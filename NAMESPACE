@@ -1,0 +1,10 @@
+# Export all names
+exportPattern(".")
+
+# Import all packages listed as Imports or Depends
+importFrom(ouch, ape2ouch)
+importFrom(numDeriv, grad, jacobian)
+importFrom(mvtnorm,dmvnorm,rmvnorm)
+importFrom(corpcor, pseudoinverse)
+importFrom(ape, rtree)
+
