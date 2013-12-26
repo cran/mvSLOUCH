@@ -63,6 +63,7 @@
 		}
 		data<-data[vElemsToKeeps]		
 	    }
+	    numpoints<-length(vMean)
 	    vNAdata<-which(is.na(data))## there are missing values we take the marginal likelihood
 	    if (length(vNAdata)>0){data<-data[-vNAdata];vMean<-vMean[-vNAdata];mCov<-mCov[-vNAdata,-vNAdata]}
 	    if (!RSS){
@@ -73,8 +74,7 @@
 		    phylLogLik<-vector("list",2)
 		    names(phylLogLik)<-c("RSS","R2")
 		    n<-ncol(lPrecalculates$mSpecDist)
-		    kYkX<-length(vMean)/n
-
+		    kYkX<-numpoints/n
 		    vVars2<-intersect(1:kYkX,unique(vVars2)) ## we are not really interested in degenerate disitributions as same likelihood and singularity in dmvnorm
 		    kY<-length(vVars2)
 		    
@@ -88,7 +88,6 @@
 	    		mCov2<-mCov
 		    	data2<-data		    
 		    }
-
 		    mDesign<-matrix(1,ncol=1,nrow=n)%x%diag(1,kY,kY)
 		    if (length(vNAdata)>0){if(ncol(mDesign)>1){mDesign<-mDesign[-vNAdata,]}else{mDesign<-matrix(c(mDesign)[-vNAdata],ncol=1)}}
 		    vIntercp<- pseudoinverse(t(mDesign)%*%pseudoinverse(mCov2)%*%mDesign)%*%t(mDesign)%*%pseudoinverse(mCov2)%*%data2
@@ -96,10 +95,10 @@
 		    if (length(vNAdata)>0){vMean3<-vMean3[-vNAdata]}
 		    RSS3<-(t(data2-vMean3))%*%pseudoinverse(mCov2)%*%(data2-vMean3)
 		    RSS2<-(t(data2-vMean2))%*%pseudoinverse(mCov2)%*%(data2-vMean2)
-	    	    phylLogLik$RSS<-(data-vMean)%*%solve(mCov)%*%(data-vMean)
+	    	    phylLogLik$RSS<-(data-vMean)%*%pseudoinverse(mCov)%*%(data-vMean)
 		    phylLogLik$R2<-1-RSS2/RSS3
 		}
-		else{phylLogLik<-(data-vMean)%*%solve(mCov)%*%(data-vMean)}
+		else{phylLogLik<-(data-vMean)%*%pseudoinverse(mCov)%*%(data-vMean)}
 	    }
 	    },warning=function(w){print(paste("Warning in dmvnorm",w))},error=function(e){print(e)}
 	)

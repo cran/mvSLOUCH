@@ -287,7 +287,8 @@
 	if (is.element("RSS",names(listobj$upper.summary))){listobj$upper.summary$RSS<-NULL}
     }
     if (is.element("regressCovar",names(listobj))){listobj$regressCovar<-NULL}    
-    sapply(listobj,function(obj,vregime.names,vY.names,vX.names,predictors,EvolModel){if (is.list(obj)){.correct.names(obj,vregime.names,vY.names,vX.names,predictors,EvolModel)}else{obj}},vregime.names=vregime.names,vY.names=vY.names,vX.names=vX.names,predictors=predictors,EvolModel=EvolModel,simplify=FALSE)
+    sapply(listobj,function(obj,vregime.names,vY.names,vX.names,predictors,EvolModel){if (is.list(obj)){
+    .correct.names(obj,vregime.names,vY.names,vX.names,predictors,EvolModel)}else{obj}},vregime.names=vregime.names,vY.names=vY.names,vX.names=vX.names,predictors=predictors,EvolModel=EvolModel,simplify=FALSE)
 }
 
 .set.tol<-function(method){
