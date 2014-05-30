@@ -1,11 +1,11 @@
-25142c74bbabd562a46aa0649e019f6f *DESCRIPTION
+b39f0714102314a42234d4d8c633d08c *DESCRIPTION
 0632cc7589c46bbf4981f0a778f1ef2a *LICENCE
 c7ab65056738ebaad1e49d571d46995a *NAMESPACE
 590af191d27af3ab343bdd27af646354 *R/MVslouchSimulStudy.R
 e700165823b072341238e66493137af3 *R/PhyloSDEestim.R
 e60c356f1bb785167221ccea765a6832 *R/ci.R
 1b41ad8fc82e5c2760b5824450909479 *R/estimBM.R
-3dfb71931df1628ee323208feda859c2 *R/estimGLSGC.R
+25041d12c32239004e3bbf450b5b6f3c *R/estimGLSGC.R
 d3e2326ea4b293db1d3dfc04759dbbbd *R/estimMAXLIK.R
 c2dab19eae5f4918c912d9bc700c25e4 *R/fitch.mvsl.R
 4cf69fb0d7de323ffce0bd7eae9830c8 *R/grid.R
@@ -17,7 +17,7 @@ dfc6f616d105ae0fcfb68089b1c8abb8 *R/matrixexps.R
 e38acf06eb1e2dc8893038c609b6478a *R/modelparamssummary.R
 b805545a0fe6a6e37187690b7ca80651 *R/modelparamstransform.R
 f2aa8dc644fa2032039def3f3af2616d *R/ouch2slouch.mvsl.R
-79e5b2dac7c55195fa86d9a43bd711cc *R/phylgls.R
+3d6b1f2adf13261010399c5ed9794475 *R/phylgls.R
 8fba6c3e09452ef28263aaf7f4c06d2a *R/precalcs.R
 0c5418bec6e996311d67a4e65bf19c99 *R/regimes.R
 cf3e40e7fd5a786a8fb9e477b39f226d *R/sdemoments.R

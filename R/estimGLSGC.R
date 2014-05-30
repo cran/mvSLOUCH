@@ -157,8 +157,8 @@
 			MaxSearchPointParams<-vEstim
 		    }
 	        }	    
-	    }
 	    attempt<-attempt+1
+	    }	    
 	}
 	if (is.na(LogLik)||is.nan(LogLik)){LogLik<- minLogLik}
 	if (is.infinite(LogLik)||is.nan(LogLik)||(is.na(LogLik))){

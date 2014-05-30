@@ -198,7 +198,7 @@
     modelParams$mCovPhyl<-mCovPhyl
     modelParams$invSXX<-invSXX
     vNAY<-which(is.na(Y));if (length(vNAY)>0){if(ncol(lDesign$D)>1){lDesign$D<-lDesign$D[-vNAY,]}else{lDesign$D<-matrix(lDesign$D[-vNAY,],ncol=1)};V<-V[-vNAY,-vNAY]}
-    modelParams$regressCovar<-pseudoinverse(t(lDesign$D)%*%solve(V)%*%lDesign$D)
+    modelParams$regressCovar<-pseudoinverse(t(lDesign$D)%*%pseudoinverse(V)%*%lDesign$D)
     modelParams    
 }
 
@@ -356,7 +356,7 @@
     if (designToEstim$y0 && designToEstim$y0AncState){modelParams$vY0<-matrix(modelParams$mPsi[,designToEstim$y0Regime]+modelParams$mPsi0,ncol=1,nrow=kY)}    
     modelParams$mCovPhyl<-V    
     vNAY<-which(is.na(Y));if (length(vNAY)>0){if(ncol(lDesign$D)>1){lDesign$D<-lDesign$D[-vNAY,]}else{lDesign$D<-matrix(lDesign$D[-vNAY,],ncol=1)};V<-V[-vNAY,-vNAY]}
-    modelParams$regressCovar<-pseudoinverse(t(lDesign$D)%*%solve(V)%*%lDesign$D)
+    modelParams$regressCovar<-pseudoinverse(t(lDesign$D)%*%pseudoinverse(V)%*%lDesign$D)
     modelParams
 }
 
