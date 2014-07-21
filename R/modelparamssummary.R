@@ -39,13 +39,14 @@
 
 .params.summary.ouch<-function(modelParams,data=NULL,t=1,LogLik=-Inf,n=0,npar0=0,RSS=NA){
     kY<-ncol(modelParams$A)
-    lParamsSummary<-vector("list",16)   
-    names(lParamsSummary)<-c("phyl.halflife","expmtA","mPsi.rotated","mPsi0.rotated","cov.matrix","trait.regression","stationary.cov.matrix","StS","LogLik","dof","m2loglik","aic","aic.c","sic","bic","RSS")
+    lParamsSummary<-vector("list",18)   
+    names(lParamsSummary)<-c("phyl.halflife","expmtA","mPsi.rotated","mPsi0.rotated","cov.matrix","corr.matrix","trait.regression","stationary.cov.matrix","stationary.corr.matrix","StS","LogLik","dof","m2loglik","aic","aic.c","sic","bic","RSS")
     lDecomps<-.decompEigenA.S(modelParams,NULL,NA,list(bCalcA=TRUE,bCovCalc=TRUE,dzetacalc=FALSE,lexptcalc=FALSE,kappacalc=FALSE,interceptcalc=FALSE),NULL)
     lParamsSummary$expmtA<-.calc.exptA(-t,lDecomps[[1]])
     lParamsSummary$mPsi.rotated<-apply(modelParams$mPsi,2,function(vPsi,expmtA){(diag(1,nrow(expmtA),ncol(expmtA))-expmtA)%*%vPsi},expmtA=lParamsSummary$expmtA)
     lParamsSummary$mPsi0.rotated<-(diag(1,nrow(lParamsSummary$expmtA),ncol(lParamsSummary$expmtA))-lParamsSummary$expmtA)%*%modelParams$mPsi0
     lParamsSummary$cov.matrix<-.calc.cov.ouch.mv(t,lDecomps[[1]],lDecomps[[2]])
+    lParamsSummary$corr.matrix<-cov2cor(lParamsSummary$cov.matrix)
     if(kY>1){
 	lParamsSummary$trait.regression<-NULL
 	tryCatch({
@@ -60,9 +61,12 @@
 					    (hadInvL1pL2*(
 						lDecomps[[1]]$invP%*%(lDecomps[[2]]$S11)%*%t(lDecomps[[1]]$invP)))%*%
 					    t(lDecomps[[1]]$eigA$vectors))
+	lParamsSummary$stationary.corr.matrix<-cov2cor(lParamsSummary$stationary.cov.matrix)
     }else{
         lParamsSummary$stationary.cov.matrix<-NULL
         lParamsSummary$stationary.cov.matrix.comment<-"A has negative eigenvalues, stationary covariance does not exist"
+        lParamsSummary$stationary.corr.matrix<-NULL
+        lParamsSummary$stationary.corr.matrix.comment<-"A has negative eigenvalues, stationary correlation does not exist"
     }
     lParamsSummary$StS<-lDecomps[[2]]$S11
     lParamsSummary$LogLik<-LogLik
@@ -82,13 +86,14 @@
 }
 
 .params.summary.mvslouch<-function(modelParams,data=NULL,t=1,LogLik=-Inf,n=0,npar0=0,RSS=NA){
-    lParamsSummary<-vector("list",21)   
-    names(lParamsSummary)<-c("phyl.halflife","expmtA","optimal.regression","mPsi.rotated","mPsi0.rotated","cov.matrix","conditional.cov.matrix","stationary.cov.matrix","optima.cov.matrix","cov.with.optima","evolutionary.regression","trait.regression","StS","LogLik","dof","m2loglik","aic","aic.c","sic","bic","RSS")
+    lParamsSummary<-vector("list",26)   
+    names(lParamsSummary)<-c("phyl.halflife","expmtA","optimal.regression","mPsi.rotated","mPsi0.rotated","cov.matrix","corr.matrix","conditional.cov.matrix","conditional.corr.matrix","stationary.cov.matrix","stationary.corr.matrix","optima.cov.matrix","optima.corr.matrix","cov.with.optima","corr.with.optima","evolutionary.regression","trait.regression","StS","LogLik","dof","m2loglik","aic","aic.c","sic","bic","RSS")
     lDecomps<-.decompEigenA.S(modelParams,NULL,NA,list(bCalcA=TRUE,bCovCalc=TRUE,dzetacalc=FALSE,lexptcalc=FALSE,kappacalc=FALSE,interceptcalc=FALSE),NULL)
     lParamsSummary$expmtA<-.calc.exptA(-t,lDecomps[[1]])
     lParamsSummary$mPsi.rotated<-apply(modelParams$mPsi,2,function(vPsi,expmtA){(diag(1,nrow(expmtA),ncol(expmtA))-expmtA)%*%vPsi},expmtA=lParamsSummary$expmtA)
     lParamsSummary$mPsi0.rotated<-(diag(1,nrow(lParamsSummary$expmtA),ncol(lParamsSummary$expmtA))-lParamsSummary$expmtA)%*%modelParams$mPsi0
     lParamsSummary$cov.matrix<-.calc.cov.slouch.mv(t,lDecomps[[1]],lDecomps[[2]])
+    lParamsSummary$corr.matrix<-cov2cor(lParamsSummary$cov.matrix)
     lParamsSummary$phyl.halflife<-.calc.phyl.halflife(modelParams$A)
     kY<-ncol(modelParams$A)
     kX<-ncol(modelParams$B)
@@ -98,6 +103,7 @@
 	lParamsSummary$trait.regression<-sapply(1:kY,function(i,mCov){mCov[i,-i]%*%solve(mCov[-i,-i])},mCov=lParamsSummary$cov.matrix,simplify=FALSE)
     },error=function(e){print(paste("Error in trait regression calculation",e))})
     lParamsSummary$conditional.cov.matrix<-lParamsSummary$cov.matrix[1:kY,1:kY]-lParamsSummary$cov.matrix[1:kY,(kY+1):(kY+kX)]%*%solve(lParamsSummary$cov.matrix[(kY+1):(kY+kX),(kY+1):(kY+kX)])%*%lParamsSummary$cov.matrix[(kY+1):(kY+kX),1:kY]
+    lParamsSummary$conditional.corr.matrix<-cov2cor(lParamsSummary$conditional.cov.matrix)
     if (length(which(Re(lDecomps[[1]]$eigA$values)<=0))==0){
 	hadInvL1pL2<-apply(matrix(0:(kY^2-1),kY,kY,byrow=TRUE),c(1,2),.CalcVlqStat,vlambda=lDecomps[[1]]$eigA$values,k=kY)
 	lParamsSummary$stationary.cov.matrix<-Re(lDecomps[[1]]$eigA$vectors%*%
@@ -108,16 +114,21 @@
 						    lDecomps[[1]]$A1B%*%lDecomps[[2]]$S21+
 				    		    lDecomps[[1]]$A1B%*%lDecomps[[2]]$S22%*%t(lDecomps[[1]]$A1B)
 						)%*%t(lDecomps[[1]]$invP)))%*%t(lDecomps[[1]]$eigA$vectors))
+        lParamsSummary$stationary.corr.matrix<-cov2cor(lParamsSummary$stationary.cov.matrix)
         lParamsSummary$optimal.regression<- (-1)*lDecomps[[1]]$A1B
     }else{
         lParamsSummary$stationary.cov.matrix<-NULL
         lParamsSummary$stationary.cov.matrix.comment<-"A has negative eigenvalues, stationary covariance does not exist"
+        lParamsSummary$stationary.corr.matrix<-NULL
+        lParamsSummary$stationary.corr.matrix.comment<-"A has negative eigenvalues, stationary correlation does not exist"
         lParamsSummary$optimal.regression<- NULL
         lParamsSummary$optimal.regression.comment<- "A has negative eigenvalues, optimal regression does not exist"
         lParamsSummary$A1B<-lDecomps[[1]]$A1B
     }
     lParamsSummary$optima.cov.matrix<-t*lDecomps[[1]]$A1B%*%lDecomps[[2]]$S22%*%t(lDecomps[[1]]$A1B)
+    lParamsSummary$optima.corr.matrix<-cov2cor(lParamsSummary$optima.cov.matrix)
     lParamsSummary$cov.with.optima<-lParamsSummary$cov.matrix[1:kY,(kY+1):(kY+kX)]%*%t(lDecomps[[1]]$A1B)*(-1) ## minus one here !!
+    lParamsSummary$corr.with.optima<-apply(matrix(0:((kY)^2-1),kY,kY,byrow=TRUE),c(1,2),function(ij,kY,mcov.traits,mcov.optima,mcov.with){i<-ij%/%kY+1;j<-ij%%kY+1;mcov.with[i,j]/(sqrt(mcov.traits[i,i]*mcov.optima[j,j]))},kY=kY,mcov.traits=lParamsSummary$cov.matrix,mcov.optima=lParamsSummary$optima.cov.matrix,mcov.with=lParamsSummary$cov.with.optima)
     lParamsSummary$StS<-rbind(cbind(lDecomps[[2]]$S11,lDecomps[[2]]$S12),cbind(lDecomps[[2]]$S21,lDecomps[[2]]$S22))
     lParamsSummary$LogLik<-LogLik
     lParamsSummary$dof<-npar0 + nrow(modelParams$Sxx)+nrow(modelParams$Sxx)*(1+nrow(modelParams$Sxx))/2 ## Sxx is for now estimated directly

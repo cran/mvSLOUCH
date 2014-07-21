@@ -96,11 +96,15 @@ The field phylhalflife are the eigenvalues, eigenvectors and phylogenetic half l
 associated with the A matrix, expmtA is exp(-A*1),
 mPsi.rotated is each of the regime effects multiplied
 by (1-exp(-A*1), mPsi0.rotated is the same for the mPsi0 vector and can be ignored,
-cov.matrix is the trait vector covariance matrix at time 1, trait.regression
+cov.matrix is the trait vector covariance matrix at time 1, 
+corr.matrix is the trait vector correlation matrix at time 1,
+trait.regression
 is a list consisting of regression coefficents when taking each trait in turn and
 calculating its coniditional expectation on all of the other trait, 
 stationary.cov.matrix is the stationary covariance matrix of process if it exists
-(i.e. the eigenvalues have positive real part). 
+(i.e. the eigenvalues have positive real part),
+stationary.corr.matrix is the stationary correlation matrix of process if it exists
+(i.e. the eigenvalues have positive real part),
 StS the infinitesmal covariance matrix S%*%t(S),
 LogLik the log--likelihood, dof the degrees of freedom, m2loglik is $-2$log--likelihood,
 aic is the Akaike information criterion, aic.c is the Akaike information criterion corrected for small

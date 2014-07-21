@@ -108,11 +108,19 @@ $exp(-A*1)$, optimal regression is the -solve(A)B matrix,
 mPsi.rotated is each of the regime effects multiplied
 by 1-exp(-A*1), mPsi0.rotated is the same for the mPsi0 vector and can be ignored,
 cov.matrix is the trait vector covariance matrix at time 1, 
+corr.matrix is the trait vector correlation matrix at time 1, 
 conditional.cov.matrix is the conditional covariance matrix of the OU type variables 
 on the Brownian motion type at time $1$, i.e. Cov[Y|X](1),
-stationary.cov.matrix is the limit of the conditional.cov.matrix, optima.cov.matrix
+conditional.corr.matrix is the conditional correlation matrix of the OU type variables 
+on the Brownian motion type at time $1$, i.e. Corr[Y|X](1),
+stationary.cov.matrix is the limit of the conditional.cov.matrix, 
+stationary.corr.matrix is the limit of the conditional.corr.matrix, 
+optima.cov.matrix
 is the covariance matrix of the optimal process at time 1 equalling 1* solve(A)BSxx(Sxx^T)(B^T)solve(A)^T,
+optima.corr.matrix
+is the correlation matrix of the optimal process at time 1,
 cov.with.optima is the covariance matrix between the optimal process and the Y type variables process,
+corr.with.optima is the correlation matrix between the optimal process and the Y type variables process,
 evolutionary.regression is the regression coefficient of E[Y|X](1)$
 StS the infinitesmal covariance matrix,
 LogLik the log--likelihood, dof the degrees of freedom, m2loglik is -2log--likelihood,

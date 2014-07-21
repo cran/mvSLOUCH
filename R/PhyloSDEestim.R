@@ -104,8 +104,10 @@
 	if (is.element("optimal.regression",names(listobj))){listobj$optimal.regression<-NULL}
 	if (is.element("A1B",names(listobj))){listobj$A1B<-NULL}
 	if (is.element("conditional.cov.matrix",names(listobj))){listobj$conditional.cov.matrix<-NULL}
+	if (is.element("conditional.corr.matrix",names(listobj))){listobj$conditional.corr.matrix<-NULL}
 	if (is.element("evolutionary.regression",names(listobj))){listobj$evolutionary.regression<-NULL}
 	if (is.element("cov.with.optima",names(listobj))){if (length(vY.names)==1){listobj$cov.with.optima<-matrix(listobj$cov.with.optima,1,1)};colnames(listobj$cov.with.optima)<-vY.names;rownames(listobj$cov.with.optima)<-vY.names}
+	if (is.element("corr.with.optima",names(listobj))){if (length(vY.names)==1){listobj$corr.with.optima<-matrix(listobj$corr.with.optima,1,1)};colnames(listobj$corr.with.optima)<-vY.names;rownames(listobj$corr.with.optima)<-vY.names}
 	if (EvolModel=="bm"){
     	    if (is.element("A",names(listobj))){listobj$A<-NULL}
     	    if (is.element("A.confidence.interval",names(listobj))){listobj$A.confidence.interval<-NULL}
@@ -174,7 +176,9 @@
     if (is.element("optimal.regression",names(listobj))){if ((length(vY.names)==1)||(length(vX.names)==1)){listobj$optimal.regression<-matrix(listobj$optimal.regression,nrow=length(vY.names),ncol=length(vX.names))};rownames(listobj$optimal.regression)<-vY.names;colnames(listobj$optimal.regression)<-vX.names}
     if (is.element("A1B",names(listobj))){if ((length(vY.names)==1)||(length(vX.names)==1)){listobj$A1B<-matrix(listobj$A1B,nrow=length(vY.names),ncol=length(vX.names))};rownames(listobj$A1B)<-vY.names;colnames(listobj$A1B)<-vX.names}
     if (is.element("cov.matrix",names(listobj))){colnames(listobj$cov.matrix)<-c(vY.names,vX.names);rownames(listobj$cov.matrix)<-c(vY.names,vX.names)}
+    if (is.element("corr.matrix",names(listobj))){colnames(listobj$corr.matrix)<-c(vY.names,vX.names);rownames(listobj$corr.matrix)<-c(vY.names,vX.names)}
     if (is.element("conditional.cov.matrix",names(listobj))){if (length(vY.names)==1){listobj$conditional.cov.matrix<-matrix(listobj$conditional.cov.matrix,1,1)};colnames(listobj$conditional.cov.matrix)<-vY.names;rownames(listobj$conditional.cov.matrix)<-vY.names}
+    if (is.element("conditional.corr.matrix",names(listobj))){if (length(vY.names)==1){listobj$conditional.corr.matrix<-matrix(listobj$conditional.corr.matrix,1,1)};colnames(listobj$conditional.corr.matrix)<-vY.names;rownames(listobj$conditional.corr.matrix)<-vY.names}
     if (is.element("evolutionary.regression",names(listobj))){
 	if ((length(vY.names)==1)||(length(vX.names)==1)){listobj$evolutionary.regression<-matrix(listobj$evolutionary.regression,ncol=length(vX.names),nrow=length(vY.names))}
 	if (is.null(predictors)){colnames(listobj$evolutionary.regression)<-vX.names;rownames(listobj$evolutionary.regression)<-vY.names}
@@ -188,12 +192,18 @@
 		    if ((length(predictors)==1)||(length(setdiff(c(vY.names,vX.names),predictors))==1)){listobj$evolutionary.regression<-matrix(listobj$evolutionary.regression,ncol=length(predictors),nrow=length(setdiff(c(vY.names,vX.names),predictors)))}
 		    colnames(listobj$evolutionary.regression)<-predictors;rownames(listobj$evolutionary.regression)<-setdiff(c(vY.names,vX.names),predictors)
 		},error=function(e){print(paste("Error in evolutionary regression calculation",e))})		
-		if (is.element("conditional.cov.matrix",names(listobj))){listobj$conditional.cov.Y.on.X<-listobj$conditional.cov.matrix}
+		if (is.element("conditional.cov.matrix",names(listobj))){
+		    listobj$conditional.cov.Y.on.X<-listobj$conditional.cov.matrix
+		    listobj$conditional.corr.Y.on.X<-listobj$conditional.corr.matrix
+		}
 	       listobj$conditional.cov.matrix<-NULL
+	       listobj$conditional.corr.matrix<-NULL
 		tryCatch({
 		    listobj$conditional.cov.matrix<-listobj$cov.matrix[setdiff(c(vY.names,vX.names),predictors),predictors]%*%solve(listobj$cov.matrix[predictors,predictors])%*%listobj$cov.matrix[predictors,setdiff(c(vY.names,vX.names),predictors)]
+		    listobj$conditional.corr.matrix<-cov2cor(listobj$conditional.cov.matrix) ##produces matrix, no need to correct if 1-dim
 		    if (length(setdiff(c(vY.names,vX.names),predictors))==1){listobj$conditional.cov.matrix<-matrix(listobj$conditional.cov.matrix,ncol=1,nrow=1)}
 		    colnames(listobj$conditional.cov.matrix)<-setdiff(c(vY.names,vX.names),predictors);rownames(listobj$conditional.cov.matrix)<-setdiff(c(vY.names,vX.names),predictors)
+		    colnames(listobj$conditional.corr.matrix)<-setdiff(c(vY.names,vX.names),predictors);rownames(listobj$conditional.corr.matrix)<-setdiff(c(vY.names,vX.names),predictors)
 		},error=function(e){print(paste("Error in conditional covariance calculation",e))})		
 	    }	    
 	    else{colnames(listobj$evolutionary.regression)<-vX.names;rownames(listobj$evolutionary.regression)<-vY.names}	
@@ -206,12 +216,18 @@
 		    if ((length(predictors)==1)||(length(setdiff(c(vY.names,vX.names),predictors))==1)){listobj$evolutionary.regression<-matrix(listobj$evolutionary.regression,ncol=length(predictors),nrow=length(setdiff(c(vY.names,vX.names),predictors)))}
 		    colnames(listobj$evolutionary.regression)<-predictors;rownames(listobj$evolutionary.regression)<-setdiff(c(vY.names,vX.names),predictors)
 	    },error=function(e){print(paste("Error in evolutionary regression calculation",e))})		
-	    if (is.element("conditional.cov.matrix",names(listobj))){listobj$conditional.cov.Y.on.X<-listobj$conditional.cov.matrix}
+	    if (is.element("conditional.cov.matrix",names(listobj))){
+		listobj$conditional.cov.Y.on.X<-listobj$conditional.cov.matrix
+		listobj$conditional.corr.Y.on.X<-listobj$conditional.corr.matrix
+	    }
 	    listobj$conditional.cov.matrix<-NULL
+	    listobj$conditional.corr.matrix<-NULL
 	    tryCatch({
 		listobj$conditional.cov.matrix<-listobj$cov.matrix[setdiff(c(vY.names,vX.names),predictors),predictors]%*%solve(listobj$cov.matrix[predictors,predictors])%*%listobj$cov.matrix[predictors,setdiff(c(vY.names,vX.names),predictors)]
+		listobj$conditional.corr.matrix<-cov2cor(listobj$conditional.cov.matrix) ##produces matrix, no need to correct if 1-dim
 		if (length(setdiff(c(vY.names,vX.names),predictors))==1){listobj$conditional.cov.matrix<-matrix(listobj$conditional.cov.matrix,ncol=1,nrow=1)}
 		colnames(listobj$conditional.cov.matrix)<-setdiff(c(vY.names,vX.names),predictors);rownames(listobj$conditional.cov.matrix)<-setdiff(c(vY.names,vX.names),predictors)
+		colnames(listobj$conditional.corr.matrix)<-setdiff(c(vY.names,vX.names),predictors);rownames(listobj$conditional.corr.matrix)<-setdiff(c(vY.names,vX.names),predictors)
 	    },error=function(e){print(paste("Error in conditional covariance calculation",e))})		
 	}
     }
@@ -239,9 +255,12 @@
 	}
     }
     if (is.element("cov.with.optima",names(listobj))){if (length(vY.names)==1){listobj$cov.with.optima<-matrix(listobj$cov.with.optima,1,1)};colnames(listobj$cov.with.optima)<-vY.names;rownames(listobj$cov.with.optima)<-vY.names}
+    if (is.element("corr.with.optima",names(listobj))){if (length(vY.names)==1){listobj$corr.with.optima<-matrix(listobj$corr.with.optima,1,1)};colnames(listobj$corr.with.optima)<-vY.names;rownames(listobj$corr.with.optima)<-vY.names}
     if (is.element("optima.cov.matrix",names(listobj))){if (length(vY.names)==1){listobj$optima.cov.matrix<-matrix(listobj$optima.cov.matrix,1,1)};colnames(listobj$optima.cov.matrix)<-vY.names;rownames(listobj$optima.cov.matrix)<-vY.names}
+    if (is.element("optima.corr.matrix",names(listobj))){if (length(vY.names)==1){listobj$optima.corr.matrix<-matrix(listobj$optima.corr.matrix,1,1)};colnames(listobj$optima.corr.matrix)<-vY.names;rownames(listobj$optima.corr.matrix)<-vY.names}
     if (is.element("stationary.cov.matrix",names(listobj))){
 	if (length(vY.names)==1){listobj$stationary.cov.matrix<-matrix(listobj$stationary.cov.matrix,1,1)};colnames(listobj$stationary.cov.matrix)<-vY.names;rownames(listobj$stationary.cov.matrix)<-vY.names
+	if (length(vY.names)==1){listobj$stationary.corr.matrix<-matrix(listobj$stationary.corr.matrix,1,1)};colnames(listobj$stationary.corr.matrix)<-vY.names;rownames(listobj$stationary.corr.matrix)<-vY.names
 	if ((length(vX.names)==0)&&(!is.null(predictors))){
 	    vResps<-setdiff(vY.names,predictors)
 	    tryCatch({
@@ -251,10 +270,18 @@
 		}
 		if (!is.element("limiting.relationship.cov.matrix",names(listobj))){
 		    listobj$limiting.relationship.cov.matrix<-listobj$limiting.regression%*%listobj$stationary.cov.matrix[predictors,predictors]%*%t(listobj$limiting.regression)
+		    listobj$limiting.relationship.corr.matrix<-cov2cor(listobj$limiting.relationship.cov.matrix)
 		    if (length(vResps)==1){listobj$limiting.relationship.cov.matrix<-matrix(listobj$limiting.relationship.cov.matrix,1,1)};colnames(listobj$limiting.relationship.cov.matrix)<-vResps;rownames(listobj$limiting.relationship.cov.matrix)<-vResps    
 		}
 		if (!is.element("cov.with.limit",names(listobj))){
 		    listobj$cov.with.limit<-listobj$stationary.cov.matrix[vResps,predictors]%*%t(listobj$limiting.regression)
+		    mcov.curr<-listobj$stationary.cov.matrix[vResps,vResps]
+		    mcov.stat<-listobj$limiting.relationship.cov.matrix[vResps,vResps]
+		    if (length(vResps)==1){
+			mcov.curr<-matrix(mcov.curr,1,1)
+			mcov.stat<-matrix(mcov.stat,1,1)
+		    }
+		    listobj$corr.with.limit<-apply(matrix(0:((length(vResps))^2-1),length(vResps),length(vResps),byrow=TRUE),c(1,2),function(ij,kY,mcov.curr,mcov.stat,mcov.with){i<-ij%/%kY+1;j<-ij%%kY+1;mcov.with[i,j]/(sqrt(mcov.curr[i,i]*mcov.stat[j,j]))},kY=length(vResps),mcov.curr=mcov.curr,mcov.stat=mcov.stat,mcov.with=listobj$cov.with.limit)
 		    if (length(vResps)==1){listobj$cov.with.limit<-matrix(listobj$cov.with.limit,1,1)};colnames(listobj$cov.with.limit)<-vResps;rownames(listobj$cov.with.limit)<-vResps    
 		}
 		listobj$limiting.trait.regression<-sapply(1:length(vY.names),function(i,mCov,vY.names){

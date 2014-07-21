@@ -65,8 +65,8 @@
 	    }
 	    numpoints<-length(vMean)
 	    vNAdata<-which(is.na(data))## there are missing values we take the marginal likelihood
-	    if (length(vNAdata)>0){data<-data[-vNAdata];vMean<-vMean[-vNAdata];mCov<-mCov[-vNAdata,-vNAdata]}
 	    if (!RSS){
+		if (length(vNAdata)>0){data<-data[-vNAdata];vMean<-vMean[-vNAdata];mCov<-mCov[-vNAdata,-vNAdata]}
 		phylLogLik<-dmvnorm(x=data, mean=vMean, sigma=mCov, log=TRUE)
 		if (phylLogLik<minLogLik){phylLogLik<-minLogLik}
 	    }else{
@@ -77,24 +77,34 @@
 		    kYkX<-numpoints/n
 		    vVars2<-intersect(1:kYkX,unique(vVars2)) ## we are not really interested in degenerate disitributions as same likelihood and singularity in dmvnorm
 		    kY<-length(vVars2)
-		    
 		    if (kY<kYkX){
 			vElemsToKeeps2<-sort(c(sapply(vVars2,function(x){seq(from=x,length.out=n,by=kYkX)})))
-			vMean2<-vMean[vElemsToKeeps2]+mCov[vElemsToKeeps2,-vElemsToKeeps2]%*%pseudoinverse(mCov[-vElemsToKeeps2,-vElemsToKeeps2])%*%(data[-vElemsToKeeps2]-vMean[-vElemsToKeeps2])
-	    		mCov2<-mCov[vElemsToKeeps2,vElemsToKeeps2]-mCov[vElemsToKeeps2,-vElemsToKeeps2]%*%pseudoinverse(mCov[-vElemsToKeeps2,-vElemsToKeeps2])%*%mCov[-vElemsToKeeps2,vElemsToKeeps2]
+			vElemsToKeeps2mNA<-union(vElemsToKeeps2,vNAdata)
+			vElemsToKeeps2<-setdiff(vElemsToKeeps2,vNAdata)			
+			vMean2<-vMean[vElemsToKeeps2]+mCov[vElemsToKeeps2,-vElemsToKeeps2mNA]%*%pseudoinverse(mCov[-vElemsToKeeps2mNA,-vElemsToKeeps2mNA])%*%(data[-vElemsToKeeps2mNA]-vMean[-vElemsToKeeps2mNA])
+	    		mCov2<-mCov[vElemsToKeeps2,vElemsToKeeps2]-mCov[vElemsToKeeps2,-vElemsToKeeps2mNA]%*%pseudoinverse(mCov[-vElemsToKeeps2mNA,-vElemsToKeeps2mNA])%*%mCov[-vElemsToKeeps2mNA,vElemsToKeeps2]
 		    	data2<-data[vElemsToKeeps2]		
 		    }else{
+			if (length(vNAdata)>0){data<-data[-vNAdata];vMean<-vMean[-vNAdata];mCov<-mCov[-vNAdata,-vNAdata]}
 			vMean2<-vMean
 	    		mCov2<-mCov
 		    	data2<-data		    
 		    }
 		    mDesign<-matrix(1,ncol=1,nrow=n)%x%diag(1,kY,kY)
-		    if (length(vNAdata)>0){if(ncol(mDesign)>1){mDesign<-mDesign[-vNAdata,]}else{mDesign<-matrix(c(mDesign)[-vNAdata],ncol=1)}}
+		    if (kY<kYkX){
+			mDesign<-matrix(1,ncol=1,nrow=n)%x%diag(1,kYkX,kYkX)
+			if(ncol(mDesign)>1){mDesign<-mDesign[vElemsToKeeps2,]}else{mDesign<-matrix(c(mDesign)[vElemsToKeeps2],ncol=1)}
+		    }else{
+			if (length(vNAdata)>0){if(ncol(mDesign)>1){mDesign<-mDesign[-vNAdata,]}else{mDesign<-matrix(c(mDesign)[-vNAdata],ncol=1)}}
+		    }
 		    vIntercp<- pseudoinverse(t(mDesign)%*%pseudoinverse(mCov2)%*%mDesign)%*%t(mDesign)%*%pseudoinverse(mCov2)%*%data2
 		    vMean3<-matrix(1,ncol=1,nrow=n)%x%vIntercp
-		    if (length(vNAdata)>0){vMean3<-vMean3[-vNAdata]}
+		    if (kY<kYkX){
+			vMean3<-vMean3[vElemsToKeeps2]
+		    }else{if (length(vNAdata)>0){vMean3<-vMean3[-vNAdata]}}
 		    RSS3<-(t(data2-vMean3))%*%pseudoinverse(mCov2)%*%(data2-vMean3)
 		    RSS2<-(t(data2-vMean2))%*%pseudoinverse(mCov2)%*%(data2-vMean2)
+	    	    if (length(vNAdata)>0){data<-data[-vNAdata];vMean<-vMean[-vNAdata];mCov<-mCov[-vNAdata,-vNAdata]}
 	    	    phylLogLik$RSS<-(data-vMean)%*%pseudoinverse(mCov)%*%(data-vMean)
 		    phylLogLik$R2<-1-RSS2/RSS3
 		}
