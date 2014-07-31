@@ -21,14 +21,14 @@ SummarizeMVSLOUCH<-function(phyltree,data,modelParams,regimes=NULL,regimes.times
     .SummarizeFullPoint(NULL,dfData=data,PhylTree=phyltree,EvolModel="mvslouch",EstimationParams=list(calcCI=calcCI,Atype=Atype,Syytype=Syytype),regimes.times=regimes.times,regimes=regimes,modelParams=modelParams,t=t,dof=dof,bShouldPrint=TRUE,LogLik=NULL,maxIter=10,tol=c(0.001,0.0001),Merror=M.error,predictors=predictors)
 }
 
-simulBMProcPhylTree<-function(phyltree,X0,Sigma,dropInternal=TRUE){
-    .simulVasicekProcPhylTree(phyltree,"bm",modelParams=list(vX0=X0,Sxx=Sigma),EstimationParams=NULL,dropInternal=dropInternal)$ExtantSample
+simulBMProcPhylTree<-function(phyltree,X0,Sigma,dropInternal=TRUE,M.error=NULL){
+    .simulVasicekProcPhylTree(phyltree,"bm",modelParams=list(vX0=X0,Sxx=Sigma),EstimationParams=NULL,dropInternal=dropInternal,M.error=M.error)$ExtantSample
 }
-simulOUCHProcPhylTree<-function(phyltree,modelParams,regimes=NULL,regimes.times=NULL,dropInternal=TRUE){
-    .simulVasicekProcPhylTree(phyltree,"ouch",modelParams=modelParams,EstimationParams=NULL,regimes=regimes,regimes.times=regimes.times,dropInternal=dropInternal)$ExtantSample
+simulOUCHProcPhylTree<-function(phyltree,modelParams,regimes=NULL,regimes.times=NULL,dropInternal=TRUE,M.error=NULL){
+    .simulVasicekProcPhylTree(phyltree,"ouch",modelParams=modelParams,EstimationParams=NULL,regimes=regimes,regimes.times=regimes.times,dropInternal=dropInternal,M.error=M.error)$ExtantSample
 }
-simulMVSLOUCHProcPhylTree<-function(phyltree,modelParams,regimes=NULL,regimes.times=NULL,dropInternal=TRUE){
-    .simulVasicekProcPhylTree(phyltree,"mvslouch",modelParams=modelParams,EstimationParams=NULL,regimes=regimes,regimes.times=regimes.times,dropInternal=dropInternal)$ExtantSample
+simulMVSLOUCHProcPhylTree<-function(phyltree,modelParams,regimes=NULL,regimes.times=NULL,dropInternal=TRUE, M.error=NULL){
+    .simulVasicekProcPhylTree(phyltree,"mvslouch",modelParams=modelParams,EstimationParams=NULL,regimes=regimes,regimes.times=regimes.times,dropInternal=dropInternal,M.error=M.error)$ExtantSample
 }
 
 .SimulStudyBM<-function(phyltree,X0,Sigma,n=NULL, M.error=NULL){

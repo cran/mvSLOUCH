@@ -26,7 +26,6 @@
 		gc(verbose=bShouldPrint)
 		modelParams<-tmpEvaluatedPoint$modelParams
 		MaxLogLik<-tmpEvaluatedPoint$LogLik
-	
 		if (is.infinite(MaxLogLik)||is.nan(MaxLogLik)||(is.na(MaxLogLik))){
 		    MaxLogLik<- minLogLik
 		    if (attempt==maxTries-1){vEstim[1:length(vEstim)]<-rnorm(length(vEstim))/10}else{vEstim<-jitter(vEstim)}

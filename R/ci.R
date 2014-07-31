@@ -103,7 +103,7 @@
 	lCI$eigenvalues$eigenvalues.support.grid<-hlgrid
     }
 ## -------------------------------------------------------------------------------
-
+    if ((nrow(regressCovar)==0)||(ncol(regressCovar)==0)){regressCovar<-NULL}
     if (!is.null(regressCovar)){
 	lCI$regression.summary<-list()
 	vRegCIs<-qnorm(1-(1-conf.level)/2)*sqrt(diag(regressCovar))

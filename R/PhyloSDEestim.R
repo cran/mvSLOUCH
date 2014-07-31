@@ -407,7 +407,8 @@
 	vKnownNames<-c()
 	EstimParams$KnownParams<-list()
 	j<-1	
-	if ((length(EstimParams$Fixed)>0)&&(length(EstimParams$KnownParams)>0)){
+	#if ((length(EstimParams$Fixed)>0)&&(length(EstimParams$KnownParams)>0)){
+	if (length(EstimParams$Fixed)>0){#&&(length(EstimParams$KnownParams)>0)){
 	    for (i in 1:length(EstimParams$Fixed)){
 		if (!is.na(EstimParams$Fixed[[i]][1])){
 		    EstimParams$KnownParams[[j]]<-EstimParams$Fixed[[i]]

@@ -49,6 +49,7 @@
     }
     if (!is.null(EstimationParams$Fixed$B)){ModelParams$B<-EstimationParams$Fixed$B}
     else{
+
 	if ((EstimationParams$kX==1)&&(EstimationParams$kY==1)){ModelParams$B<-matrix(params["B"],ncol=1,nrow=1)}
 	else{
 	    ModelParams$B=switch(EstimationParams$Btype,

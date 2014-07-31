@@ -7,7 +7,7 @@ Simulate data on a phylogeny under a (multivariate) Brownian motion model
 Simulate data on a phylogeny under a (multivariate) Brownian motion model
 }
 \usage{
-simulBMProcPhylTree(phyltree, X0, Sigma, dropInternal = TRUE)
+simulBMProcPhylTree(phyltree, X0, Sigma, dropInternal = TRUE, M.error=NULL)
 }
 \arguments{
   \item{phyltree}{The phylogeny in \code{ouch} format. All of the internal nodes have to be uniquely named. The tree can be obtained from e.g. a \code{nexus} file by the \code{read.nexus} function
@@ -15,7 +15,28 @@ from the \code{ape} package and converted into the \code{ouch} format by \code{o
 \code{ape2ouch} function. See the example of how to correct the internal nodes.}
   \item{X0}{The ancestral, root state.}
   \item{Sigma}{The diffusion matrix of the Brownian motion.}
-  \item{dropInternal}{Logical whether the simulated values at the internal nodes be changed to NA or not.}
+  \item{dropInternal}{Logical whether the simulated values at the internal nodes be 
+  changed to NA or not.}
+  \item{M.error}{
+    An optional measurement error covariance matrix. The program tries to recognizes 
+    the structure of matrix passed and accepts the following possibilities :
+    \itemize{
+	\item{}{a single number that will be on the diagonal of the covariance matrix}
+	\item{}{a m element vector with each value corresponding to a variable and the 
+	covariance matrix will have that vector repeated on its diagonal,}
+	\item{}{a nxm element vector a diagonal matrix with this vector on the diagonal,}
+	\item{}{a m x m ((number of variables) x (number of variables)) matrix it is assumed 
+	that the measurement errors are independent between observations so the resulting 
+	covariance structure is block diagonal,}
+	\item{}{a list of length m (number of variables), each list element is the 
+	covariance structure for the appropriate variable, either a single number 
+	(each observations has same variance), vector (of length n for each observation), 
+	or full matrix,}
+	\item{}{matrix of size mn x mn (m - number of variables, n - number of observations) 
+	the measurement error covaraince provided as is,}
+	\item{}{NULL no measurement error}
+    }
+}
 }
 
 \value{

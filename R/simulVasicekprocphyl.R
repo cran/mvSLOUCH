@@ -1,4 +1,4 @@
-.simulVasicekProcPhylTree<-function(phyltree,EvolModel,modelParams,EstimationParams=NULL,regimes=NULL,regimes.times=NULL,Simulparams=NULL,dropInternal=TRUE,bAllTrajectories=FALSE){
+.simulVasicekProcPhylTree<-function(phyltree,EvolModel,modelParams,EstimationParams=NULL,regimes=NULL,regimes.times=NULL,Simulparams=NULL,dropInternal=TRUE,bAllTrajectories=FALSE,M.error=NULL){
 ## tree is assumed to be in ouch format
 ## we don't need  descendent list as we have the tree in ouch format use @lineages
 
@@ -26,6 +26,7 @@
                                                         
     modelParams$regimes<-regimes
     modelParams$regimeTimes<-regimes.times
+
     
      params<-list()
      params$EvolModel<-EvolModel
@@ -216,6 +217,14 @@
     if (EvolModel=="bm"){if (!is.null(colnames(modelParams$Sxx))){colnames(mTreeTraject)<-colnames(modelParams$Sxx)}}
     if (EvolModel=="ouch"){if (!is.null(colnames(modelParams$A))){colnames(mTreeTraject)<-colnames(modelParams$A)}}
     if (EvolModel=="mvslouch"){if ((!is.null(colnames(modelParams$A)))&&(!is.null(colnames(modelParams$Sxx)))){colnames(mTreeTraject)<-c(colnames(modelParams$A),colnames(modelParams$Sxx))}}
+    
+    if (!is.null(M.error)){
+	M.error<-.createCovariancematrix(M.error,phyltree@nterm,ncol(mTreeTraject),NULL,"measurement error")
+    
+	m.errors<-rmvnorm(1,mean=rep(0,ncol(M.error)),sigma=M.error)
+	m.errors<-matrix(m.errors,nrow=phyltree@nterm,ncol=ncol(mTreeTraject),byrow=TRUE)
+	mTreeTraject[c(phyltree@term),]<-mTreeTraject[(phyltree@term),]+m.errors
+    }
     mTreeTraject<-as.data.frame(mTreeTraject)
     simulReturn<-vector("list",3)
     names(simulReturn)<-c("Tree","ExtantSample","FullTrajectory")

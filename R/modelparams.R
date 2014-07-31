@@ -30,6 +30,7 @@
         modelParams$A<-lPoint$A
         modelParams$Syy<-lPoint$Syy
     }
+
     if (EvolModel=="mvslouch"){
     	    tmpvY0<-NA
     	    if (!EstimationParams$designToEstim$y0){tmpvY0<-EstimationParams$Fixed$vY0}
@@ -37,7 +38,7 @@
     	    vX0<-NA
 	    mPsi<-NA
 	    mPsi0<-NA
-    	    if (EstimationParams$designToEstim$psi){mPsi<-EstimationParams$Fixed$mPsi}
+    	    if (!EstimationParams$designToEstim$psi){mPsi<-EstimationParams$Fixed$mPsi}
 	    if (is.element("mPsi0",names(EstimationParams$Fixed))){mPsi0<-EstimationParams$Fixed$mPsi0}
 	    if (EstimationParams$designToEstim$y0AncState){
 		if (!EstimationParams$designToEstim$psi){
@@ -65,6 +66,7 @@
 
     if (EvolModel=="ouch"){
 	    tmpvY0<-NA
+
 	    if (!EstimationParams$designToEstim$y0){tmpvY0<-EstimationParams$Fixed$vY0}
     	    if (!EstimationParams$designToEstim$psi){mPsi<-EstimationParams$Fixed$mPsi}
     	    if (is.element("mPsi0",names(EstimationParams$Fixed))){mPsi0<-EstimationParams$Fixed$mPsi0}
@@ -118,7 +120,10 @@
               }
               if (EvolModel=="bm"){V<-mCovPhyl}
               V[which(abs(V)<1e-15)]<-0
-              if ((EvolModel=="ouch")||(EvolModel=="mvslouch")){ modelParams$regressCovar<-pseudoinverse(t(lDesign$D)%*%solve(V)%*%lDesign$D)}
+              if ((EvolModel=="ouch")||(EvolModel=="mvslouch")){ 
+    		modelParams$regressCovar<-matrix(0,ncol=ncol(lDesign$D),nrow=ncol(lDesign$D))
+    		if (ncol(lDesign$D)>0){modelParams$regressCovar<-pseudoinverse(t(lDesign$D)%*%solve(V)%*%lDesign$D)}
+    	      }
 	      lPointSummary<-.Params.summary(modelParams,EvolModel,EstimationParams$designToEstim,data=data,t=t,LogLik=LogLik,n=ncol(lPrecalculates$mSpecDist),npar0=length(modelParams$vPoint),RSS=RSS,lPrecalculates=lPrecalculates,KnownParams=EstimationParams$KnownParams,conf.level=EstimationParams$conf.level,vVars=EstimationParams$vVars,conditional=EstimationParams$conditional,minLogLik=minLogLik)
         }else{lPointSummary<-.Params.summary(modelParams,EvolModel,EstimationParams$designToEstim,data=data,t=t,LogLik=LogLik,n=ncol(lPrecalculates$mSpecDist),npar0=length(modelParams$vPoint),RSS=RSS)}
     }

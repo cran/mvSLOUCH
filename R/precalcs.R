@@ -6,7 +6,6 @@
 ##---------------------------Prepare all the variables ----------------------------------
     regimes<-modelParams$regimes
     regimeTimes<-modelParams$regimeTimes
-
     if (is.element("A",names(modelParams))){A<-modelParams$A}else{A<-NULL}
     if (is.element("B",names(modelParams))){B<-modelParams$B}else{B<-NULL}
     if (is.element("Syy",names(modelParams))){Syy<-modelParams$Syy}else{Syy<-NULL}
@@ -17,7 +16,6 @@
     if (is.element("mPsi0",names(modelParams))){mPsi0<-modelParams$mPsi0}else{mPsi0<-NULL}
     if (is.element("vY0",names(modelParams))){vY0<-modelParams$vY0}else{vY0<-NULL}
     if (is.element("vX0",names(modelParams))){vX0<-modelParams$vX0}else{vX0<-NULL}
-
     if (!is.null(lPrecalculates)){
 	if (is.element("mSpecDist",names(lPrecalculates))){mSpecDist<-lPrecalculates$mSpecDist}else{mSpecDist<-NULL}
 	if (is.element("mTreeDist",names(lPrecalculates))){mTreeDist<-lPrecalculates$mTreeDist}else{mTreeDist<-NULL}
@@ -31,7 +29,7 @@
     kappacalc<-toCalc$kappacalc
     bcalcA<-toCalc$bCalcA 
     interceptcalc<-toCalc$interceptcalc
-    
+
     if (!is.element("bCalcG",names(toCalc))){bCalcG<-FALSE}else{bCalcG<-toCalc$bCalcG}
 ## --------------------------------------------------------------------------------    
     lReturn<-vector("list",6)
@@ -56,6 +54,7 @@
 	lReturn[[1]]<-ldecompEigenA.precalc
 	if (is.element("precalcMatrices",names(modelParams))){modelParams$precalcMatrices[[1]]<-lReturn[[1]]}
     }
+
     if (bCovCalc){
 	lSs<-vector("list",5)
 	names(lSs)<-c("S11","S12","S21","S22","invS22")
@@ -121,6 +120,7 @@
        lReturn[[4]]<-list(lDzeta=lDzeta,lDzetaKappa=lDzetaKappa,mKappa=mKappa,lDzetaIJ=lDzetaIJ)
        if (is.element("precalcMatrices",names(modelParams))){modelParams$precalcMatrices[[4]]<-lReturn[[4]]}
     }
+
     intercept<-NA
     mKappaIntercept<-NA
     if (interceptcalc){
@@ -138,15 +138,17 @@
 	    if (!designToEstim$psi && designToEstim$y0AncState){intercept<-intercept+c(sapply(modelParams$precalcMatrices[[3]]$lexpmtA,function(expmtA,AncPsi){expmtA%*%AncPsi},AncPsi=vAncPsi,simplify=TRUE))}
 	    if (designToEstim$psi0 && !designToEstim$psi && designToEstim$y0AncState){intercept<-intercept+c(sapply(modelParams$precalcMatrices[[3]]$lexpmtA,function(expmtA,mPsi0){expmtA%*%mPsi0},mPsi0=mPsi0,simplify=TRUE))}	
 	}
+	
 	if (!designToEstim$psi){
-    	    intercept<-intercept+c(sapply(1:n,function(i,mPsi,lexpmtA,lexptjA){
+    	    intercept<-intercept+c(sapply(1:n,function(i,mPsi,lexptjA){
     		vRegs<-regimes[[i]]
-		Reduce('+',c(sapply(1:length(vRegs)-1,function(reg,mPsi,mexpmtA,mexptjA){(mexptjA[[reg+1]]-mexptjA[[reg]])%*%mPsi[,reg]},mPsi=mPsi,mexpmtA=lexpmtA[[i]],mexptjA=lexptjA[[i]],simplify=TRUE)))    		
-    	    },mPsi=mPsi,lexpmtA=modelParams$precalcMatrices[[3]]$lexpmtA,lexptjA=modelParams$precalcMatrices[[3]]$lexptjA,simplify=TRUE))
+		Reduce('+',c(sapply(1:(length(vRegs)),function(reg,mPsi,mexptjA){(mexptjA[[reg+1]]-mexptjA[[reg]])%*%mPsi[,vRegs[reg]]},mPsi=mPsi,mexptjA=lexptjA[[i]],simplify=TRUE)))    		
+    	    },mPsi=mPsi,lexptjA=modelParams$precalcMatrices[[3]]$lexptjA,simplify=TRUE))
     	}
 	if (!designToEstim$psi0){
 	    intercept<-intercept+c(sapply(modelParams$precalcMatrices[[3]]$lexpmtA,function(expmtA,mPsi0){(diag(1,ncol(expmtA),nrow(expmtA))-expmtA)%*%mPsi0},mPsi0=mPsi0,simplify=TRUE))	
-    	}    	
+    	}   
+    	 	
     	if (!is.null(mXmX0)){ ## this is checking whether we have have mvslouch or ouch
 	    if(designToEstim$B){ ## we do not know B matrix
     		if (!bSimpReg){
@@ -195,6 +197,7 @@
     	}
 	intercept[which(abs(intercept)<1e-15)]<-0
     }
+
     lReturn[[5]]<-list(intercept=intercept,mKappaIntercept=mKappaIntercept)
     lReturn
 }

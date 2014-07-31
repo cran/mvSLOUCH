@@ -40,28 +40,30 @@
     vNAY<-which(is.na(Y)) ## remove missing value rows
     if (length(vNAY)>0){Y<-Y[-vNAY];if(ncol(D)>1){D<-D[-vNAY,]}else{D<-matrix(D[-vNAY,],ncol=1)};V<-V[-vNAY,-vNAY]}
     sol<-matrix(NA,nrow=ncol(D),ncol=1)    
-    if (method == "chol"){
-	tryCatch({
-		invV<-solve(V)
-		W<-t(D)%*%invV%*%D
-	        R<-chol(W)
-		z<-solve(t(R))%*%t(D)%*%Y
-		sol<-solve(R)%*%z
-	    },
-	    error=function(e){print(paste("Cholesky ",e))}
-	)
-    }    
-    if (method == "psinv"){
-	tryCatch({
-		vP<-chol(V) ## make the transormation to have independent residuals, as described in
-		Pt<-solve(t(vP)) ## Box Jenkins, Time Series Analysis Holden-Day San Francisco 1970 p265-267
-	        pD<-Pt%*%D
-		pY<-Pt%*%Y		
-		psinvpD<-pseudoinverse(pD) ## pseudoinverse comes from corpcor library
-		sol<-psinvpD%*%pY 
-	    },
-	    error=function(e){print(paste("pseudo inverse",e))}
-	)
+    if (ncol(D)>0){
+	if (method == "chol"){
+	    tryCatch({
+		    invV<-solve(V)
+		    W<-t(D)%*%invV%*%D
+	    	    R<-chol(W)
+		    z<-solve(t(R))%*%t(D)%*%Y
+		    sol<-solve(R)%*%z
+		},
+		error=function(e){print(paste("Cholesky ",e))}
+	    )
+	}    
+	if (method == "psinv"){
+	    tryCatch({
+		    vP<-chol(V) ## make the transormation to have independent residuals, as described in
+		    Pt<-solve(t(vP)) ## Box Jenkins, Time Series Analysis Holden-Day San Francisco 1970 p265-267
+	    	    pD<-Pt%*%D
+		    pY<-Pt%*%Y		
+		    psinvpD<-pseudoinverse(pD) ## pseudoinverse comes from corpcor library
+		    sol<-psinvpD%*%pY 
+		},
+		error=function(e){print(paste("pseudo inverse",e))}
+	    )
+	}
     }
     sol
 }
@@ -198,7 +200,9 @@
     modelParams$mCovPhyl<-mCovPhyl
     modelParams$invSXX<-invSXX
     vNAY<-which(is.na(Y));if (length(vNAY)>0){if(ncol(lDesign$D)>1){lDesign$D<-lDesign$D[-vNAY,]}else{lDesign$D<-matrix(lDesign$D[-vNAY,],ncol=1)};V<-V[-vNAY,-vNAY]}
-    modelParams$regressCovar<-pseudoinverse(t(lDesign$D)%*%pseudoinverse(V)%*%lDesign$D)
+
+    modelParams$regressCovar<-matrix(0,nrow=ncol(lDesign$D),ncol=ncol(lDesign$D))
+    if(ncol(lDesign$D)>0){modelParams$regressCovar<-pseudoinverse(t(lDesign$D)%*%pseudoinverse(V)%*%lDesign$D)}
     modelParams    
 }
 
@@ -337,26 +341,29 @@
     }
 
     if (!is.na(intercept)){Y<-Y-intercept}
+
     lDesign<-.ouch.design.matrix(mSpecDist,mTreeDist,modelParams,designToEstim,lexpmtA,lexptjA)
     if (!is.na(modelParams$mCovPhyl)){V<-modelParams$mCovPhyl}else{V<-.calc.phyl.cov(mTreeDist,mSpecDist[nrow(mSpecDist),],NULL,vSpeciesPairs,"ouch",modelParams)}
     estimParams<-.solve.reg(D=lDesign$D,Y=Y,V=V,UnknownIntercept)
-    estimParams[which(abs(estimParams)<1e-15)]<-0
 
+    estimParams[which(abs(estimParams)<1e-15)]<-0
     if (UnknownIntercept){modelParams$EstimedIntercept<-estimParams[1:kY,1];CurrPos<-kY+1}else{CurrPos<-1}   
     if (designToEstim$y0 && !designToEstim$y0AncState){modelParams$vY0<-estimParams[1:kY,1];CurrPos<-kY+1}    
 
     if (designToEstim$psi){
-	modelParams$mPsi<-matrix(estimParams[CurrPos:(CurrPos+length(modelParams$regimeTypes)*kY-1),1],nrow=kY,ncol=length(modelParams$regimeTypes),byrow=FALSE)
-	CurrPos<-CurrPos+length(modelParams$regimeTypes)*kY
+        modelParams$mPsi<-matrix(estimParams[CurrPos:(CurrPos+length(modelParams$regimeTypes)*kY-1),1],nrow=kY,ncol=length(modelParams$regimeTypes),byrow=FALSE)
+        CurrPos<-CurrPos+length(modelParams$regimeTypes)*kY
     }
     if (designToEstim$psi0){
-	modelParams$mPsi0<-matrix(estimParams[CurrPos:(CurrPos+kY-1),1],nrow=kY,ncol=1)
-	CurrPos<-CurrPos+kY
+        modelParams$mPsi0<-matrix(estimParams[CurrPos:(CurrPos+kY-1),1],nrow=kY,ncol=1)
+        CurrPos<-CurrPos+kY
     }
     if (designToEstim$y0 && designToEstim$y0AncState){modelParams$vY0<-matrix(modelParams$mPsi[,designToEstim$y0Regime]+modelParams$mPsi0,ncol=1,nrow=kY)}    
     modelParams$mCovPhyl<-V    
     vNAY<-which(is.na(Y));if (length(vNAY)>0){if(ncol(lDesign$D)>1){lDesign$D<-lDesign$D[-vNAY,]}else{lDesign$D<-matrix(lDesign$D[-vNAY,],ncol=1)};V<-V[-vNAY,-vNAY]}
-    modelParams$regressCovar<-pseudoinverse(t(lDesign$D)%*%pseudoinverse(V)%*%lDesign$D)
+    modelParams$regressCovar<-matrix(0,nrow=ncol(lDesign$D),ncol=ncol(lDesign$D))
+    if(ncol(lDesign$D)>0){modelParams$regressCovar<-pseudoinverse(t(lDesign$D)%*%pseudoinverse(V)%*%lDesign$D)}
+    
     modelParams
 }
 

@@ -8,7 +8,7 @@ Simulate data on a phylogeny under a (multivariate) OUBM model
 }
 \usage{
 simulMVSLOUCHProcPhylTree(phyltree, modelParams, regimes = NULL, 
-regimes.times = NULL, dropInternal = TRUE)
+regimes.times = NULL, dropInternal = TRUE, M.error=NULL)
 }
 \arguments{
   \item{phyltree}{
@@ -32,8 +32,27 @@ In between are the times where the regimes (niches) changed. If \code{NULL} then
 considered to be a regime.
 }
  \item{dropInternal}{Logical whether the simulated values at the internal nodes be changed to NA or not.}
+\item{M.error}{
+ An optional measurement error covariance matrix. The program tries to recognizes the 
+ structure of matrix passed and accepts the following possibilities :
+\itemize{
+\item{}{a single number that will be on the diagonal of the covariance matrix}
+\item{}{a m element vector with each value corresponding to a variable and the 
+covariance matrix will have that vector repeated on its diagonal,}
+\item{}{a nxm element vector a diagonal matrix with this vector on the diagonal,}
+\item{}{a m x m ((number of variables) x (number of variables)) matrix it is assumed 
+that the measurement errors are independent between observations so the resulting covariance 
+structure is block diagonal,}
+\item{}{a list of length m (number of variables), each list element is the covariance 
+structure for the appropriate variable, either a single number 
+(each observations has same variance), vector (of length n for each observation), or full matrix,}
+\item{}{matrix of size mn x mn (m - number of variables, n - number of observations) 
+the measurement error covaraince provided as is,}
+\item{}{NULL no measurement error}
 }
 
+}
+}
 \value{
 Returns a data.frame with each row corresponding to a tree node and each column to a trait. If dropInternal is TRUE
 then the entries for the internal nodes are changed to NAs.

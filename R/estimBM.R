@@ -62,10 +62,13 @@
 	    if (!is.null(Merror)){V<-V+Merror}
 	    if (length(vNAX)>0){V<-V[-vNAX,-vNAX]}
 	    V1<-pseudoinverse(V)
+
 	    vX0<-pseudoinverse(t(D)%*%V1%*%D)%*%t(D)%*%V1%*%data
 	    vX0[which(abs(vX0)<1e-15)]<-0
 	    vX0<-matrix(vX0,ncol=1,nrow=ncol(dfX))
-	    RSS<- ((data-rep(vX0,phylTree@nterm)[-vNAX])%*%V1%*%(data-rep(vX0,phylTree@nterm)[-vNAX]))[1,1]
+	    vMean<-rep(vX0,phylTree@nterm)
+	    if (length(vNAX)>0){vMean<-vMean[-vNAX]}
+	    RSS<- ((data-vMean)%*%V1%*%(data-vMean))[1,1]
 	}
     }
     list(vX0=vX0,StS=StS,Sxx=Sxx,LogLik=LogLik,RSS=RSS)
