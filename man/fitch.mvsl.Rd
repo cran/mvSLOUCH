@@ -35,7 +35,7 @@ Swofford, D. L. and W.P. Maddison (1987) Reconstructing ancestral character stat
 }
 \author{Jason Pienaar \email{jasonpienaar@gmail.com}}
 \seealso{
-\url{slouch::fitch}, \url{slouch::slouchtree.plot}, \url{slouch::model.fit}, \url{slouch::ouch2slouch}
+\code{slouch::fitch}, \code{slouch::slouchtree.plot}, \code{slouch::model.fit}, \code{slouch::ouch2slouch}
 }
 
 \examples{

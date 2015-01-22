@@ -126,10 +126,10 @@ Warnings and errors (even of lot of them) can be produced during the confidence 
 }
 
 \seealso{
-\url{slouch::model.fit}, \code{\link{mvslouchModel}}, \code{\link{simulMVSLOUCHProcPhylTree}}
+\code{slouch::model.fit}, \code{\link{mvslouchModel}}, \code{\link{simulMVSLOUCHProcPhylTree}}
 }
 \examples{
-\donttest{
+\dontrun{ ##It takes too long to run this
 ### We will first simulate a small phylogenetic tree using functions from ape and ouch.
 ### For simulating the tree one could also use alternative functions, eg. sim.bd.taxa 
 ### from the TreeSim package

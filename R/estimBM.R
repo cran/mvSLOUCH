@@ -9,7 +9,7 @@
 
     if (length(vNAX)==0){
 	tryCatch({
-	    bmEstim<-brown(data=dfX,tree=phylTree)
+	    bmEstim<-ouch::brown(data=dfX,tree=phylTree)
 	    LogLik<-bmEstim@loglik
 	    vX0<-matrix(sapply(bmEstim@theta,function(x){x},simplify=TRUE),ncol=1,nrow=ncol(dfX))
 	    StS<-.sym.par(bmEstim@sigma,ncol(dfX))

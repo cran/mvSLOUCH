@@ -148,7 +148,7 @@ The function can produce (a lot of) warnings and errors during the search proced
 }
 
 \examples{
-\donttest{
+\dontrun{ ##It takes too long to run this
 ### We will first simulate a small phylogenetic tree using functions from ape and ouch.
 ### For simulating the tree one could also use alternative functions, eg. sim.bd.taxa 
 ### from the TreeSim package
