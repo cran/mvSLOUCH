@@ -47,14 +47,21 @@ A vector of time points at which the summary is to be calculated. This allows fo
 }
 
   \item{M.error}{
- An optional measurement error covariance matrix. The program tries to recognizes the structure of matrix passed and accepts the following possibilities :
+ An optional measurement error covariance matrix. The program tries to recognizes the structure 
+ of matrix passed and accepts the following possibilities :
 \itemize{
 \item{}{a single number that will be on the diagonal of the covariance matrix}
-\item{}{a m element vector with each value corresponding to a variable and the covariance matrix will have that vector repeated on its diagonal,}
+\item{}{a m element vector with each value corresponding to a variable and the covariance matrix 
+will have that vector repeated on its diagonal,}
 \item{}{a nxm element vector a diagonal matrix with this vector on the diagonal,}
-\item{}{a m x m ((number of variables) x (number of variables)) matrix it is assumed that the measurement errors are independent between observations so the resulting covariance structure is block diagonal,}
-\item{}{a list of length m (number of variables), each list element is the covariance structure for the appropriate variable, either a single number (each observations has same variance), vector (of length n for each observation), or full matrix,}
-\item{}{matrix of size mn x mn (m - number of variables, n - number of observations) the measurement error covaraince provided as is,}
+\item{}{a m x m ((number of variables) x (number of variables)) matrix it is assumed that the 
+measurement errors are independent between observations so the resulting covariance structure is 
+block diagonal,}
+\item{}{a list of length m (number of variables), each list element is the covariance structure 
+for the appropriate variable, either a single number (each observations has same variance), 
+vector (of length n for each observation), or full matrix,}
+\item{}{matrix of size mn x mn (m - number of variables, n - number of observations) the 
+measurement error covaraince provided as is,}
 \item{}{NULL no measurement error}
 }
 }
@@ -79,8 +86,8 @@ What class does the Syy matrix in the multivariate OUBM model belong to, possibl
 \code{Symmetric}, \code{Any}
 }
   \item{calcCI}{
-  An optional logical variable indicating whether to calculate and return confidence intervals on the estimat  ed
-  parameters.
+  An optional logical variable indicating whether to calculate and return confidence intervals on the 
+  estimated parameters.
 }
 }
 
@@ -88,7 +95,8 @@ What class does the Syy matrix in the multivariate OUBM model belong to, possibl
 surface for the eigenvalues conditional on the other parameters and regression confidence intervals.
 See Bartoszek et. al. for the mathematical details of these confidence intervals.
 }
-\value{A list for each provided time point. See the help of \code{\link{mvslouchModel}} for what the summary at each time point is.}
+\value{A list for each provided time point. See the help of \code{\link{mvslouchModel}} for what the 
+summary at each time point is.}
 
 \references{
 Bartoszek, K. and Pienaar, J. and Mostad. P. and Andersson, S. and Hansen, T. F. (2012)
@@ -104,7 +112,8 @@ Hansen, T.F. (1997)
   Evolution 51:1341-1351.
   
 Hansen, T.F. and Bartoszek, K. (2012)
-  Interpreting the evolutionary regression: the interplay between observational and biological errors in phylogenetic comparative studies.
+  Interpreting the evolutionary regression: the interplay between observational and biological 
+  errors in phylogenetic comparative studies.
   Systematic Biology 61(3):413-425.
 
 Pienaar et al (in prep) An overview of comparative methods for
@@ -113,7 +122,8 @@ Pienaar et al (in prep) An overview of comparative methods for
 \author{Krzysztof Bartoszek}
 
 \section{Warning}{Calculating the confidence intervals can take a very long time.
-Warnings and errors (even of lot of them) can be produced during the confidence interval calculation, this is nothing to worry about.
+Warnings and errors (even of lot of them) can be produced during the confidence interval calculation, 
+this is nothing to worry about.
 }
 
 

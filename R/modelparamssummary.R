@@ -1,5 +1,5 @@
 .Params.summary<-function(modelParams,EvolModel,designToEstim,data=NULL,t=1,LogLik=-Inf,n=0,npar0=0,RSS=NA,lPrecalculates=NULL,KnownParams=NULL,conf.level=0.95,vVars=NULL,conditional=FALSE,minLogLik=-Inf){
-    tryCatch({
+       tryCatch({
 	modelParams$designToEstim<-designToEstim
 	names(LogLik)<-c()
 	lParamSummary=switch(EvolModel,
@@ -263,6 +263,7 @@
             if(is.element("Fixed",names(EstimationParams))&& is.element("mPsi0",names(EstimationParams$Fixed))){mPsi0<-EstimationParams$Fixed$mPsi0}
         }
     }
+
     EstimationParams<-.beginEstimationParams(EvolModel,EstimationParams,dfData,PhylTree,Merror)
     if (is.null(vPoint)){
         if (!is.element("Fixed",names(EstimationParams))){EstimationParams$Fixed<-list()}

@@ -103,7 +103,7 @@
               modelParamsTmp$B<-NA
               if (EvolModel=="bm"){mCovPhyl<-.calc.phyl.cov(NULL,NULL,lPrecalculates$mAncestorTimes,NULL,EvolModel,modelParams)}
               else{mCovPhyl<-.calc.phyl.cov(lPrecalculates$mTreeDist,lPrecalculates$mSpecDist[nrow(lPrecalculates$mSpecDist),],NULL,lPrecalculates$vSpeciesPairs,EvolModel,modelParams)}
-              
+ 
               if (EvolModel=="mvslouch"){
 		modelParams$precalcMatrices[[4]]$lDzetaKappa<-.decompEigenA.S(modelParamsTmp,lPrecalculates,EstimationParams$designToEstim,list(bCalcA=TRUE,bCovCalc=TRUE,dzetacalc=bDzeta,lexptcalc=TRUE,kappacalc=bKappa,interceptcalc=TRUE),EstimationParams$Data$mXmX0)[[4]]$lDzetaKappa
                 lDesign<-.slouch.mv.design.matrix.YcT(lPrecalculates$mSpecDist,lPrecalculates$mTreeDist,lPrecalculates$mAncestorTimes,modelParams,EstimationParams$designToEstim,EstimationParams$Data$mX,modelParams$precalcMatrices[[4]]$lDzeta,modelParams$precalcMatrices[[4]]$lDzetaKappa,modelParams$precalcMatrices[[3]]$lexpmtA,modelParams$precalcMatrices[[3]]$lexptjA,X0=EstimationParams$Fixed$vX0,lPrecalculates$invmAncestorTimes)

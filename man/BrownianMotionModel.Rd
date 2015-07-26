@@ -28,34 +28,44 @@ A vector giving the numbers of the columns from
 on in the program output. 
 }
   \item{M.error}{
- An optional measurement error covariance matrix. The program tries to recognizes the structure of matrix passed and accepts the following possibilities :
+An optional measurement error covariance matrix. The program tries to recognizes the structure of 
+matrix passed and accepts the following possibilities :
 \itemize{
 \item{}{a single number that will be on the diagonal of the covariance matrix}
-\item{}{a m element vector with each value corresponding to a variable and the covariance matrix will have that vector repeated on its diagonal,}
+\item{}{a m element vector with each value corresponding to a variable and the covariance matrix 
+will have that vector repeated on its diagonal,}
 \item{}{a nxm element vector a diagonal matrix with this vector on the diagonal,}
-\item{}{a m x m ((number of variables) x (number of variables)) matrix it is assumed that the measurement errors are independent between observations so the resulting covariance structure is block diagonal,}
-\item{}{a list of length m (number of variables), each list element is the covariance structure for the appropriate variable, either a single number (each observations has same variance), vector (of length n for each observation), or full matrix,}
-\item{}{matrix of size mn x mn (m - number of variables, n - number of observations) the measurement error covaraince provided as is,}
+\item{}{a m x m ((number of variables) x (number of variables)) matrix it is assumed that the 
+measurement errors are independent between observations so the resulting covariance structure 
+is block diagonal,}
+\item{}{a list of length m (number of variables), each list element is the covariance structure 
+for the appropriate variable, either a single number (each observations has same variance), 
+vector (of length n for each observation), or full matrix,}
+\item{}{matrix of size mn x mn (m - number of variables, n - number of observations) the 
+measurement error covaraince provided as is,}
 \item{}{NULL no measurement error}
 }
 }
   \item{calcCI}{
-  An optional logical variable indicating whether to calculate and return confidence intervals on the estimated parameters.
+  An optional logical variable indicating whether to calculate and return confidence intervals 
+  on the estimated parameters.
 }
 }
 \details{
 This function estimates the parameters of a multivariate Brownian motion model defined by the SDE,
-\deqn{dX(t) = \Sigma dB(t), X(0)=X_{0}}{dX(t) = S dW(t), X(0)=X0} evolving on a phylogenetic tree. If there is no measurement error it uses the \code{brown} function
+\deqn{dX(t) = \Sigma dB(t), X(0)=X_{0}}{dX(t) = S dW(t), X(0)=X0} evolving on a phylogenetic tree. 
+If there is no measurement error it uses the \code{brown} function
 from the ouch package, otherwise it does a numerical optimization.
 }
 \value{
     \item{ParamsInModel}{
-    A list with estimated model parameters. The elements are vX0 : the ancestral trate, and Sxx where t*Sxx%*%t(Sxx) is the Brownian motion's covariance matrix at time t.
+    A list with estimated model parameters. The elements are vX0 : the ancestral trate, and Sxx 
+    where t*Sxx%*%t(Sxx) is the Brownian motion's covariance matrix at time t.
 }
     \item{ParamSummary}{
     A list with summary statistics with elements,
     StS the infinitesmal covariance matrix Sxx%*%t(Sxx),
-    LogLik the log--likelihood, dof the degrees of freedom, m2loglik is $-2$log--likelihood,
+    LogLik the log--likelihood, dof the degrees of freedom, m2loglik is \eqn{-2}log--likelihood,
     aic is the Akaike information criterion, aic.c is the Akaike information criterion corrected for small
     sample size, sic is the Schwarz information criterion, bic is the Bayesian information criterion
     (which is the same as the Schwarz information criterion) and RSS is the residual sum of squares.
@@ -76,7 +86,8 @@ Felsenstein, J. (1985)
   American Naturalist 125:1-15.
   
 Hansen, T.F. and Bartoszek, K. (2012)
-  Interpreting the evolutionary regression: the interplay between observational and biological errors in phylogenetic comparative studies.
+  Interpreting the evolutionary regression: the interplay between observational and biological 
+  errors in phylogenetic comparative studies.
   Systematic Biology 61(3):413-425.
 
 Pienaar et al (in prep) An overview of comparative methods for

@@ -10,7 +10,9 @@ Simulate data on a phylogeny under a (multivariate) Brownian motion model
 simulBMProcPhylTree(phyltree, X0, Sigma, dropInternal = TRUE, M.error=NULL)
 }
 \arguments{
-  \item{phyltree}{The phylogeny in \code{ouch} format. All of the internal nodes have to be uniquely named. The tree can be obtained from e.g. a \code{nexus} file by the \code{read.nexus} function
+  \item{phyltree}{The phylogeny in \code{ouch} format. All of the internal nodes have to be 
+  uniquely named. The tree can be obtained from e.g. a \code{nexus} file by the 
+  \code{read.nexus} function
 from the \code{ape} package and converted into the \code{ouch} format by \code{ouch}'s
 \code{ape2ouch} function. See the example of how to correct the internal nodes.}
   \item{X0}{The ancestral, root state.}
@@ -40,7 +42,8 @@ from the \code{ape} package and converted into the \code{ouch} format by \code{o
 }
 
 \value{
-Returns a data.frame with each row corresponding to a tree node and each column to a trait. If dropInternal is TRUE
+Returns a data.frame with each row corresponding to a tree node and each column to a trait. 
+If \code{dropInternal} is \code{TRUE}
 then the entries for the internal nodes are changed to NAs.
 }
 \references{
@@ -57,7 +60,8 @@ Felsenstein, J. (1985)
   American Naturalist 125:1-15.
 
 Hansen, T.F. and Bartoszek, K. (2012)
-  Interpreting the evolutionary regression: the interplay between observational and biological errors in phylogenetic comparative studies.
+  Interpreting the evolutionary regression: the interplay between observational and biological 
+  errors in phylogenetic comparative studies.
   Systematic Biology 61(3):413-425.
 
 Pienaar et al (in prep) An overview of comparative methods for

@@ -113,6 +113,8 @@
 \alias{.ouch2slouch.mvsl}
 \alias{.solve.reg}
 \alias{.make.states.mvsl}
+\alias{.generate.model.description}
+\alias{.generate.model.se}
 \description{Internal mvSLOUCH objects.}
 \details{These are not to be called by the user.}
 \keyword{internal}

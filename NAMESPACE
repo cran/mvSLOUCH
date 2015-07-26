@@ -2,9 +2,11 @@
 exportPattern(".")
 
 # Import all packages listed as Imports or Depends
-importFrom(ouch, ape2ouch)
+importFrom(ouch, ape2ouch, brown)
 importFrom(numDeriv, grad, jacobian)
-importFrom(mvtnorm,dmvnorm,rmvnorm)
+importFrom(mvtnorm, dmvnorm, rmvnorm)
 importFrom(corpcor, pseudoinverse)
 importFrom(ape, rtree)
-
+importFrom(stats, cov2cor, nlminb, optim, qnorm, qt, rexp, rnorm, runif)
+importFrom(graphics, abline, legend, mtext, par, plot, points)
+importFrom("methods", "as")

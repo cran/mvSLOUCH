@@ -23,7 +23,6 @@
 	    as.character(sapply(epch[-1],function(reg,vregimes){vregimes[reg]},vregimes=vregimes,simplify=TRUE))
 	},vregimes=vregimes,simplify=TRUE)
     }
-    
 
     bOKregimes<-TRUE
     if ((length(regimes)!=length(regimes.times))||(length(regimes)!=length(phyltree@epochs))){
@@ -64,27 +63,12 @@
 	if (!is.element("minLogLik",names(params))){params$minLogLik<- -Inf}
 	params$EstimParams<-.set.estimparams(params,kY,kX,length(regimes.types))
 	if (params$EstimParams$designToEstim$y0AncState){
-	    ## check if our root regime is repeated anywhere if it is not then change it to something
-	    ## as there is no information in our data on it
-	    if (!is.null(root.regime)){
-		if (is.element(root.regime,regimes.types.orig)){params$EstimParams$designToEstim$y0Regime<-which(regimes.types.orig==root.regime)}
-		else{params$EstimParams$designToEstim$y0Regime<-regimes[[1]][1]}
-	    }
+	    if (!is.null(root.regime)){params$EstimParams$designToEstim$y0Regime<-which(regimes.types.orig==root.regime)}
 	    else{
-	     if (is.element("y0Regime",names(params$EstimParams$designToEstim))){
-		if (is.element(params$EstimParams$designToEstim$y0Regime,regimes.types.orig)){params$EstimParams$designToEstim$y0Regime<-which(regimes.types.orig==params$EstimParams$designToEstim$y0Regime)}
-		else{params$EstimParams$designToEstim$y0Regime<-regimes[[1]][1]}	        
-		}	
+	     if (is.element("y0Regime",names(params$EstimParams$designToEstim))){params$EstimParams$designToEstim$y0Regime<-which(regimes.types.orig==params$EstimParams$designToEstim$y0Regime)}	
 	     else{params$EstimParams$designToEstim$y0Regime<-regimes[[1]][1]} ## need to choose something anyway ...	
 	    }
 	}
-
-	## check if our root regime is repeated anywhere if it is not then change it to something
-	## as there is no information in our data on it	    
-	if ( !is.null(params$EstimParams$designToEstim$y0Regime) &&( !(params$EstimParams$designToEstim$y0Regime>0) || 	!(params$EstimParams$designToEstim$y0Regime<length(regimes.types)))){
-		params$EstimParams$designToEstim$y0Regime<-regimes[[1]][1]
-	}
-
 
 	if (!is.null(predictors)){
 	    params$EstimParams$predictors<-predictors

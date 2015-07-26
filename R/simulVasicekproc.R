@@ -12,37 +12,37 @@
     mTrajectory<-matrix(NA,ncol=kY+1,nrow=ceiling(duration/step)+1)
     mTrajectory[1,]<-c(0,c(modelParams$vY0[,1]))
     i<-2
-    t<-step
+    curr.time<-step
     lRegs<-list(times=NULL,exptjA=NULL,regimes=NULL)
-    while(t<duration){
+    while(curr.time<duration){
 	if (!is.null(regimes)){
-	    vRegTimesIndex<-intersect(which(regimes.times>t-step),which(regimes.times<=t))
-	    vRegTimesIndex<-c(max(which(regimes.times<=t-step)),vRegTimesIndex)
+	    vRegTimesIndex<-intersect(which(regimes.times>curr.time-step),which(regimes.times<=curr.time))
+	    vRegTimesIndex<-c(max(which(regimes.times<=curr.time-step)),vRegTimesIndex)
 	    lRegs$times<-regimes.times[vRegTimesIndex]
-	    lRegs$times[1]<-t-step
-	    if (lRegs$times[length(lRegs$times)]<t){lRegs$times<-c(lRegs$times,t)}
+	    lRegs$times[1]<-curr.time-step
+	    if (lRegs$times[length(lRegs$times)]<curr.time){lRegs$times<-c(lRegs$times,curr.time)}
 	    lRegs$regimes<-rep(NA,length(lRegs$times)-1)
 	    for (j in 1:length(lRegs$regimes)){
 		if (lRegs$times[j+1]>=max(regimes.times)){lRegs$regimes[j]<-regimes[length(regimes.times)]}
 		else{lRegs$regimes[j]<-regimes[min(which(regimes.times>=lRegs$times[j+1]))-1]}
 	    }
-	    lRegs$times<-lRegs$times-(t-step)
+	    lRegs$times<-lRegs$times-(curr.time-step)
 	}
-	mTrajectory[i,]<-c(t,.draw.ouch(step,mTrajectory[i-1,2:(kY+1)],modelParams,mCov,lRegs))
+	mTrajectory[i,]<-c(curr.time,.draw.ouch(step,mTrajectory[i-1,2:(kY+1)],modelParams,mCov,lRegs))
 	i<-i+1
-	t<-t+step
+	curr.time<-curr.time+step
     }
     mTrajectory<-Re(mTrajectory)
     mTrajectory
 }
 
 
-.draw.ouch<-function(t,Y,modelParams,mCov=NULL,lRegs=list(times=NULL,exptjA=NULL,regimes=NULL)){
-    expmtA<-modelParams$precalcMatrices[[1]]$eigA$vectors%*%diag(exp(-modelParams$precalcMatrices[[1]]$eigA$values*t),length(Y),length(Y))%*%modelParams$precalcMatrices[[1]]$invP
+.draw.ouch<-function(curr.time,Y,modelParams,mCov=NULL,lRegs=list(times=NULL,exptjA=NULL,regimes=NULL)){
+    expmtA<-modelParams$precalcMatrices[[1]]$eigA$vectors%*%diag(exp(-modelParams$precalcMatrices[[1]]$eigA$values*curr.time),length(Y),length(Y))%*%modelParams$precalcMatrices[[1]]$invP
     if (!is.null(lRegs$times)){lRegs$exptjA<-sapply(lRegs$times,function(t1,eigA,invP){eigA$vectors%*%diag(exp(eigA$values*t1),length(eigA$values),length(eigA$values))%*%invP},eigA=modelParams$precalcMatrices[[1]]$eigA,invP=modelParams$precalcMatrices[[1]]$invP,simplify=FALSE)}
     modelParams$vY0<-Y
     vMean<-.calc.mean.ouch.mv(expmtA,Y,modelParams$mPsi,modelParams$mPsi0,lRegs$exptjA,lRegs$regimes)
-    if (is.null(mCov)){mCov<-.calc.cov.ouch.mv(t,modelParams$precalcMatrices[[1]],modelParams$precalcMatrices[[2]])}
+    if (is.null(mCov)){mCov<-.calc.cov.ouch.mv(curr.time,modelParams$precalcMatrices[[1]],modelParams$precalcMatrices[[2]])}
     rmvnorm(n=1,mean=vMean,sigma=mCov)
 }
 
@@ -54,17 +54,17 @@
     mTrajectory<-matrix(0,ncol=k+1,nrow=ceiling(duration/step)+1)
     mTrajectory[1,]<-c(0,vX0)
     i<-2
-    t<-step
-    while(t<duration){
-	mTrajectory[i,]<-c(t,.draw.bm(step,mTrajectory[i-1,2:(k+1)],SigmaSq))
+    curr.time<-step
+    while(curr.time<duration){
+	mTrajectory[i,]<-c(curr.time,.draw.bm(step,mTrajectory[i-1,2:(k+1)],SigmaSq))
 	i<-i+1
-	t<-t+step
+	curr.time<-curr.time+step
     }
     mTrajectory
 }
 
-.draw.bm<-function(t,Y,Sigmasq){
-    rmvnorm(n=1,mean=Y,sigma=t*Sigmasq)
+.draw.bm<-function(curr.time,Y,Sigmasq){
+    rmvnorm(n=1,mean=Y,sigma=curr.time*Sigmasq)
 }
 
 .mvslouch.simulate<-function(step,duration,modelParams,regimes=NULL,regimes.times=NULL,mCov=NULL){
@@ -82,38 +82,38 @@
     mTrajectory<-matrix(NA,ncol=kY+kX+1,nrow=ceiling(duration/step)+1)
     mTrajectory[1,]<-c(0,c(modelParams$vY0[,1],modelParams$vX0[,1]))
     i<-2
-    t<-step
+    curr.time<-step
     lRegs<-list(times=NULL,exptjA=NULL,regimes=NULL)
-    while(t<duration){
+    while(curr.time<duration){
 	if (!is.null(regimes)){
-	    vRegTimesIndex<-intersect(which(regimes.times>t-step),which(regimes.times<=t))
-	    vRegTimesIndex<-c(max(which(regimes.times<=t-step)),vRegTimesIndex)
+	    vRegTimesIndex<-intersect(which(regimes.times>curr.time-step),which(regimes.times<=curr.time))
+	    vRegTimesIndex<-c(max(which(regimes.times<=curr.time-step)),vRegTimesIndex)
 	    lRegs$times<-regimes.times[vRegTimesIndex]
-	    lRegs$times[1]<-t-step
-	    if (lRegs$times[length(lRegs$times)]<t){lRegs$times<-c(lRegs$times,t)}
+	    lRegs$times[1]<-curr.time-step
+	    if (lRegs$times[length(lRegs$times)]<curr.time){lRegs$times<-c(lRegs$times,curr.time)}
 	    lRegs$regimes<-rep(NA,length(lRegs$times)-1)
 	    for (j in 1:length(lRegs$regimes)){
 
 		if (lRegs$times[j+1]>=max(regimes.times)){lRegs$regimes[j]<-regimes[length(regimes.times)]}
 		else{lRegs$regimes[j]<-regimes[min(which(regimes.times>=lRegs$times[j+1]))-1]}
 	    }
-	    lRegs$times<-lRegs$times-(t-step)
+	    lRegs$times<-lRegs$times-(curr.time-step)
 	}
-	mTrajectory[i,]<-c(t,.draw.mvslouch(step,mTrajectory[i-1,2:(kY+1)],mTrajectory[i-1,(kY+2):(kY+kX+1)],modelParams,mCov,lRegs))
+	mTrajectory[i,]<-c(curr.time,.draw.mvslouch(step,mTrajectory[i-1,2:(kY+1)],mTrajectory[i-1,(kY+2):(kY+kX+1)],modelParams,mCov,lRegs))
 	i<-i+1
-	t<-t+step
+	curr.time<-curr.time+step
     }
     mTrajectory<-Re(mTrajectory)
     mTrajectory
 }
 
-.draw.mvslouch<-function(t,Y,vX,modelParams,mCov=NULL,lRegs=list(times=NULL,exptjA=NULL,regimes=NULL)){
-    expmtA<-modelParams$precalcMatrices[[1]]$eigA$vectors%*%diag(exp(-modelParams$precalcMatrices[[1]]$eigA$values*t),length(Y),length(Y))%*%modelParams$precalcMatrices[[1]]$invP
+.draw.mvslouch<-function(curr.time,Y,vX,modelParams,mCov=NULL,lRegs=list(times=NULL,exptjA=NULL,regimes=NULL)){
+    expmtA<-modelParams$precalcMatrices[[1]]$eigA$vectors%*%diag(exp(-modelParams$precalcMatrices[[1]]$eigA$values*curr.time),length(Y),length(Y))%*%modelParams$precalcMatrices[[1]]$invP
     if (!is.null(lRegs$times)){lRegs$exptjA<-sapply(lRegs$times,function(t1,eigA,invP){eigA$vectors%*%diag(exp(eigA$values*t1),length(eigA$values),length(eigA$values))%*%invP},eigA=modelParams$precalcMatrices[[1]]$eigA,invP=modelParams$precalcMatrices[[1]]$invP,simplify=FALSE)}
     modelParams$vY0<-Y
     modelParams$vX0<-vX
     vMean<-.calc.mean.slouch.mv(expmtA,modelParams$precalcMatrices[[1]]$A1B,Y,vX,modelParams$mPsi,modelParams$mPsi0,lRegs$exptjA,lRegs$regimes)
-    if (is.null(mCov)){mCov<-.calc.cov.slouch.mv(t,modelParams$precalcMatrices[[1]],modelParams$precalcMatrices[[2]])}
+    if (is.null(mCov)){mCov<-.calc.cov.slouch.mv(curr.time,modelParams$precalcMatrices[[1]],modelParams$precalcMatrices[[2]])}
     rmvnorm(n=1,mean=vMean,sigma=mCov)
 }
 

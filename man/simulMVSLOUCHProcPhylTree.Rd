@@ -54,7 +54,8 @@ the measurement error covaraince provided as is,}
 }
 }
 \value{
-Returns a data.frame with each row corresponding to a tree node and each column to a trait. If dropInternal is TRUE
+Returns a data.frame with each row corresponding to a tree node and each column to a trait. 
+If dropInternal is TRUE
 then the entries for the internal nodes are changed to NAs.
 }
 
@@ -72,7 +73,8 @@ Hansen, T.F. (1997)
   Evolution 51:1341-1351.
 
 Hansen, T.F. and Bartoszek, K. (2012)
-  Interpreting the evolutionary regression: the interplay between observational and biological errors in phylogenetic comparative studies.
+  Interpreting the evolutionary regression: the interplay between observational and 
+  biological errors in phylogenetic comparative studies.
   Systematic Biology 61(3):413-425.
 
 Hansen, T.F. and Pienaar, J. and Orzack, S.H. (2008) 
@@ -80,7 +82,8 @@ Hansen, T.F. and Pienaar, J. and Orzack, S.H. (2008)
   Evolution 62:1965-1977.
 
 Labra, A., Pienaar, J. & Hansen, T.F. (2009) 
-  Evolution of thermophysiology in Liolaemus lizards: adaptation, phylogenetic inertia and niche tracking. 
+  Evolution of thermophysiology in Liolaemus lizards: adaptation, phylogenetic 
+  inertia and niche tracking. 
   The American Naturalist 174:204-220.
 
 Pienaar et al (in prep) An overview of comparative methods for

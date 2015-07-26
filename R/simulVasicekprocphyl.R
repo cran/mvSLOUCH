@@ -50,7 +50,7 @@
 	x0<-modelParams$vY0
 	EstimationParams<-.set.estimparams(params,kY,0,length(regimes.types))
         modelParams$precalcMatrices<-.decompEigenA.S(modelParams,lPrecalculates,NA,list(bCalcA=TRUE,bCovCalc=TRUE,dzetacalc=FALSE,lexptcalc=TRUE,kappacalc=FALSE,interceptcalc=FALSE),NULL)
-	invlexpmtA<-sapply(modelParams$precalcMatrices[[3]]$lexpmtA,solve,simplify=FALSE)
+	##invlexpmtA<-sapply(modelParams$precalcMatrices[[3]]$lexpmtA,solve,simplify=FALSE)
     }
     if ((EvolModel=="mvslouch")||(EvolModel=="mvslouchStep")){
 	kY<-nrow(modelParams$A)
@@ -58,7 +58,7 @@
     	x0<-c(modelParams$vY0,modelParams$vX0)
     	EstimationParams<-.set.estimparams(params,kY,kX,length(regimes.types))
         modelParams$precalcMatrices<-.decompEigenA.S(modelParams,lPrecalculates,EstimationParams$designToEstim,list(bCalcA=TRUE,bCovCalc=TRUE,dzetacalc=FALSE,lexptcalc=TRUE,kappacalc=FALSE,interceptcalc=FALSE),NULL)
-	invlexpmtA<-sapply(modelParams$precalcMatrices[[3]]$lexpmtA,solve,simplify=FALSE)
+	##invlexpmtA<-sapply(modelParams$precalcMatrices[[3]]$lexpmtA,solve,simplify=FALSE)
     }
     RootNode<-phyltree@root
     mTreeTraject<-matrix(NA,ncol=length(x0),nrow=length(phyltree@nodes))
@@ -185,11 +185,11 @@
 #	    	    expmtA<-modelParams$precalcMatrices[[3]]$lexpmtA[[itermNum]]
 #	    	    exptjA<-modelParams$precalcMatrices[[3]]$lexptjA[[itermNum]][vWhichTimes]
 
-                    expmtAcurr<-.calc.exptA(t=-timeDiff,modelParams$precalcMatrices[[1]])   ##A=modelParams$A) ## correct the mean value structure we are only moving along a single branch
-##                  exptAcorr<-expmtAcurr%*%.calc.exptA(t=-phyltree@times[vTermLineage[j-1]],A=modelParams$A)%*%invlexpmtA[[itermNum]]    ## and not through the whole tree, we want the mean at the branch end
-##                  exptjA<-sapply(modelParams$precalcMatrices[[3]]$lexptjA[[itermNum]][vWhichTimes],function(mexptjA,exptAcorr){exptAcorr%*%mexptjA},exptAcorr=exptAcorr,simplify=FALSE)
-                    exptjA<-sapply(c(regimes.times[[itermNum]][vWhichTimes]-regimes.times[[itermNum]][vWhichTimes[1]]-timeDiff),function(t,precalc){.calc.exptA(t=t,precalc)},precalc=modelParams$precalcMatrices[[1]],simplify=FALSE)
-		    
+		    expmtAcurr<-.calc.exptA(t=-timeDiff,modelParams$precalcMatrices[[1]])   ##A=modelParams$A) ## correct the mean value structure we are only moving along a single branch
+##		    exptAcorr<-expmtAcurr%*%.calc.exptA(t=-phyltree@times[vTermLineage[j-1]],A=modelParams$A)%*%invlexpmtA[[itermNum]]    ## and not through the whole tree, we want the mean at the branch end
+##		    exptjA<-sapply(modelParams$precalcMatrices[[3]]$lexptjA[[itermNum]][vWhichTimes],function(mexptjA,exptAcorr){exptAcorr%*%mexptjA},exptAcorr=exptAcorr,simplify=FALSE)
+
+		    exptjA<-sapply(c(regimes.times[[itermNum]][vWhichTimes]-regimes.times[[itermNum]][vWhichTimes[1]]-timeDiff),function(t,precalc){.calc.exptA(t=t,precalc)},precalc=modelParams$precalcMatrices[[1]],simplify=FALSE)		    
 	    	    regimesCurr<-regimes[[itermNum]][vWhichTimes[1:(length(vWhichTimes)-1)]]		
 	    	    names(regimesCurr)<-NULL
 		    if (EvolModel=="ouch"){

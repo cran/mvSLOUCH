@@ -182,48 +182,10 @@
 ## function creates the covariance matrix from the data provided by the user according to the provided matrix type
 ## code modified from GLSME.R
 ## T.F. Hansen, K. Bartoszek; Interpreting the evolutionary regression: the interplay between observational and biological errors in phylogenetic comparative studies; Syst. Biol., 61(3):413-425, 2012
-    mCov<-matrix(NA,ncol=n*m,nrow=n*m)
-    if (is.null(matrixtype)){
-        matrixOK<-FALSE
-        if ((is.vector(covmat))&&(length(covmat)==1)){matrixtype<-"SingleValue";matrixOK<-TRUE}
-        if ((is.vector(covmat))&&(length(covmat)==m)&&(m>1)){matrixtype<-"Vector";matrixOK<-TRUE;}
-        if ((is.list(covmat))&&(length(covmat)==m)&&(m>1)){matrixtype<-"MatrixList";matrixOK<-TRUE}
-        if ((is.matrix(covmat))&&(nrow(covmat)==n*m)&&(ncol(covmat)==n*m)&&(n*m>1)){matrixtype<-"Matrix";matrixOK<-TRUE}
-        if (!matrixOK){print(paste("Could not setup ",whichcov," matrix. Please check input or provide a full matrix.",sep=""));stop()}
-    }
-    if ((matrixtype=="Matrix")&&(is.matrix(covmat))&&(ncol(covmat)==n*m)&&(nrow(covmat)==n*m)){mCov<-covmat}
-    else{
-        if (matrixtype=="VectorList"){matrixtype<-"MatrixList"}
-        if (matrixtype=="SingleValue"){mCov[1:(n*m),1:(n*m)]<-0;diag(mCov)<-covmat}
-        if (matrixtype=="Vector"){mCov[1:(n*m),1:(n*m)]<-0;covmat[which(covmat=="F")]<-0;covmat<-as.numeric(covmat);diagvect<-rep(covmat,n);diag(mCov)<-diagvect}
-        if (matrixtype=="CorrelatedPredictors"){mCov<-diag(1,n,n)%x%covmat}
-        if (matrixtype=="MatrixList"){
-            mCov[1:(n*m),1:(n*m)]<-0;
-            for (i in 1:m){
-                if ((is.character(covmat[[i]]))&&(covmat[[i]]=="F")){covmat[[i]]<-0};
-                if (is.vector(covmat[[i]])){
-                    if((length(covmat[[i]])==m)||(length(covmat[[i]])==1)){
-                        vcov<-covmat[[i]]
-                        covmat[[i]]<-matrix(0,n,n)
-                        diag(covmat[[i]])<-vcov
-                    }else{print(paste("Could not setup covariance of predictor ",i," of ",whichcov," matrix. Please check input.",sep=""));stop()}
-                }
-                vindexes<-which((1:(n*m))%%m==i%%m)
-                mCov[vindexes,vindexes]<-covmat[[i]]
-            }
-        }
-    }    
-    mCov<- (mCov+t(mCov))/2
-    EigVals<-eigen(mCov)$values
-    if (length(which(EigVals<0)>0)){print(paste("Warning : ",whichcov," matrix has negative eigenvalues!!",sep=""))}
-    if (length(which(is.complex(EigVals))>0)){print(paste("Warning : ",whichcov," matrix has complex eigenvalues!!",sep=""))}
-    list(mCov,matrixtype)
-}
+## the GLSME function is not compatible as here we want the matrix to be of the form
+## n (species) blocks of size m (traits) while in GLSME m (traits) blocks of size n (species)
+## will need a wrapper function if GLSME is included in the mvSLOUCH code for bias correction
 
-.createCovariancematrix<-function(covmat,n,m,matrixtype,whichcov){
-## function creates the covariance matrix from the data provided by the user according to the provided matrix type
-## code modified from GLSME.R
-## T.F. Hansen, K. Bartoszek; Interpreting the evolutionary regression: the interplay between observational and biological errors in phylogenetic comparative studies; Syst. Biol., 61(3):413-425, 2012
     mCov<-matrix(NA,ncol=n*m,nrow=n*m)
     if (is.null(matrixtype)){
         matrixOK<-FALSE
@@ -258,6 +220,7 @@
         }
     }    
     mCov[which(is.na(mCov))]<-0
+    if (length(which(is.na(mCov)))>0){print("WARNING: NAs in measurement error covariance matrix changed to 0")}
     mCov<- (mCov+t(mCov))/2    
     EigVals<-eigen(mCov)$values
     if (length(which(EigVals<0)>0)){print(paste("Warning : ",whichcov," matrix has negative eigenvalues!!",sep=""))}

@@ -4,7 +4,8 @@
 Estimate parameters under a (multivariate) OUBM model of evolution
 }
 \description{
-The \code{mvslouchModel} function uses maximum likelihood to fit parameters of a multivariate OUBM  model evolving on the phylogeny.
+The \code{mvslouchModel} function uses maximum likelihood to fit parameters of a multivariate 
+OUBM model evolving on the phylogeny.
 }
 \usage{
 mvslouchModel(phyltree, data, kY, regimes = NULL, regimes.times = NULL, 
@@ -19,8 +20,8 @@ from the \code{ape} package and converted into the \code{ouch} format by \code{o
 \code{ape2ouch} function. See the example of how to correct the internal nodes.
 }
   \item{data}{
-A data frame with the rows corresponding to the species while the columns correspond to the traits.
-The rows can be named by species, if not then the order
+A data frame with the rows corresponding to the species while the columns correspond 
+to the traits. The rows can be named by species, if not then the order
 of the species has to be the same as the order in which the species are on the phylogeny.
 }
   \item{kY}{
@@ -29,13 +30,13 @@ Number of "Y" (response) variables.
   \item{regimes}{
   A vector or list of regimes. If vector then each entry corresponds to the branch
   preceeding the respective node. If list then each list entry corresponds to a node
-  and is a vector for regimes on that lineage. If \code{NULL} then a constant regime is assumed on
-  the whole tree.
+  and is a vector for regimes on that lineage. If \code{NULL} then a constant regime is 
+  assumed on the whole tree.
 }
   \item{regimes.times}{
-A list of vectors for each tree node, it starts with 0 and ends with the current time of the species.
-In between are the times where the regimes (niches) changed. If \code{NULL} then each branch is
-considered to be a regime.
+A list of vectors for each tree node, it starts with 0 and ends with the current time 
+of the species. In between are the times where the regimes (niches) changed. If \code{NULL} 
+then each branch is considered to be a regime.
 }
   \item{root.regime}{
 The regime at the root of the tree. If not given taken as first element of regimes.
@@ -47,14 +48,21 @@ A vector giving the numbers of the columns from
 }
 
   \item{M.error}{
- An optional measurement error covariance matrix. The program tries to recognizes the structure of matrix passed and accepts the following possibilities :
+ An optional measurement error covariance matrix. The program tries to recognizes the 
+ structure of matrix passed and accepts the following possibilities :
 \itemize{
 \item{}{a single number that will be on the diagonal of the covariance matrix}
-\item{}{a m element vector with each value corresponding to a variable and the covariance matrix will have that vector repeated on its diagonal,}
+\item{}{a m element vector with each value corresponding to a variable and the covariance matrix 
+will have that vector repeated on its diagonal,}
 \item{}{a nxm element vector a diagonal matrix with this vector on the diagonal,}
-\item{}{a m x m ((number of variables) x (number of variables)) matrix it is assumed that the measurement errors are independent between observations so the resulting covariance structure is block diagonal,}
-\item{}{a list of length m (number of variables), each list element is the covariance structure for the appropriate variable, either a single number (each observations has same variance), vector (of length n for each observation), or full matrix,}
-\item{}{matrix of size mn x mn (m - number of variables, n - number of observations) the measurement error covaraince provided as is,}
+\item{}{a m x m ((number of variables) x (number of variables)) matrix it is assumed that the 
+measurement errors are independent between observations so the resulting covariance structure is 
+block diagonal,}
+\item{}{a list of length m (number of variables), each list element is the covariance structure for 
+the appropriate variable, either a single number (each observations has same variance), 
+vector (of length n for each observation), or full matrix,}
+\item{}{matrix of size mn x mn (m - number of variables, n - number of observations) 
+the measurement error covaraince provided as is,}
 \item{}{NULL no measurement error}
 }
 }
@@ -75,7 +83,8 @@ What class does the Syy matrix in the multivariate OUBM model belong to, possibl
 \code{Symmetric}, \code{Any}
 }
   \item{calcCI}{
-  An optional logical variable indicating whether to calculate and return confidence intervals on the estimated parameters.
+  An optional logical variable indicating whether to calculate and return confidence intervals 
+  on the estimated parameters.
 }
   \item{diagA}{
   Whether the values on \code{A}'s diagonal are to be \code{"Positive"}, \code{"Negative"} or sign allowed to vary, \code{NULL}.  
@@ -87,32 +96,36 @@ This function estimates the parameters of the following multivariate SDE,
 dY(t) & = & -A(Y(t)-(\Psi(t)- A^{-1}BX(t)))dt + \Sigma_{yy} dB(t) & Y(0) & = & Y_{0}, \\ dX(t) & = & \Sigma_{xx} dB(t) & X(0) & = & X_{0}
 \end{array}
 }{
-dY(t) = -A(Y(t)-(Psi(t)- solve(A)BX(t)))dt + Syy dB(t) Y(0)=Y0, 
+dY(t) = -A(Y(t)-(\Psi(t)- solve(A)BX(t)))dt + Syy dB(t) Y(0)=Y0, 
 
 dX(t) = Sxx dB(t), X(0)=X0
 }
 on a phylogenetic tree. It uses
-a numerical optimization over A (parametrized by its eigenvalues and eigenvectors or its QR decomposition)
-and S (parametrized by its values) and conditional on A and S estimates the values of Psi corresponding
-to the different regimes by a GLS estimate. Y(0) is assumed to be equal to - solve(A)BX(0) plus the root value of Psi.
+a numerical optimization over A (parametrized by its eigenvalues and eigenvectors or 
+its QR decomposition)
+and S (parametrized by its values) and conditional on A and S estimates the values of 
+Psi corresponding
+to the different regimes by a GLS estimate. Y(0) is assumed to be equal to - solve(A)BX(0) 
+plus the root value of Psi.
 
 The found point is described by a list containing four fields. 
-The first field HeuristicSearchPointFinalFind is the parametrization of the model parameters at the considered
+The first field HeuristicSearchPointFinalFind is the parametrization of the model 
+parameters at the considered
 point with the value of the log--likelihood.
 The field ParamsInModel is the point estimate of the parameters of the SDE. The value of mPsi0
 can be currently ignored.
 The field ParamSummary are different composite (evaluated at time 1) and summary statitics,
 The field phylhalflife are the eigenvalues, eigenvectors and phylogenetic half lives
 associated with the A matrix of, expmtA is
-$exp(-A*1)$, optimal regression is the -solve(A)B matrix,
+\eqn{exp(-A*1)}, optimal regression is the -solve(A)B matrix,
 mPsi.rotated is each of the regime effects multiplied
-by 1-exp(-A*1), mPsi0.rotated is the same for the mPsi0 vector and can be ignored,
+by \eqn{1-exp(-A*1}, mPsi0.rotated is the same for the mPsi0 vector and can be ignored,
 cov.matrix is the trait vector covariance matrix at time 1, 
 corr.matrix is the trait vector correlation matrix at time 1, 
 conditional.cov.matrix is the conditional covariance matrix of the OU type variables 
-on the Brownian motion type at time $1$, i.e. Cov[Y|X](1),
+on the Brownian motion type at time \eqn{1}, i.e. Cov[Y|X](1),
 conditional.corr.matrix is the conditional correlation matrix of the OU type variables 
-on the Brownian motion type at time $1$, i.e. Corr[Y|X](1),
+on the Brownian motion type at time \eqn{1}, i.e. Corr[Y|X](1),
 stationary.cov.matrix is the limit of the conditional.cov.matrix, 
 stationary.corr.matrix is the limit of the conditional.corr.matrix, 
 optima.cov.matrix
@@ -121,7 +134,7 @@ optima.corr.matrix
 is the correlation matrix of the optimal process at time 1,
 cov.with.optima is the covariance matrix between the optimal process and the Y type variables process,
 corr.with.optima is the correlation matrix between the optimal process and the Y type variables process,
-evolutionary.regression is the regression coefficient of E[Y|X](1)$
+evolutionary.regression is the regression coefficient of E[Y|X](1)
 StS the infinitesmal covariance matrix,
 LogLik the log--likelihood, dof the degrees of freedom, m2loglik is -2log--likelihood,
 aic is the Akaike information criterion, aic.c is the Akaike information criterion corrected for small
@@ -131,7 +144,8 @@ The last field LogLik is the log--likelihood at the point.
 }
 \value{
 \item{FinalFound}{The point where the search procedure stopped. See Details for the description.}
-\item{MaxLikFound}{The point with the highest likelihood found by the search procedure, if it is the same as the final point then this field equals "Same as final found". }
+\item{MaxLikFound}{The point with the highest likelihood found by the search procedure, 
+if it is the same as the final point then this field equals "Same as final found". }
 }
 \references{
 Bartoszek, K. and Pienaar, J. and Mostad. P. and Andersson, S. and Hansen, T. F. (2012)
@@ -147,7 +161,8 @@ Hansen, T.F. (1997)
   Evolution 51:1341-1351.
 
 Hansen, T.F. and Bartoszek, K. (2012)
-  Interpreting the evolutionary regression: the interplay between observational and biological errors in phylogenetic comparative studies.
+  Interpreting the evolutionary regression: the interplay between observational and 
+  biological errors in phylogenetic comparative studies.
   Systematic Biology 61(3):413-425.
 
 Hansen, T.F. and Pienaar, J. and Orzack, S.H. (2008) 
@@ -166,8 +181,10 @@ Pienaar et al (in prep) An overview of comparative methods for
 The slouch package is a recommended alternative if one has only a single response (Y) trait.
 }
 
-\section{Warning}{The estimation can take a long time and should be repeated a couple of times so that it is run from different starting positions.
-The function can produce (a lot of) warnings and errors during the search procedure, this is nothing to worry about.
+\section{Warning}{The estimation can take a long time and should be repeated a couple of times 
+so that it is run from different starting positions.
+The function can produce (a lot of) warnings and errors during the search procedure, 
+this is nothing to worry about.
 }
 
 \seealso{

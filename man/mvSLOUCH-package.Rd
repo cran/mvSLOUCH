@@ -20,7 +20,12 @@ dX(t)  = Sxx dB(t)
 }
 models that evolve on a phylogenetic tree.
 
-This software comes AS IS in the hope that it will be useful WITHOUT ANY WARRANTY, NOT even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. Please understand that there may still be bugs and errors. Use it at your own risk. We take no responsibility for any errors or omissions in this package or for any misfortune that may befall you or others as a result of its use. Please send comments and report bugs to Krzysztof Bartoszek at bartoszekkj@gmail.com .
+This software comes AS IS in the hope that it will be useful WITHOUT ANY WARRANTY, 
+NOT even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
+Please understand that there may still be bugs and errors. Use it at your own risk. 
+We take no responsibility for any errors or omissions in this package or for any misfortune 
+that may befall you or others as a result of its use. Please send comments and report 
+bugs to Krzysztof Bartoszek at bartoszekkj@gmail.com .
 }
 \details{
 \tabular{ll}{
@@ -46,17 +51,25 @@ dX(t)  = Sxx dB(t)
 }
 models that evolve on a phylogenetic tree.
 
-The estimation functions are \code{BrownianMotionModel}, \code{ouchModel} (OUOU) and \code{mvslouchModel} (mvOUBM).
+The estimation functions are \code{BrownianMotionModel}, \code{ouchModel} (OUOU) and 
+\code{mvslouchModel} (mvOUBM).
 The rely on a combination of least squares and numerical optimization techniques. 
+A wrapper funciotn for all of them is \code{estimate.evolutionary.model}, in tries all
+three model with different matrix parameter classes and then returns the best model 
+based on the AICc.
 
-The simulation functions are simulBMProcPhylTree, simulOUCHProcPhylTree, simulMVSLOUCHProcPhylTree.
+The simulation functions are simulBMProcPhylTree, simulOUCHProcPhylTree, 
+simulMVSLOUCHProcPhylTree.
 
-The phylogeny provided to them is required to be of the same type that the \code{ouch} package requires.
+The phylogeny provided to them is required to be of the same type that the \code{ouch} 
+package requires.
 
-The package uses the functions .sym.par and .sym.unpar from the \code{ouch} package to parametrize symmetric matrices.
-The package also uses the internal structure of \code{ouch}'s (as of version 2.8.2) tree object.
+The package uses the functions .sym.par and .sym.unpar from the \code{ouch} package to 
+parametrize symmetric matrices. The package also uses the internal structure of 
+\code{ouch}'s (as of version 2.8.2) tree object.
 
-In the case the mvOUBM model with a single response trait the package \code{slouch} is a recommended alternative.
+In the case the mvOUBM model with a single response trait the package \code{slouch} is a 
+recommended alternative.
 
 
 }
@@ -83,7 +96,8 @@ Hansen, T.F. (1997)
   Evolution 51:1341-1351.
 
 Hansen, T.F. and Bartoszek, K. (2012)
-  Interpreting the evolutionary regression: the interplay between observational and biological errors in phylogenetic comparative studies.
+  Interpreting the evolutionary regression: the interplay between observational and biological 
+  errors in phylogenetic comparative studies.
   Systematic Biology 61(3):413-425.
 
 Hansen, T.F. and Pienaar, J. and Orzack, S.H. (2008) 
@@ -91,7 +105,8 @@ Hansen, T.F. and Pienaar, J. and Orzack, S.H. (2008)
   Evolution 62:1965-1977.
 
 Labra, A., Pienaar, J. & Hansen, T.F. (2009) 
-  Evolution of thermophysiology in Liolaemus lizards: adaptation, phylogenetic inertia and niche tracking. 
+  Evolution of thermophysiology in Liolaemus lizards: adaptation, phylogenetic inertia and 
+  niche tracking. 
   The American Naturalist 174:204-220.
 
 Pienaar et al (in prep) An overview of comparative methods for
@@ -139,6 +154,21 @@ OUOUestim<-ouchModel(phyltree,OUOUdata,regimes,Atype="DecomposablePositive",
 Syytype="UpperTri",diagA="Positive")
 OUBMestim<-mvslouchModel(phyltree,OUBMdata,2,regimes,Atype="DecomposablePositive",
 Syytype="UpperTri",diagA="Positive")
+
+### Use the wrapper function
+estimResultsBM<-estimate.evolutionary.model(demotreeouch,BMdata,regimes=NULL,
+root.regime=NULL,M.error=NULL,repeats=3,model.setups=NULL,predictors=c(3),kY=2,
+doPrint=TRUE)
+estimResultsOUOU<-estimate.evolutionary.model(demotreeouch,OUOUdata,regimes=regimes,
+root.regime="small",M.error=NULL,repeats=3,model.setups=NULL,predictors=c(3),kY=2,
+doPrint=TRUE)
+estimResultsOUBM<-estimate.evolutionary.model(demotreeouch,OUBMdata,regimes=regimes,
+root.regime="small",M.error=NULL,repeats=3,model.setups=NULL,predictors=c(3),kY=2,
+doPrint=TRUE)
+## In the wrapper function the resulting best found model parameters are in
+## estimResultsBM$BestModel$ParamsInModel
+## estimResultsOUOU$BestModel$ParamsInModel
+## estimResultsOUBM$BestModel$ParamsInModel
 
 ### And summarize them.
 BM.summary<-SummarizeBM(phyltree,BMdata,BMestim$ParamsInModel,t=c(1),
