@@ -1,4 +1,4 @@
-estimate.evolutionary.model<-function(phyltreeouch,dfdata,regimes=NULL,root.regime=NULL,M.error=NULL,repeats=3,model.setups=NULL,predictors=NULL,kY=NULL,doPrint=FALSE,pESS=NULL){
+estimate.evolutionary.model<-function(phyltree,dfdata,regimes=NULL,root.regime=NULL,M.error=NULL,repeats=3,model.setups=NULL,predictors=NULL,kY=NULL,doPrint=FALSE,pESS=NULL){
 
     testedModels<-list()
     j<-1
@@ -27,7 +27,7 @@ estimate.evolutionary.model<-function(phyltreeouch,dfdata,regimes=NULL,root.regi
 		if (doPrint){print("Doing estimation for BM model")}
 		BMres<-NULL
 		tryCatch({
-		    BMres<-BrownianMotionModel(phyltree=phyltreeouch,data=dfdata,predictors=predictors,M.error=M.error,calcCI=FALSE)
+		    BMres<-BrownianMotionModel(phyltree=phyltree,data=dfdata,predictors=predictors,M.error=M.error,calcCI=FALSE)
 		},error=function(e){print(e)})
 		testedModels[[j]]<-list()
 		testedModels[[j]]$result<-BMres;testedModels[[j]]$aic.c<-NA;testedModels[[j]]$model<-model.setups[[k]];j<-j+1	    
@@ -41,7 +41,7 @@ estimate.evolutionary.model<-function(phyltreeouch,dfdata,regimes=NULL,root.regi
 		}
 		
 		if (!is.null(pESS)){
-		    calcESS<-.calcESSanalytical(phyltreeouch,proc.params=BMres$ParamsInModel,evolmodel="bm",Merror=M.error,vNAs=vNAs,ESS.method=pESS)
+		    calcESS<-.calcESSanalytical(phyltree,proc.params=BMres$ParamsInModel,evolmodel="bm",Merror=M.error,vNAs=vNAs,ESS.method=pESS)
 		    testedModels[[j-1]]$ESScalcs<-calcESS
 		    ESScrit<-.getESScriteria(BMres$ParamSummary$LogLik,BMres$ParamSummary$dof,calcESS$ESS.model.selection,calcESS$ESS.factor.model.selection,calcESS$rhon,BMres$ParamSummary$RSS)
 		    if ((!is.null(ESScrit))&&(ESScrit$aic.c < BestModelESS$aic.c)){
@@ -59,7 +59,7 @@ estimate.evolutionary.model<-function(phyltreeouch,dfdata,regimes=NULL,root.regi
 		if(doPrint){print(paste("Doing estimation for ouch model with A: ",model.setups[[k]]$Atype," with diagonal: ",model.setups[[k]]$diagA," Syy: ",model.setups[[k]]$Syytype,sep=""))}
 		OUres<-NULL
 		tryCatch({
-		    OUres<-ouchModel(phyltree=phyltreeouch,data=dfdata,regimes=regimes,regimes.times=NULL,root.regime=root.regime,predictors=predictors,M.error=M.error,Atype=model.setups[[k]]$Atype,Syytype=model.setups[[k]]$Syytype,calcCI=FALSE,diagA=model.setups[[k]]$diagA)
+		    OUres<-ouchModel(phyltree=phyltree,data=dfdata,regimes=regimes,regimes.times=NULL,root.regime=root.regime,predictors=predictors,M.error=M.error,Atype=model.setups[[k]]$Atype,Syytype=model.setups[[k]]$Syytype,calcCI=FALSE,diagA=model.setups[[k]]$diagA)
 		},error=function(e){print(e)})
 		testedModels[[j]]<-list()
 		testedModels[[j]]$result<-OUres;testedModels[[j]]$aic.c<-NA;testedModels[[j]]$model<-model.setups[[k]];j<-j+1
@@ -75,7 +75,7 @@ estimate.evolutionary.model<-function(phyltreeouch,dfdata,regimes=NULL,root.regi
 			    BestModel$model<-model.setups[[k]]
 			}
 			if (!is.null(pESS)){
-			    calcESS<-.calcESSanalytical(phyltreeouch,proc.params=OUres$MaxLikFound$ParamsInModel,evolmodel="ouch",Merror=M.error,vNAs=vNAs,ESS.method=pESS)
+			    calcESS<-.calcESSanalytical(phyltree,proc.params=OUres$MaxLikFound$ParamsInModel,evolmodel="ouch",Merror=M.error,vNAs=vNAs,ESS.method=pESS)
 			    testedModels[[j-1]]$ESScalcs<-calcESS
 			    ESScrit<-.getESScriteria(OUres$MaxLikFound$ParamSummary$LogLik,OUres$MaxLikFound$ParamSummary$dof,calcESS$ESS.model.selection,calcESS$ESS.factor.model.selection,calcESS$rhon,OUres$MaxLikFound$ParamSummary$RSS)
 	            	    if (ESScrit$aic.c < BestModelESS$aic.c){
@@ -100,7 +100,7 @@ estimate.evolutionary.model<-function(phyltreeouch,dfdata,regimes=NULL,root.regi
 			    BestModel$model<-model.setups[[k]]
 			}
 			if (!is.null(pESS)){
-			    calcESS<-.calcESSanalytical(phyltreeouch,proc.params=OUres$FinalFound$ParamsInModel,evolmodel="ouch",Merror=M.error,vNAs=vNAs,ESS.method=pESS)
+			    calcESS<-.calcESSanalytical(phyltree,proc.params=OUres$FinalFound$ParamsInModel,evolmodel="ouch",Merror=M.error,vNAs=vNAs,ESS.method=pESS)
 			    testedModels[[j-1]]$ESScalcs<-calcESS
 			    ESScrit<-.getESScriteria(OUres$FinalFound$ParamSummary$LogLik,OUres$FinalFound$ParamSummary$dof,calcESS$ESS.model.selection,calcESS$ESS.factor.model.selection,calcESS$rhon,OUres$FinalFound$ParamSummary$RSS)
 	            	    if (ESScrit$aic.c < BestModelESS$aic.c){
@@ -125,7 +125,7 @@ estimate.evolutionary.model<-function(phyltreeouch,dfdata,regimes=NULL,root.regi
 		if(doPrint){print(paste("Doing estimation for mvlslouch model with A: ",model.setups[[k]]$Atype," with diagonal: ",model.setups[[k]]$diagA," Syy: ",model.setups[[k]]$Syytype,sep=""))}
 	    	mvslres<-NULL
 	    	tryCatch({
-	    	    mvslres<-mvslouchModel(phyltree=phyltreeouch,data=dfdata.mvsl,kY,regimes=regimes,regimes.times=NULL,root.regime=root.regime,predictors=predictors,M.error=M.error,Atype=model.setups[[k]]$Atype,Syytype=model.setups[[k]]$Syytype,calcCI=FALSE,diagA=model.setups[[k]]$diagA)
+	    	    mvslres<-mvslouchModel(phyltree=phyltree,data=dfdata.mvsl,kY,regimes=regimes,regimes.times=NULL,root.regime=root.regime,predictors=predictors,M.error=M.error,Atype=model.setups[[k]]$Atype,Syytype=model.setups[[k]]$Syytype,calcCI=FALSE,diagA=model.setups[[k]]$diagA)
 		},error=function(e){print(e)})
 		testedModels[[j]]<-list()
 		testedModels[[j]]$result<-mvslres;testedModels[[j]]$aic.c<-NA;testedModels[[j]]$model<-model.setups[[k]];j<-j+1
@@ -140,7 +140,7 @@ estimate.evolutionary.model<-function(phyltreeouch,dfdata,regimes=NULL,root.regi
 			    BestModel$evolmodel<-"mvslouch"
 			}
 			if (!is.null(pESS)){
-			    calcESS<-.calcESSanalytical(phyltreeouch,proc.params=mvslres$MaxLikFound$ParamsInModel,evolmodel="mvslouch",Merror=M.error,vNAs=vNAs,ESS.method=pESS)
+			    calcESS<-.calcESSanalytical(phyltree,proc.params=mvslres$MaxLikFound$ParamsInModel,evolmodel="mvslouch",Merror=M.error,vNAs=vNAs,ESS.method=pESS)
 			    testedModels[[j-1]]$ESScalcs<-calcESS
 			    ESScrit<-.getESScriteria(mvslres$MaxLikFound$ParamSummary$LogLik,mvslres$MaxLikFound$ParamSummary$dof,calcESS$ESS.model.selection,calcESS$ESS.factor.model.selection,calcESS$rhon,mvslres$MaxLikFound$ParamSummary$RSS)
 			    if (ESScrit$aic.c < BestModelESS$aic.c){
@@ -163,7 +163,7 @@ estimate.evolutionary.model<-function(phyltreeouch,dfdata,regimes=NULL,root.regi
 			    BestModel$evolmodel<-"mvslouch"
 			}
 			if (!is.null(pESS)){
-			    calcESS<-.calcESSanalytical(phyltreeouch,proc.params=mvslres$FinalFound$ParamsInModel,evolmodel="mvslouch",Merror=M.error,vNAs=vNAs,ESS.method=pESS)
+			    calcESS<-.calcESSanalytical(phyltree,proc.params=mvslres$FinalFound$ParamsInModel,evolmodel="mvslouch",Merror=M.error,vNAs=vNAs,ESS.method=pESS)
 			    testedModels[[j-1]]$ESScalcs<-calcESS
 			    ESScrit<-.getESScriteria(mvslres$FinalFound$ParamSummary$LogLik,mvslres$FinalFound$ParamSummary$dof,calcESS$ESS.model.selection,calcESS$ESS.factor.model.selection,calcESS$rhon,mvslres$FinalFound$ParamSummary$RSS)
 			    if (ESScrit$aic.c < BestModelESS$aic.c){
@@ -426,7 +426,7 @@ generate.model.setups<-function(){
     if (evolmodel=="mvslouch"){
 	chsedesc<-paste(chsedesc,"SummarizeMVSLOUCH(phyltree=your.phylogenetic.tree,data=your.data.frame,modelParams=your.estimated.model.parameters,regimes=your.regimes,dof=your.degrees.of.freedom,M.error=your.measurement.error,predictors=your.predictors,Atype=your.Atype,Syytype=your.Syytype,calcCI=TRUE) ", sep="")
     }
-    chsedesc<-paste(chsedesc,"where your.phylogenetic.tree is your phylogeny in ouch format (passed to the parameter phyltreeouch when calling evol.model.est), your.data.frame is your trait data (passed to the parameter dfdata when calling evol.model.est), your.estimated.model.parameters are the estimated parameters (can be found in the slot $BestModel$BestModel$ParamsInModel in the returned object),  your.degrees.of.freedom are the degrees of freedom of the best found model (can be found in the slot $BestModel$BestModel$ParamSummary$dof in the returned object), your.measurement.error is your measurement error structure (passed to the parameter M.error when calling evol.model.est, may be left NULL), your.predictors are your indicated predictor variables (passed to the parameter predictors when calling evol.model.est, may be left NULL)",sep="")    
+    chsedesc<-paste(chsedesc,"where your.phylogenetic.tree is your phylogeny in ouch format (passed to the parameter phyltree when calling evol.model.est), your.data.frame is your trait data (passed to the parameter dfdata when calling evol.model.est), your.estimated.model.parameters are the estimated parameters (can be found in the slot $BestModel$BestModel$ParamsInModel in the returned object),  your.degrees.of.freedom are the degrees of freedom of the best found model (can be found in the slot $BestModel$BestModel$ParamSummary$dof in the returned object), your.measurement.error is your measurement error structure (passed to the parameter M.error when calling evol.model.est, may be left NULL), your.predictors are your indicated predictor variables (passed to the parameter predictors when calling evol.model.est, may be left NULL)",sep="")    
     if ((evolmodel=="ouch") || (evolmodel=="mvslouch")){
 	chsedesc<-paste(chsedesc,", your.regimes is your regimes vector (passed to the parameter regimes when calling evol.model.est), your.Atype is the class to which the A matrix belongs in the best found model (can be found in the slot $BestModel$model$Atype in the returned object), your.Syytype is the class to which the A matrix belongs in the best found model (can be found in the slot $BestModel$model$Syytype in the returned object). ", sep="")
     }else{chsedesc<-paste(chsedesc,".",sep="")}

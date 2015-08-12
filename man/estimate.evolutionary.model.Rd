@@ -13,19 +13,19 @@ It then compares the resulting estimates by the AICc and
 returns the best overall model.
 }
 \usage{
-estimate.evolutionary.model(phyltreeouch, dfdata, regimes = NULL, 
+estimate.evolutionary.model(phyltree, dfdata, regimes = NULL, 
 root.regime = NULL, M.error = NULL, repeats = 3, model.setups = NULL, 
 predictors = NULL, kY = NULL, doPrint = FALSE, pESS=NULL)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{phyltreeouch}{
+  \item{phyltree}{
 The phylogeny in \code{ouch} format. All of the internal nodes have to be uniquely named.
 The tree can be obtained from e.g. a \code{nexus} file by the \code{read.nexus} function
 from the \code{ape} package and converted into the \code{ouch} format by \code{ouch}'s
 \code{ape2ouch} function. See the example of how to correct the internal nodes.
 It is strongly advisable to rescale the tree so that the determinant of the 
-speciation time matrix (\code{phyltreeouch@branch.times}) is about 1. This
+speciation time matrix (\code{phyltree@branch.times}) is about 1. This
 significantly stabilizes the estimation procedure.
 }
   \item{dfdata}{
@@ -169,8 +169,9 @@ Ane, C. (2008)
   Analysis of comparative data with hierarchical autocorrelation. 
   Annals of Applied Statistics 2:1078-1102.
 
-Bartoszek, K. (2015 submitted)
+Bartoszek, K. (2015)
   Phylogenetic effective sample size.
+  ArXiv e-prints 1507.07113.
 
 Bartoszek, K. and Pienaar, J. and Mostad. P. and Andersson, S. and Hansen, T. F. (2012)
   A phylogenetic comparative method for studying multivariate adaptation.

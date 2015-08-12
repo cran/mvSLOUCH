@@ -1,4 +1,4 @@
-bd4b7b6d7b378b9be985284675d76899 *DESCRIPTION
+4b781ded280b55812994e5272b43ce91 *DESCRIPTION
 0632cc7589c46bbf4981f0a778f1ef2a *LICENCE
 a6e64f479853bd929560cd9c9c830aa7 *NAMESPACE
 590af191d27af3ab343bdd27af646354 *R/MVslouchSimulStudy.R
@@ -7,7 +7,7 @@ efa6e998b350ea093ad622ee7d6340d9 *R/ci.R
 a9e9512c2af6e3c89013c4229a6e41b5 *R/estimBM.R
 7fd5bc5237a1dfbbe6e0e8e5c714b22b *R/estimGLSGC.R
 542f30fe6380440af00b35a0b15dda9a *R/estimMAXLIK.R
-b63b8d5dcec536ab1b1199b89ccfc9a6 *R/evolmodelest.R
+5c3f122eba473520d4c450ea80c63a03 *R/evolmodelest.R
 c2dab19eae5f4918c912d9bc700c25e4 *R/fitch.mvsl.R
 0ee903f6bdadc13872d7857ab65ed7b7 *R/getESS.R
 4cf69fb0d7de323ffce0bd7eae9830c8 *R/grid.R
@@ -35,7 +35,7 @@ d32239bcb673463ab874e80d47fae504 *inst/GPL-3
 50846d8c13e3826bd75b2441f150a2ab *man/SummarizeBM.Rd
 adbe81cd2a6c0d65f4d36917c56e33fd *man/SummarizeMVSLOUCH.Rd
 74dc4c6d99567823da47b38d5a50fd5a *man/SummarizeOUCH.Rd
-40b8ec2a43d00b634fe5d14d89f1a1b2 *man/estimate.evolutionary.model.Rd
+13902c8284566a22f13a174c377399b6 *man/estimate.evolutionary.model.Rd
 b02e8a7135b174fe5d80fb5c56807ad7 *man/fitch.mvsl.Rd
 4fba28d34fd57c2991f673a43fa86ef8 *man/generate.model.setups.Rd
 7ea6d8e87445fb7d5d5827ef5abf902c *man/mvSLOUCH-internal.Rd
