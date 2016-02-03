@@ -153,7 +153,7 @@
 	    }
 	}
 
-	lTruePointSummary<-.Params.summary(modelParams,params$EvolModel,params$EstimParams$designToEstim,data=vSimData,t=1,LogLik=TruePointLogLik,n=ncol(lPrecalculates$mSpecDist),npar0=npar0,RSS=TruePointRSS) ## no need to build CIs here, true point
+	lTruePointSummary<-.Params.summary(modelParams,params$EvolModel,params$EstimParams$designToEstim,data=vSimData,t=1,LogLik=TruePointLogLik,n=ncol(lPrecalculates$mSpecDist),npar0=npar0,RSS=TruePointRSS,lPrecalculates=list(tree.height=lPrecalculates$tree.height)) ## no need to build CIs here, true point
 	modelParams<-.cleanUpModelParams(modelParams)
 	modelParams$TruePointSummary<-lTruePointSummary
 	modelParams<-.cleanUpModelParams(modelParams)

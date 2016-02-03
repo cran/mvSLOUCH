@@ -76,8 +76,12 @@
     TreeTermLabels<-PhylTree@nodelabels[PhylTree@term]
     n<-length(TreeTermLabels)
     lDists<-.calcTreeDist(PhylTree,TreeTermLabels)
-    lPrecalc<-vector("list",5)
-    names(lPrecalc)<-c("mSpecDist","mTreeDist","mAncestorTimes","vSpeciesPairs","invmAncestorTimes")
+    lPrecalc<-vector("list",6)
+    names(lPrecalc)<-c("mSpecDist","mTreeDist","mAncestorTimes","vSpeciesPairs","invmAncestorTimes","tree.height")
+    ## the presence of mSpecDist is used in .Params.summary to determine if CIs are to be calculated
+
+    lPrecalc$tree.height<-PhylTree@depth
+    
     if (is.null(UserTermLabels)){lPrecalc$mSpecDist<-lDists[[1]][TreeTermLabels]}
     else{lPrecalc$mSpecDist<-lDists[[1]][UserTermLabels]}
     if(!(is.matrix(lPrecalc$mSpecDist))){lPrecalc$mSpecDist<-matrix(lPrecalc$mSpecDist,nrow=1)}

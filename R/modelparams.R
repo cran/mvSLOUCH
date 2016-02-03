@@ -125,7 +125,7 @@
     		if (ncol(lDesign$D)>0){modelParams$regressCovar<-pseudoinverse(t(lDesign$D)%*%solve(V)%*%lDesign$D)}
     	      }
 	      lPointSummary<-.Params.summary(modelParams,EvolModel,EstimationParams$designToEstim,data=data,t=t,LogLik=LogLik,n=ncol(lPrecalculates$mSpecDist),npar0=length(modelParams$vPoint),RSS=RSS,lPrecalculates=lPrecalculates,KnownParams=EstimationParams$KnownParams,conf.level=EstimationParams$conf.level,vVars=EstimationParams$vVars,conditional=EstimationParams$conditional,minLogLik=minLogLik)
-        }else{lPointSummary<-.Params.summary(modelParams,EvolModel,EstimationParams$designToEstim,data=data,t=t,LogLik=LogLik,n=ncol(lPrecalculates$mSpecDist),npar0=length(modelParams$vPoint),RSS=RSS)}
+        }else{lPointSummary<-.Params.summary(modelParams,EvolModel,EstimationParams$designToEstim,data=data,t=t,LogLik=LogLik,n=ncol(lPrecalculates$mSpecDist),npar0=length(modelParams$vPoint),RSS=RSS,lPrecalculates=list(tree.height=lPrecalculates$tree.height))}
     }
     list(modelParams=modelParams,LogLik=LogLik,PointSummary=lPointSummary)
 }

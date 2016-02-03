@@ -71,6 +71,7 @@
 	}
 
 	if (!is.null(predictors)){
+	    predictors<-intersect(1:ncol(data),predictors)## if user provided column out of range
 	    params$EstimParams$predictors<-predictors
 	    predictors<-colnames(data)[predictors]
 	}
@@ -284,13 +285,17 @@
 		    listobj$corr.with.limit<-apply(matrix(0:((length(vResps))^2-1),length(vResps),length(vResps),byrow=TRUE),c(1,2),function(ij,kY,mcov.curr,mcov.stat,mcov.with){i<-ij%/%kY+1;j<-ij%%kY+1;mcov.with[i,j]/(sqrt(mcov.curr[i,i]*mcov.stat[j,j]))},kY=length(vResps),mcov.curr=mcov.curr,mcov.stat=mcov.stat,mcov.with=listobj$cov.with.limit)
 		    if (length(vResps)==1){listobj$cov.with.limit<-matrix(listobj$cov.with.limit,1,1)};colnames(listobj$cov.with.limit)<-vResps;rownames(listobj$cov.with.limit)<-vResps    
 		}
+	    },error=function(e){print(paste("Error in limiting regression and covariance calculation",e))})		
+	}
+	tryCatch({    
+	    if ((!is.element("limiting.trait.regression",names(listobj)))&&(length(vY.names)>1)){ ## no point in doing the regressions if there is only a single trait
 		listobj$limiting.trait.regression<-sapply(1:length(vY.names),function(i,mCov,vY.names){
 			    limiting.trait.reg<-mCov[i,-i]%*%solve(mCov[-i,-i])    
 			    limiting.trait.reg<-matrix(limiting.trait.reg,nrow=1);colnames(limiting.trait.reg)<-vY.names[-i];rownames(limiting.trait.reg)<-vY.names[i]
 			    limiting.trait.reg	
 		},mCov=listobj$stationary.cov.matrix,vY.names=vY.names,simplify=FALSE)
-	    },error=function(e){print(paste("Error in limiting regression and covariance calculation",e))})		
-	}
+	    }
+	},error=function(e){print(paste("Error in limiting trait regression calculation",e))})
     }   
     if (is.element("StS",names(listobj))){colnames(listobj$StS)<-c(vY.names,vX.names);rownames(listobj$StS)<-c(vY.names,vX.names)}
     if (is.element("lower.summary",names(listobj))){

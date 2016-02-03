@@ -1,14 +1,16 @@
 .Params.summary<-function(modelParams,EvolModel,designToEstim,data=NULL,t=1,LogLik=-Inf,n=0,npar0=0,RSS=NA,lPrecalculates=NULL,KnownParams=NULL,conf.level=0.95,vVars=NULL,conditional=FALSE,minLogLik=-Inf){
        tryCatch({
 	modelParams$designToEstim<-designToEstim
+	tree.height<-NA
+	if ((!is.null(lPrecalculates))&&(!is.null(lPrecalculates$tree.height))){tree.height<-lPrecalculates$tree.height}
 	names(LogLik)<-c()
 	lParamSummary=switch(EvolModel,
-    		bm=.params.summary.bm(modelParams,data,LogLik,RSS,n),
-        	ouch=.params.summary.ouch(modelParams,data,t,LogLik,n,npar0,RSS),
-#        	slouch=.params.summary.slouch(modelParams,data,LogLik,n,npar0,RSS),
-        	mvslouch=.params.summary.mvslouch(modelParams,data,t,LogLik,n,npar0,RSS)
+    		bm=.params.summary.bm(modelParams,data,LogLik,RSS,n,tree.height),
+        	ouch=.params.summary.ouch(modelParams,data,t,LogLik,n,npar0,RSS,tree.height),
+#        	slouch=.params.summary.slouch(modelParams,data,LogLik,n,npar0,RSS,tree.height),
+        	mvslouch=.params.summary.mvslouch(modelParams,data,t,LogLik,n,npar0,RSS,tree.height)
     	    )
-	if (!is.null(lPrecalculates)){
+	if ((!is.null(lPrecalculates))&&(!is.null(lPrecalculates$mSpecDist))){
 	    regressCovar<-NULL
 	    if (is.element("regressCovar",names(modelParams))){regressCovar<-modelParams$regressCovar}
 	    modelParams$paramPoint<-.cleanUpModelParams(modelParams) 
@@ -20,7 +22,7 @@
     },error=function(e){print(paste("Error in parameter summary",e))})
 }
 
-.params.summary.bm<-function(modelParams,data,LogLik,RSS,n){
+.params.summary.bm<-function(modelParams,data,LogLik,RSS,n,tree.height){
     lParamsSummary<-vector("list",1)
     names(lParamsSummary)<-c("StS")
     lParamsSummary$StS<-modelParams$Sxx%*%t(modelParams$Sxx)
@@ -37,7 +39,7 @@
     lParamsSummary
 }
 
-.params.summary.ouch<-function(modelParams,data=NULL,t=1,LogLik=-Inf,n=0,npar0=0,RSS=NA){
+.params.summary.ouch<-function(modelParams,data=NULL,t=1,LogLik=-Inf,n=0,npar0=0,RSS=NA,tree.height=1){
     kY<-ncol(modelParams$A)
     lParamsSummary<-vector("list",18)   
     names(lParamsSummary)<-c("phyl.halflife","expmtA","mPsi.rotated","mPsi0.rotated","cov.matrix","corr.matrix","trait.regression","stationary.cov.matrix","stationary.corr.matrix","StS","LogLik","dof","m2loglik","aic","aic.c","sic","bic","RSS")
@@ -53,7 +55,7 @@
 	    lParamsSummary$trait.regression<-sapply(1:kY,function(i,mCov){mCov[i,-i]%*%solve(mCov[-i,-i])},mCov=lParamsSummary$cov.matrix,simplify=FALSE)
 	},error=function(e){print(paste("Error in trait regression calculation",e))})
     }else{lParamsSummary$trait.regression<-NULL}
-    lParamsSummary$phyl.halflife<-.calc.phyl.halflife(modelParams$A)
+    lParamsSummary$phyl.halflife<-.calc.phyl.halflife(modelParams$A,tree.height)
     k<-ncol(modelParams$A)
     if (length(which(Re(lDecomps[[1]]$eigA$values)<=0))==0){
 	hadInvL1pL2<-apply(matrix(0:(k^2-1),k,k,byrow=TRUE),c(1,2),.CalcVlqStat,vlambda=lDecomps[[1]]$eigA$values,k=k)
@@ -85,7 +87,7 @@
     lParamsSummary
 }
 
-.params.summary.mvslouch<-function(modelParams,data=NULL,t=1,LogLik=-Inf,n=0,npar0=0,RSS=NA){
+.params.summary.mvslouch<-function(modelParams,data=NULL,t=1,LogLik=-Inf,n=0,npar0=0,RSS=NA,tree.height=1){
     lParamsSummary<-vector("list",26)   
     names(lParamsSummary)<-c("phyl.halflife","expmtA","optimal.regression","mPsi.rotated","mPsi0.rotated","cov.matrix","corr.matrix","conditional.cov.matrix","conditional.corr.matrix","stationary.cov.matrix","stationary.corr.matrix","optima.cov.matrix","optima.corr.matrix","cov.with.optima","corr.with.optima","evolutionary.regression","trait.regression","StS","LogLik","dof","m2loglik","aic","aic.c","sic","bic","RSS")
     lDecomps<-.decompEigenA.S(modelParams,NULL,NA,list(bCalcA=TRUE,bCovCalc=TRUE,dzetacalc=FALSE,lexptcalc=FALSE,kappacalc=FALSE,interceptcalc=FALSE),NULL)
@@ -94,7 +96,7 @@
     lParamsSummary$mPsi0.rotated<-(diag(1,nrow(lParamsSummary$expmtA),ncol(lParamsSummary$expmtA))-lParamsSummary$expmtA)%*%modelParams$mPsi0
     lParamsSummary$cov.matrix<-.calc.cov.slouch.mv(t,lDecomps[[1]],lDecomps[[2]])
     lParamsSummary$corr.matrix<-cov2cor(lParamsSummary$cov.matrix)
-    lParamsSummary$phyl.halflife<-.calc.phyl.halflife(modelParams$A)
+    lParamsSummary$phyl.halflife<-.calc.phyl.halflife(modelParams$A,tree.height)
     kY<-ncol(modelParams$A)
     kX<-ncol(modelParams$B)
     lParamsSummary$evolutionary.regression<-lParamsSummary$cov.matrix[1:kY,(kY+1):(kY+kX)]%*%solve(lParamsSummary$cov.matrix[(kY+1):(kY+kX),(kY+1):(kY+kX)])
@@ -149,12 +151,14 @@
 
 .norm.max<-function(M){max(abs(M))}
 
-.calc.phyl.halflife<-function(A){
-    mPhylHalfLife<-matrix(NA,nrow=2,ncol=nrow(A))
-    rownames(mPhylHalfLife)<-c("eigenvalues","halflife")
+.calc.phyl.halflife<-function(A,tree.height){
+    mPhylHalfLife<-matrix(NA,nrow=3,ncol=nrow(A))
+    rownames(mPhylHalfLife)<-c("eigenvalues","halflife","%treeheight")
     eigA<-eigen(A)
     mPhylHalfLife[1,]<-eigA$values
-    mPhylHalfLife[2,]<- log(2)/(Re(eigA$values)) ## Idea for bound taken from von Lohan, Sensitivity of the matrix exponential remove det part
+    mPhylHalfLife[2,]<- log(2)/(Re(eigA$values)) 
+    mPhylHalfLife[3,]<- 100*(mPhylHalfLife[2,]/tree.height)
+    ## Idea for bound taken from von Lohan, Sensitivity of the matrix exponential remove det part
     list("directions"=eigA$vectors,"halflives"=mPhylHalfLife,"halflifeLowerbounds"=c(Re(log(2)/sum(eigA$values))))
 }
 

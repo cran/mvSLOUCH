@@ -50,9 +50,9 @@
     names(lCI)<-vnames
 
     lCI$lower.summary<-NA
-    lCI$lower.summary<-tryCatch({.Params.summary(lPoint.lower,EvolModel,designToEstim,NULL,t,-Inf,0,0,NA)},error=function(e){print(paste("Error in lower confidence interval calculation",e))})
+    lCI$lower.summary<-tryCatch({.Params.summary(lPoint.lower,EvolModel,designToEstim,NULL,t,-Inf,0,0,NA,lPrecalculates=list(tree.height=lPrecalculates$tree.height))},error=function(e){print(paste("Error in lower confidence interval calculation",e))})
     lCI$upper.summary<-NA
-    lCI$upper.summary<-tryCatch({.Params.summary(lPoint.upper,EvolModel,designToEstim,NULL,t,-Inf,0,0,NA)},error=function(e){print(paste("Error in lower confidence interval calculation",e))})
+    lCI$upper.summary<-tryCatch({.Params.summary(lPoint.upper,EvolModel,designToEstim,NULL,t,-Inf,0,0,NA,lPrecalculates=list(tree.height=lPrecalculates$tree.height))},error=function(e){print(paste("Error in lower confidence interval calculation",e))})
 
 ## Do eigen CIs ------------------------------------------------------------------
 ## in code we use HL/hl instead of eig as originally this built confidence intervals for half-lives but it turned out that
@@ -84,9 +84,9 @@
 	lPoint.HL.upper<-params
     
 	lCI$eigenvalues$lower.summary<-NA
-	lCI$eigenvalues$lower.summary<-tryCatch({.Params.summary(lPoint.HL.lower,EvolModel,designToEstim,NULL,t,-Inf,0,0,NA)},error=function(e){print(paste("Error in lower confidence interval calculation",e))})
+	lCI$eigenvalues$lower.summary<-tryCatch({.Params.summary(lPoint.HL.lower,EvolModel,designToEstim,NULL,t,-Inf,0,0,NA,lPrecalculates=list(tree.height=lPrecalculates$tree.height))},error=function(e){print(paste("Error in lower confidence interval calculation",e))})
 	lCI$eigenvalues$upper.summary<-NA
-	lCI$eigenvalues$upper.summary<-tryCatch({.Params.summary(lPoint.HL.upper,EvolModel,designToEstim,NULL,t,-Inf,0,0,NA)},error=function(e){print(paste("Error in lower confidence interval calculation",e))})
+	lCI$eigenvalues$upper.summary<-tryCatch({.Params.summary(lPoint.HL.upper,EvolModel,designToEstim,NULL,t,-Inf,0,0,NA,lPrecalculates=list(tree.height=lPrecalculates$tree.height))},error=function(e){print(paste("Error in lower confidence interval calculation",e))})
     
 	hlMinMax<-matrix(0,nrow=length(vEstimedHLs),ncol=2)
 	hlMinMax[,1]<-vEstimedHLs-designToEstim$sigmaRule*vEstimedHLs
