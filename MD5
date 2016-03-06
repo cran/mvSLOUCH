@@ -1,4 +1,4 @@
-6529f36da61a8b0da0a3933ed8e6c553 *DESCRIPTION
+5a890b78a663808bc75a642171fda8a0 *DESCRIPTION
 0632cc7589c46bbf4981f0a778f1ef2a *LICENCE
 a6e64f479853bd929560cd9c9c830aa7 *NAMESPACE
 3998b3a6703df87a71afc0a34ad76344 *R/MVslouchSimulStudy.R
@@ -25,9 +25,9 @@ a9c9bf8f206a87e005dfae5a4c7ed0cc *R/precalcs.R
 cf3e40e7fd5a786a8fb9e477b39f226d *R/sdemoments.R
 b91af2543ca4475f705b986d52e36adb *R/sdemomentsphyl.R
 f6ffb42a9da8337d2638966ea7df7a6e *R/simulVasicekproc.R
-074c6b2a081d82f0d70743ea60b938f7 *R/simulVasicekprocphyl.R
+ad98e4fbaa2d60be5dc4567eac1527bd *R/simulVasicekprocphyl.R
 8e6b39b9b1d410c4af683bc856afa42f *R/treeDists.R
-335b590dfbf143d18c8f0cc3ff2fddea *R/wrappers.R
+93026cad4fa3c044bdcf6a5578b1e044 *R/wrappers.R
 ecf040c24e58cebdeb3c3456aca17000 *inst/CITATION
 eb723b61539feef013de476e68b5c50a *inst/GPL-2
 d32239bcb673463ab874e80d47fae504 *inst/GPL-3
@@ -35,6 +35,7 @@ d32239bcb673463ab874e80d47fae504 *inst/GPL-3
 50846d8c13e3826bd75b2441f150a2ab *man/SummarizeBM.Rd
 adbe81cd2a6c0d65f4d36917c56e33fd *man/SummarizeMVSLOUCH.Rd
 74dc4c6d99567823da47b38d5a50fd5a *man/SummarizeOUCH.Rd
+23bf5b39458263d2ce88ee72ea984efd *man/drawPhylProcess.Rd
 13902c8284566a22f13a174c377399b6 *man/estimate.evolutionary.model.Rd
 b02e8a7135b174fe5d80fb5c56807ad7 *man/fitch.mvsl.Rd
 4fba28d34fd57c2991f673a43fa86ef8 *man/generate.model.setups.Rd
@@ -42,6 +43,6 @@ b02e8a7135b174fe5d80fb5c56807ad7 *man/fitch.mvsl.Rd
 430b63395bd560d6a778cb3b0ca269e3 *man/mvSLOUCH-package.Rd
 88af700f4ae8cb9fb02c104fb3695614 *man/mvslouchModel.Rd
 37e0ab2819ce9d6e5791fa0fc416a64b *man/ouchModel.Rd
-ecf2857a1c2fa26a6ac8a67e2295f688 *man/simulBMProcPhylTree.Rd
-954aa1beb80712f05c158e80219c064c *man/simulMVSLOUCHProcPhylTree.Rd
-3fcca7bb5f7a78f2d4984973e1675b1e *man/simulOUCHProcPhylTree.Rd
+2efe241c31c0b4c1b8e08a20423e1fb0 *man/simulBMProcPhylTree.Rd
+58940cfb4c32b2b4c714c2e74fc82dd4 *man/simulMVSLOUCHProcPhylTree.Rd
+4b116ced71417f760ffdceb9e2a79f3e *man/simulOUCHProcPhylTree.Rd

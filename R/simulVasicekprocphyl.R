@@ -2,6 +2,11 @@
 ## tree is assumed to be in ouch format
 ## we don't need  descendent list as we have the tree in ouch format use @lineages
 
+    if (bAllTrajectories && (is.null(Simulparams) || !is.element("step",names(Simulparams)))){
+	step<-min(c(0.001,phyltree@depth/1000))
+	if (is.null(Simulparams)){Simulparams<-list(step=step)}
+	else{Simulparams$step<-step}
+    }
 ## temporary simulation solution --- should consider a full model with this
     bJumpAtNode<-FALSE
     if (is.element("jump",names(Simulparams))){bJumpAtNode<-TRUE}
@@ -96,17 +101,23 @@
 		timeDiff<-phyltree@times[vTermLineage[j]]-phyltree@times[vTermLineage[j-1]]
 
 ## temporary simulation solution --- should consider a full model with this	
-		if (bJumpAtNode){
+		if (bJumpAtNode){		    
 		    bDoJump<-FALSE
-		    if (Simulparams$jump$jumptype=="ForBoth"){if (is.na(vJumpNode[vTermLineage[j-1]])){bDoJump<-TRUE}}
+		    if (Simulparams$jump$jumptype=="ForBoth"){
+                        if (is.na(vJumpNode[vTermLineage[j-1]])){
+                            if (runif(1)<Simulparams$jump$jumpprob){bDoJump<-TRUE}
+                            else{bDoJump<-FALSE;vJumpNode[vTermLineage[j-1]]<-0}
+                            #bDoJump<-TRUE
+                        }
+                    }
 		    if (Simulparams$jump$jumptype=="RandomLineage"){
 			if (is.na(vJumpNode[vTermLineage[j-1]])){vJumpNode[vTermLineage[j-1]]<-sample(c(1,2),1)}
 			if ((vJumpNode[vTermLineage[j-1]]==1)||(vJumpNode[vTermLineage[j-1]]==3)){bDoJump<-TRUE}
 			if (vJumpNode[vTermLineage[j-1]]==2){bDoJump<-FALSE;vJumpNode[vTermLineage[j-1]]<-3}
 		    }
 		    if (Simulparams$jump$jumptype=="JumpWithProb"){
-			if (is.na(vJumpNode[vTermLineage[j-1]])||(vJumpNode[vTermLineage[j-1]]==1)){if (runif(1)<Simulparams$jumpprob){doJump<-TRUE}}
-			if (vJumpNode[vTermLineage[j-1]]==2){doJump<-FALSE;vJumpNode[vTermLineage[j-1]]<-0}
+		    	if (is.na(vJumpNode[vTermLineage[j-1]])||(vJumpNode[vTermLineage[j-1]]==1)){if (runif(1)<Simulparams$jump$jumpprob){bDoJump<-TRUE}}
+			if ((!is.na(vJumpNode[vTermLineage[j-1]]))&&(vJumpNode[vTermLineage[j-1]]==2)){bDoJump<-FALSE;vJumpNode[vTermLineage[j-1]]<-0}
 		    }
 		    if (bDoJump){		    	
 		    	## add according to distribution
@@ -236,37 +247,64 @@
 }
 
 
-.drawPhylProcess<-function(PhylTraitProcess,phyltree=NULL,vColours="black",plotlayout=c(1,1),additionalfigs=FALSE,modelParams=NULL,EvolModel=NULL){
+drawPhylProcess<-function(PhylTraitProcess,phyltree=NULL,vColours="black",plotlayout=c(1,1),additionalfigs=FALSE,modelParams=NULL,EvolModel=NULL,xlimits=NULL,ylimits=NULL){
     ## prepare data matrix to plot
-    lPhylTraject<-PhylTraitProcess$FullTrajectory
-    mData<-lPhylTraject[[1]]$trajectory
-    if (length(lPhylTraject)>1){for (i in 2:length(lPhylTraject)){mData<-rbind(mData,lPhylTraject[[i]]$trajectory)}}
+    mData<-NA
+    if (is.list(PhylTraitProcess)){
+	if (is.element("FullTrajectory",names(PhylTraitProcess))){
+	    lPhylTraject<-PhylTraitProcess$FullTrajectory
+	    mData<-lPhylTraject[[1]]$trajectory
+	    if (length(lPhylTraject)>1){for (i in 2:length(lPhylTraject)){mData<-rbind(mData,lPhylTraject[[i]]$trajectory)}}
+	}
+    }else{if (is.matrix(PhylTraitProcess)){mData<-PhylTraitProcess}}
     
-    ntraits<-ncol(mData)-1
-    ## check if we have the colors
-    if ((length(vColours)==0)||(is.na(vColours[1]))||(is.null(vColours))){vColours<-"black"}
-    if (length(vColours)<ntraits){vColours<-rep(vColours,length.out=ntraits)}
+    if (!is.na(mData[1])){    
+	ntraits<-ncol(mData)-1
+	## check if we have the colors
+	if ((length(vColours)==0)||(is.na(vColours[1]))||(is.null(vColours))){vColours<-"black"}
+	if (length(vColours)<ntraits){vColours<-rep(vColours,length.out=ntraits)}
     
-    ## prepare plot area
-    if (prod(plotlayout)<ntraits){plotlayout<-c(1,ntraits);print("WARNING : Possibly ugly plot layout, change parameter plotlayout!")}
-##    minmaxx<-vector("list",ntraits)
-##    for (i in 2:(ntraits+1)){minmaxx[[i]]<-c(min(mData[,i]),max(mData[,i]))}
-    minmaxy<-c(min(mData[,1]),max(mData[,1]))    
+	## prepare plot area
+	if (prod(plotlayout)<ntraits){plotlayout<-c(1,ntraits);print("WARNING : Possibly ugly plot layout, change parameter plotlayout!")}
     
-    ## plot
-    par(mfrow=(plotlayout))
-    for (i in 2:(ntraits+1)){
-	plot(mData[,i],mData[,1],col=vColours[i-1],pch=19,cex=0.2,main="",xlab="",ylab="",frame.plot=FALSE,axes=FALSE,ylim=rev(minmaxy))
-	if (additionalfigs && !is.null(modelParams) && !is.null(EvolModel)){
-	    if (EvolModel=="bm"){abline(v=modelParams$vX0[i-1,1],lty=2,lwd=1.5);mtext(side=3,at=modelParams$vX0[i-1,1],text=expression(X[0]),cex=2)}
-	    if (EvolModel=="ouou"){abline(v=modelParams$vY0[i-1,1],lty=2,lwd=1.5);abline(v=modelParams$mPsi[i-1,1],lty=2,lwd=1.5);mtext(side=3,at=modelParams$vY0[i-1,1],text=expression(X[0]),cex=2);mtext(side=3,at=modelParams$mPsi[i-1,1],text=expression(theta),cex=2)}
-	    if (EvolModel=="mvslouch"){
-		kY<-nrow(modelParams$A);kX<-nrow(modelParams$Sxx)
-		if (i-1<=kY){abline(v=modelParams$vY0[i-1,1],lty=2,lwd=1.5);abline(v=modelParams$mPsi[i-1,1],lty=2,lwd=1.5);mtext(side=3,at=modelParams$vY0[i-1,1],text=expression(Y[0]),cex=2);mtext(side=3,at=modelParams$mPsi[i-1,1],text=expression(psi),cex=2)}
-		else{abline(v=modelParams$vX0[i-1-kY,1],lty=2,lwd=1.5);mtext(side=3,at=modelParams$vX0[i-1-kY,1],text=expression(X[0]),cex=2)}
+	## plot
+	par(mfrow=(plotlayout))
+	for (i in 2:(ntraits+1)){
+	    minmaxx<-NA
+	    if (!is.null(xlimits)){
+		if ((is.vector(xlimits))&&(length(xlimits)==2)){minmaxx<-xlimits}
+		if ((is.list(xlimits))&&(length(xlimits)==1)&&(is.vector(xlimits[[1]]))&&(length(xlimits[[1]])==2)){minmaxx<-xlimits[[1]]}
+		if ((is.list(xlimits))&&(length(xlimits)==ntraits)&&(is.vector(xlimits[[i-1]]))&&(length(xlimits[[i-1]])==2)){minmaxx<-xlimits[[i-1]]}
+		if ((is.matrix(xlimits))&&(ncol(xlimits)==2)&&(nrow(xlimits)==1)){minmaxx<-xlimits[1,]}
+		if ((is.matrix(xlimits))&&(ncol(xlimits)==2)&&(nrow(xlimits)==ntraits)){minmaxx<-xlimits[i-1,]}		
+	    }
+	    if (is.na(minmaxx)){
+		minmaxx<-c(min(mData[,i]),max(mData[,i]))
+	    }	    
+	    minmaxy<-NA
+	    if (!is.null(ylimits)){
+		if ((is.vector(ylimits))&&(length(ylimits)==2)){minmaxy<-ylimits}
+		if ((is.list(ylimits))&&(length(ylimits)==1)&&(is.vector(ylimits[[1]]))&&(length(ylimits[[1]])==2)){minmaxy<-ylimits[[1]]}
+		if ((is.list(ylimits))&&(length(ylimits)==ntraits)&&(is.vector(ylimits[[i-1]]))&&(length(ylimits[[i-1]])==2)){minmaxy<-ylimits[[i-1]]}
+		if ((is.matrix(ylimits))&&(ncol(ylimits)==2)&&(nrow(ylimits)==1)){minmaxy<-ylimits[1,]}
+		if ((is.matrix(ylimits))&&(ncol(ylimits)==2)&&(nrow(ylimits)==ntraits)){minmaxy<-ylimits[i-1,]}		
+	    }
+	    if (is.na(minmaxy)){
+	    	minmaxy<-c(min(mData[,1]),max(mData[,1]))
+	    }	    
+
+	    plot(mData[,i],mData[,1],col=vColours[i-1],pch=19,cex=0.2,main="",xlab="",ylab="",frame.plot=FALSE,axes=FALSE,ylim=rev(minmaxy),xlim=minmaxx)
+	    if (additionalfigs && !is.null(modelParams) && !is.null(EvolModel)){
+		if (EvolModel=="bm"){abline(v=modelParams$vX0[i-1,1],lty=2,lwd=1.5);mtext(side=3,at=modelParams$vX0[i-1,1],text=expression(X[0]),cex=2)}
+		if (EvolModel=="ouou"){abline(v=modelParams$vY0[i-1,1],lty=2,lwd=1.5);abline(v=modelParams$mPsi[i-1,1],lty=2,lwd=1.5);mtext(side=3,at=modelParams$vY0[i-1,1],text=expression(X[0]),cex=2);mtext(side=3,at=modelParams$mPsi[i-1,1],text=expression(theta),cex=2)}
+		if (EvolModel=="mvslouch"){
+		    kY<-nrow(modelParams$A);kX<-nrow(modelParams$Sxx)
+		    if (i-1<=kY){abline(v=modelParams$vY0[i-1,1],lty=2,lwd=1.5);abline(v=modelParams$mPsi[i-1,1],lty=2,lwd=1.5);mtext(side=3,at=modelParams$vY0[i-1,1],text=expression(Y[0]),cex=2);mtext(side=3,at=modelParams$mPsi[i-1,1],text=expression(psi),cex=2)}
+		    else{abline(v=modelParams$vX0[i-1-kY,1],lty=2,lwd=1.5);mtext(side=3,at=modelParams$vX0[i-1-kY,1],text=expression(X[0]),cex=2)}
+		}
 	    }
 	}
-    }
-        
+    }else{print("Error: wrong data provided to plotting function")}
+    NA        
 }
 

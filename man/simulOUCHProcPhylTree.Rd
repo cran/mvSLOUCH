@@ -8,7 +8,8 @@ Simulate data on a phylogeny under a (multivariate) OU model
 }
 \usage{
 simulOUCHProcPhylTree(phyltree, modelParams, regimes = NULL, 
-regimes.times = NULL, dropInternal = TRUE, M.error=NULL)
+regimes.times = NULL, dropInternal = TRUE, M.error=NULL, fullTrajectory=FALSE,
+jumpsetup=NULL)
 }
 \arguments{
   \item{phyltree}{
@@ -51,13 +52,44 @@ measurement error covaraince provided as is,}
 \item{}{NULL no measurement error}
 }
 }
+\item{fullTrajectory}{should the full realization of the process or only node and tip values 
+be returned}
+    \item{jumpsetup}{Either \code{NULL} or list describing the jump at speciation. In the second 
+    case:
+    \itemize{
+        \item{\code{jumptype}}{In what way does the jump take place. Possible values are
+        \code{"ForBoth"} the jump occurs at speciation and is common to both daughter lineages,
+        \code{"RandomLineage"} the jump occurs just after speciation affecting exactly one
+        daughter lineage, both desceding branches have the same chance of being affected,
+        \code{"JumpWithProb"} the jump occurs with probability \code{jumpprob}
+        just after speciation independently on each daughter lineage independently.
+        }
+        \item{\code{jumpprob}}{A value in \eqn{[0,1]} indictating the probability of a jump
+        taking place, only matters if \code{jumptype} is \code{"JumpWithProb"}
+        or \code{"JumpWithProb"}.}
+        \item{\code{jumpdistrib}}{The distribution of the jump, currently only can take
+        value \code{"Normal"}.}
+        \item{\code{vMean}}{The expected value of the jump, a vector of appropriate
+        length if the trait is multivariate.}
+        \item{\code{mCov}}{The variance of the jump, a matrix of appropriate
+        dimensions if the trait is multivariate.}
+    }
+    }
+
 }
 \value{
-Returns a data.frame with each row corresponding to a tree node and each column to a trait. 
-If dropInternal is TRUE
+If \code{fullTrajectory} is \code{FALSE} then 
+returns a data.frame with each row corresponding to a tree node and each column to a trait. 
+Otherwise returns a more complex object describing the full realization of the process on the tree.
+If \code{dropInternal} is \code{TRUE}
 then the entries for the internal nodes are changed to NAs.
 }
+
 \references{
+Bartoszek, K. (2014) 
+  Quantifying the effects of anagenetic and cladogenetic evolution. 
+  Mathematical Biosciences 254:42-57.
+
 Bartoszek, K. and Pienaar, J. and Mostad. P. and Andersson, S. and Hansen, T. F. (2012)
   A phylogenetic comparative method for studying  multivariate adaptation.
   Journal of Theoretical Biology 314:204-215.
@@ -104,7 +136,9 @@ A=rbind(c(9,0,0),c(0,5,0),c(0,0,1)),mPsi=cbind("small"=c(1,-1,0.5),
 "large"=c(-1,1,0.5)),Syy=rbind(c(1,0.25,0.3),c(0,1,0.2),c(0,0,1)))
 
 ### Now simulate the data and remove the values corresponding to the internal nodes.
-OUOUdata<-simulOUCHProcPhylTree(phyltree,OUOUparameters,regimes,NULL)
+jumpobj<-list(jumptype="RandomLineage",jumpprob=0.5,jumpdistrib="Normal",
+vMean=rep(0,3),mCov=diag(1,3,3))
+OUOUdata<-simulOUCHProcPhylTree(phyltree,OUOUparameters,regimes,NULL,jumpsetup=jumpobj)
 }
 }
 \keyword{models}

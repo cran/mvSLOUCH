@@ -21,14 +21,33 @@ SummarizeMVSLOUCH<-function(phyltree,data,modelParams,regimes=NULL,regimes.times
     .SummarizeFullPoint(NULL,dfData=data,PhylTree=phyltree,EvolModel="mvslouch",EstimationParams=list(calcCI=calcCI,Atype=Atype,Syytype=Syytype),regimes.times=regimes.times,regimes=regimes,modelParams=modelParams,t=t,dof=dof,bShouldPrint=TRUE,LogLik=NULL,maxIter=10,tol=c(0.001,0.0001),Merror=M.error,predictors=predictors)
 }
 
-simulBMProcPhylTree<-function(phyltree,X0,Sigma,dropInternal=TRUE,M.error=NULL){
-    .simulVasicekProcPhylTree(phyltree,"bm",modelParams=list(vX0=X0,Sxx=Sigma),EstimationParams=NULL,dropInternal=dropInternal,M.error=M.error)$ExtantSample
+simulBMProcPhylTree<-function(phyltree,X0,Sigma,dropInternal=TRUE,M.error=NULL,fullTrajectory=FALSE,jumpsetup=NULL){
+    evolmodel<-"bm"
+    if (fullTrajectory){evolmodel<-"bmStep"}
+    Simulparams<-NULL
+    if (!is.null(jumpsetup)){Simulparams$jump<-jumpsetup}
+    res<-.simulVasicekProcPhylTree(phyltree,evolmodel,modelParams=list(vX0=X0,Sxx=Sigma),EstimationParams=NULL,Simulparams=Simulparams,dropInternal=dropInternal,M.error=M.error,bAllTrajectories=fullTrajectory)
+    if (!fullTrajectory){res<-res$ExtantSample}
+    res
 }
-simulOUCHProcPhylTree<-function(phyltree,modelParams,regimes=NULL,regimes.times=NULL,dropInternal=TRUE,M.error=NULL){
-    .simulVasicekProcPhylTree(phyltree,"ouch",modelParams=modelParams,EstimationParams=NULL,regimes=regimes,regimes.times=regimes.times,dropInternal=dropInternal,M.error=M.error)$ExtantSample
+simulOUCHProcPhylTree<-function(phyltree,modelParams,regimes=NULL,regimes.times=NULL,dropInternal=TRUE,M.error=NULL,fullTrajectory=FALSE,jumpsetup=NULL){
+    evolmodel<-"ouch"
+    if (fullTrajectory){evolmodel<-"ouchStep"}
+    Simulparams<-NULL
+    if (!is.null(jumpsetup)){Simulparams$jump<-jumpsetup}
+    res<-.simulVasicekProcPhylTree(phyltree,evolmodel,modelParams=modelParams,EstimationParams=NULL,regimes=regimes,regimes.times=regimes.times,Simulparams=Simulparams,dropInternal=dropInternal,M.error=M.error,bAllTrajectories=fullTrajectory)
+    if (!fullTrajectory){res<-res$ExtantSample}
+    res
 }
-simulMVSLOUCHProcPhylTree<-function(phyltree,modelParams,regimes=NULL,regimes.times=NULL,dropInternal=TRUE, M.error=NULL){
-    .simulVasicekProcPhylTree(phyltree,"mvslouch",modelParams=modelParams,EstimationParams=NULL,regimes=regimes,regimes.times=regimes.times,dropInternal=dropInternal,M.error=M.error)$ExtantSample
+
+simulMVSLOUCHProcPhylTree<-function(phyltree,modelParams,regimes=NULL,regimes.times=NULL,dropInternal=TRUE, M.error=NULL,fullTrajectory=FALSE,jumpsetup=NULL){
+    evolmodel<-"mvslouch"
+    if (fullTrajectory){evolmodel<-"mvslouchStep"}
+    Simulparams<-NULL
+    if (!is.null(jumpsetup)){Simulparams$jump<-jumpsetup}
+    res<-.simulVasicekProcPhylTree(phyltree,evolmodel,modelParams=modelParams,EstimationParams=NULL,regimes=regimes,regimes.times=regimes.times,Simulparams=Simulparams,dropInternal=dropInternal,M.error=M.error,bAllTrajectories=fullTrajectory)
+    if (!fullTrajectory){res<-res$ExtantSample}
+    res
 }
 
 .SimulStudyBM<-function(phyltree,X0,Sigma,n=NULL, M.error=NULL){
