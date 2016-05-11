@@ -74,7 +74,7 @@
     ESS.factor.reg<-0
     ESS.reg<-1
     tryCatch({
-    	ESS.reg<-sum(sapply(1:nV,function(i,V){
+    	vr.calc<-sum(sapply(1:nV,function(i,V){
 	    numtry<-0
 	    while(numtry<3){
 		    if (numtry>0){V[-i,-i]<-jitter(V[-i,-i],amount=1e-14);print("Jittering for reg ESS")}
@@ -88,7 +88,8 @@
     	    if (res<0){print("Error in pseudoinverse --- negative variance, taking absolute value");print(c(i,res));res<-abs(res)}
     	    res
     	},V=V,simplify=TRUE))
-	ESS.factor.reg<-(ESS.reg-1)/(samplesize-1)
+	ESS.factor.reg<-vr.calc/samplesize
+	ESS.reg<-(samplesize-1)*ESS.factor.reg+1
 	if (ESS.factor.reg<0){
 	    print("Warning : negative regression ESS factor")
 	    ESS.factor.reg<-0
@@ -98,8 +99,8 @@
     if (ESS.method=="reg"){ESS.factor<-ESS.factor.reg;ESS<-ESS.reg;ESS.factor.model.selection<-ESS.factor.reg;ESS.model.selection<-ESS.reg;}
 
 
-    ESS.factor.mvMI<-0
-    ESS.mvMI<-1
+    ESS.factor.mvMI<-ESS.factor.MI ##0
+    ESS.mvMI<-ESS.MI ##1
     if (procdim>1){
 	sumlogdetVj<-0
 	ni<-n
@@ -124,12 +125,12 @@
         if (ESS.method=="mvMI"){ESS.factor<-ESS.factor.mvMI;ESS<-ESS.mvMI;ESS.factor.model.selection<-ESS.factor.MI;ESS.model.selection<-ESS.MI}
     }
 
-    ESS.factor.mvreg<-0
-    ESS.mvreg<-1
+    ESS.factor.mvreg<-ESS.factor.reg ##0
+    ESS.mvreg<-ESS.reg ##1
     if (procdim>1){
 	ni<-n
 	tryCatch({
-    	    ESS.mvreg<-sum(sapply(setdiff(1:n,full.NA.species),function(i,orgV){
+    	    mvvr.calc<-sum(sapply(setdiff(1:n,full.NA.species),function(i,orgV){
 		numtry<-0
 		while(numtry<3){
 		    species.i<-c((procdim*(i-1)+1):(procdim*i))
@@ -147,7 +148,9 @@
     		if (res<0){print("Error in pseudoinverse --- negative variance, taking absolute value");print(c(i,res));res<-abs(res)}
     		det(res) ## in mvreg we have total variance
     	    },orgV=orgV,simplify=TRUE))
-	    ESS.factor.mvreg<-(ESS.mvreg-1)/(n.noNAs-1)
+	    ESS.factor.mvreg<-mvvr.calc/n.noNAs
+	    ESS.mvreg<-(n.noNAs-1)*ESS.factor.mvreg+1
+
 	    if (ESS.factor.mvreg<0){
 		print("Warning : negative multivariate regression ESS factor")
 		ESS.factor.mvreg<-0
@@ -171,7 +174,7 @@
 	    }
 	}
     }
-    list(ESS.factor=ESS.factor,ESS=ESS,ESS.factor.model.selection=ESS.factor,ESS.model.selection=ESS,rhon=rhon,ESS.coeffs=list(ESS.MI=list(ESS.MI.factor=ESS.factor.MI,ESS.MI=ESS.MI,ESS.factor.mvMI=ESS.factor.mvMI,ESS.mvMI=ESS.mvMI),ESS.mean=list(ESS.mean.factor=ESS.factor.mean,ESS.mean=ESS.mean),ESS.reg=list(ESS.reg.factor=ESS.factor.reg,ESS.reg=ESS.reg),ESS.reg=list(ESS.reg.factor=ESS.factor.reg,ESS.reg=ESS.reg,ESS.mvreg.factor=ESS.factor.mvreg,ESS.mvreg=ESS.mvreg)))
+    list(ESS.factor=ESS.factor,ESS=ESS,ESS.factor.model.selection=ESS.factor,ESS.model.selection=ESS,rhon=rhon,ESS.coeffs=list(ESS.MI=list(ESS.MI.factor=ESS.factor.MI,ESS.MI=ESS.MI,ESS.factor.mvMI=ESS.factor.mvMI,ESS.mvMI=ESS.mvMI),ESS.mean=list(ESS.mean.factor=ESS.factor.mean,ESS.mean=ESS.mean),ESS.reg=list(ESS.reg.factor=ESS.factor.reg,ESS.reg=ESS.reg,ESS.mvreg.factor=ESS.factor.mvreg,ESS.mvreg=ESS.mvreg)))
 }
 
 .getESScriteria<-function(LogLik,dof,ESS,ESS.factor,rhon,RSS){
