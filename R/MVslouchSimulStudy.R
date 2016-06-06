@@ -26,7 +26,7 @@
         regimes<-sapply(PhylTree@lineages[PhylTree@term],function(epch,vregimes){
     	    epch<-rev(epch)
     	    as.character(sapply(epch[-1],function(reg,vregimes){vregimes[reg]},vregimes=vregimes,simplify=TRUE))
-        },vregimes=vregimes,simplify=TRUE)
+        },vregimes=vregimes,simplify=FALSE)
     }else{root.regime<-regimes[[1]][1]}
     
     if (is.null(regimes)){regimes<-.drawRandomRegimes(PhylTree,regimes.types,regimes.times,process,procparams)}

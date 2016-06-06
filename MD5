@@ -1,8 +1,8 @@
-1937dcaad1440ced6cfadc0b8f7c636d *DESCRIPTION
+5c31d6a9442aaf66005f2c97854a1b1f *DESCRIPTION
 0632cc7589c46bbf4981f0a778f1ef2a *LICENCE
 a6e64f479853bd929560cd9c9c830aa7 *NAMESPACE
-3998b3a6703df87a71afc0a34ad76344 *R/MVslouchSimulStudy.R
-370dfd8db5238a1fc69c444f3a12108a *R/PhyloSDEestim.R
+d14ebf66288b5e6c4f69c9143c3e1c5a *R/MVslouchSimulStudy.R
+84895ac0bb33c88aa72ff1f17ebcc6c3 *R/PhyloSDEestim.R
 22f48be4667bdcd802aa164c9f423935 *R/ci.R
 a9e9512c2af6e3c89013c4229a6e41b5 *R/estimBM.R
 fc43538b886db97fbdf9fbc97612351b *R/estimGLSGC.R
@@ -16,7 +16,7 @@ a714e8a651b004c3614fe3078decdea6 *R/make.states.mvsl.R
 dfc6f616d105ae0fcfb68089b1c8abb8 *R/matrixexps.R
 54d043ec9b1665b04fc67e3d44d6d360 *R/matrixparametrizations.R
 4268c036c6c687b626fec4d08e496612 *R/modelparams.R
-457b2b8fcb06ba7a88defe42283e10f9 *R/modelparamssummary.R
+0cbadf5ffb80cc1011fb93412d59f3e6 *R/modelparamssummary.R
 2a979b6012360406ced8b494af9ccc20 *R/modelparamstransform.R
 f2aa8dc644fa2032039def3f3af2616d *R/ouch2slouch.mvsl.R
 311b77ded97c4d0109f9f3dbd8734f21 *R/phylgls.R
@@ -25,7 +25,7 @@ a9c9bf8f206a87e005dfae5a4c7ed0cc *R/precalcs.R
 cf3e40e7fd5a786a8fb9e477b39f226d *R/sdemoments.R
 b91af2543ca4475f705b986d52e36adb *R/sdemomentsphyl.R
 f6ffb42a9da8337d2638966ea7df7a6e *R/simulVasicekproc.R
-ad98e4fbaa2d60be5dc4567eac1527bd *R/simulVasicekprocphyl.R
+187ec56591bb2985ccef959c75e2ecde *R/simulVasicekprocphyl.R
 8e6b39b9b1d410c4af683bc856afa42f *R/treeDists.R
 93026cad4fa3c044bdcf6a5578b1e044 *R/wrappers.R
 ecf040c24e58cebdeb3c3456aca17000 *inst/CITATION

@@ -19,7 +19,7 @@
         regimes<-sapply(phyltree@lineages[phyltree@term],function(epch,vregimes){
             epch<-rev(epch)
             as.character(sapply(epch[-1],function(reg,vregimes){vregimes[reg]},vregimes=vregimes,simplify=TRUE))
-	},vregimes=vregimes,simplify=TRUE)
+	},vregimes=vregimes,simplify=FALSE)
     }                                                                 
     regimes.types.orig<-c()
     for (i in 1: length(regimes)){regimes.types.orig<-c(regimes.types.orig,unique(regimes[[i]]))}
