@@ -11,7 +11,7 @@ model evolving on the phylogeny.
 \usage{
 ouchModel(phyltree, data, regimes = NULL, regimes.times = NULL, 
 root.regime = NULL, predictors = NULL, M.error = NULL, Atype = "Invertible", 
-Syytype = "UpperTri", calcCI = FALSE, diagA = "Positive")
+Syytype = "UpperTri", calcCI = FALSE, diagA = "Positive",estimate.root.state=FALSE)
 }
 \arguments{
   \item{phyltree}{
@@ -87,7 +87,13 @@ What class does the Syy matrix in the multivariate OUBM model belong to, possibl
   Whether the values on \code{A}'s diagonal are to be \code{"Positive"}, \code{"Negative"} or 
   sign allowed to vary, \code{NULL}.
 }
-  
+\item{estimate.root.state}{
+    Should the root state be estimate \code{TRUE} (not recommended) or set at the optimum 
+    \code{FALSE} (recommended). Root state estimation is usually unreliable hence
+    if fossil measurements are available prediction based on them and the estimated
+    model will probably be more accurate. If there is only one regime, then 
+    estimation of the root state separately is impossible and will not be allowed.
+}  
 }
 \details{
 This function estimates the parameters of the following multivariate SDE,

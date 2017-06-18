@@ -15,7 +15,7 @@ returns the best overall model.
 \usage{
 estimate.evolutionary.model(phyltree, dfdata, regimes = NULL, 
 root.regime = NULL, M.error = NULL, repeats = 3, model.setups = NULL, 
-predictors = NULL, kY = NULL, doPrint = FALSE, pESS=NULL)
+predictors = NULL, kY = NULL, doPrint = FALSE, pESS=NULL,estimate.root.state=FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -134,6 +134,13 @@ is the interspecies correlation matrix),
 \code{"mvreg"}(multivariate version of "regression" effective sample size when each species is described by a suite of traits) , 
 \code{"mvMI"} (multivariate mutual information effective sample size when each species is described by a suite of traits) indicating
 the way to calculate the pESS. The default is \code{"reg"}.
+}
+\item{estimate.root.state}{
+    Should the root state be estimate \code{TRUE} (not recommended) or set at the optimum 
+    \code{FALSE} (recommended). Root state estimation is usually unreliable hence
+    if fossil measurements are available prediction based on them and the estimated
+    model will probably be more accurate. If there is only one regime, then 
+    estimation of the root state separately is impossible and will not be allowed.
 }
 }
 \details{

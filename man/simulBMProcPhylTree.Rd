@@ -77,6 +77,10 @@ Bartoszek, K. (2014)
   Quantifying the effects of anagenetic and cladogenetic evolution. 
   Mathematical Biosciences 254:42-57.
 
+Bartoszek, K. (2016) 
+  A Central Limit Theorem for punctuated equilibrium.
+  arXiv:1602.05189.
+
 Bartoszek, K. and Pienaar, J. and Mostad. P. and Andersson, S. and Hansen, T. F. (2012)
   A phylogenetic comparative method for studying  multivariate adaptation.
   Journal of Theoretical Biology 314:204-215.

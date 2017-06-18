@@ -3,7 +3,7 @@
 ## we don't need  descendent list as we have the tree in ouch format use @lineages
 
     if (bAllTrajectories && (is.null(Simulparams) || !is.element("step",names(Simulparams)))){
-	step<-min(c(0.001,phyltree@depth/1000))
+	step<-min(c(0.00025,phyltree@depth/4000))
 	if (is.null(Simulparams)){Simulparams<-list(step=step)}
 	else{Simulparams$step<-step}
     }

@@ -1,4 +1,4 @@
-.Params.summary<-function(modelParams,EvolModel,designToEstim,data=NULL,t=1,LogLik=-Inf,n=0,npar0=0,RSS=NA,lPrecalculates=NULL,KnownParams=NULL,conf.level=0.95,vVars=NULL,conditional=FALSE,minLogLik=-Inf){
+.Params.summary<-function(modelParams,EvolModel,designToEstim,data=NULL,t=1,LogLik=-Inf,n=0,npar0=0,RSS=NA,lPrecalculates=NULL,KnownParams=NULL,conf.level=0.95,vVars=NULL,conditional=FALSE,minLogLik=-Inf,bfullCI=FALSE){
        tryCatch({
 	modelParams$designToEstim<-designToEstim
 	tree.height<-NA
@@ -15,7 +15,7 @@
 	    if (is.element("regressCovar",names(modelParams))){regressCovar<-modelParams$regressCovar}
 	    modelParams$paramPoint<-.cleanUpModelParams(modelParams) 
     	    tryCatch({
-    		lParamSummary$confidence.interval<-.calcCI(EvolModel,modelParams,data,designToEstim,lPrecalculates,KnownParams,vVars,conditional,minLogLik,conf.level,t,regressCovar)
+    		lParamSummary$confidence.interval<-.calcCI(EvolModel,modelParams,data,designToEstim,lPrecalculates,KnownParams,vVars,conditional,minLogLik,conf.level,t,regressCovar,bfullCI)
 	    },error=function(e){print(paste("Error in confidence interval calculation",e))})
 	}
 	lParamSummary

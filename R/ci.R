@@ -1,110 +1,115 @@
-.calcCI<-function(EvolModel,params,data,designToEstim,lPrecalculates,KnownParams,vVars=NULL,conditional=FALSE,minLogLik=-Inf,conf.level=0.95,t=1,regressCovar=NULL){
+.calcCI<-function(EvolModel,params,data,designToEstim,lPrecalculates,KnownParams,vVars=NULL,conditional=FALSE,minLogLik=-Inf,conf.level=0.95,t=1,regressCovar=NULL,bfullCI=FALSE){
     n<-ncol(lPrecalculates$mTreeDist)
     
-    ## prepare params for this
-    vEstimedPoint<-.ci.vectorizeParams(params$paramPoint,KnownParams)
+    lCI<-NULL
+    if (bfullCI){
+        print("Calculating confidence intervals can take very long time")
+	## prepare params for this
+        vEstimedPoint<-.ci.vectorizeParams(params$paramPoint,KnownParams)
     
-    gradLogLik<-grad(.ci.loglikfunc,vEstimedPoint,method="simple",KnownParams=KnownParams,params=params,data=data,lPrecalculates=lPrecalculates,EvolModel=EvolModel,vVars=vVars,conditional=conditional,minLogLik=minLogLik)
-    gradLogLik<-matrix(gradLogLik,ncol=1)
-    ## method simple not implemented for hessian Richardson takes too long ... so we need to call Jacobian on grad with simple
-    hessLogLik<-jacobian(function(x,KnownParams,params,data,lPrecalculates,EvolModel,vVars,conditional,minLogLik){
-	    grad(.ci.loglikfunc,x,method="simple",KnownParams=KnownParams,params=params,data=data,lPrecalculates=lPrecalculates,EvolModel=EvolModel,vVars=vVars,conditional=conditional,minLogLik=minLogLik)
-	},vEstimedPoint,method="simple",KnownParams=KnownParams,params=params,data=data,lPrecalculates=lPrecalculates,EvolModel=EvolModel,vVars=vVars,conditional=conditional,minLogLik=minLogLik
-    )
-    if (length(which(is.nan(hessLogLik)))>0){
-	hessLogLik[which(is.nan(hessLogLik))]<-0
-	print("WARNING: NaNs in the Hessian changed to 0!!!!")
-    }
-    if (length(which(is.na(hessLogLik)))>0){
-	hessLogLik[which(is.na(hessLogLik))]<-0
-	print("WARNING: NAs in the Hessian changed to 0!!!!")
-    }
-    if (length(which(is.infinite(hessLogLik)))>0){
-	hessLogLik[which(is.infinite(hessLogLik))]<-0
-	print("WARNING: Infs in the Hessian changed to 0!!!!")
-    }
+        gradLogLik<-grad(.ci.loglikfunc,vEstimedPoint,method="simple",KnownParams=KnownParams,params=params,data=data,lPrecalculates=lPrecalculates,EvolModel=EvolModel,vVars=vVars,conditional=conditional,minLogLik=minLogLik)
+	gradLogLik<-matrix(gradLogLik,ncol=1)
+        ## method simple not implemented for hessian Richardson takes too long ... so we need to call Jacobian on grad with simple
+	hessLogLik<-jacobian(function(x,KnownParams,params,data,lPrecalculates,EvolModel,vVars,conditional,minLogLik){
+		grad(.ci.loglikfunc,x,method="simple",KnownParams=KnownParams,params=params,data=data,lPrecalculates=lPrecalculates,EvolModel=EvolModel,vVars=vVars,conditional=conditional,minLogLik=minLogLik)
+	    },vEstimedPoint,method="simple",KnownParams=KnownParams,params=params,data=data,lPrecalculates=lPrecalculates,EvolModel=EvolModel,vVars=vVars,conditional=conditional,minLogLik=minLogLik
+	)
+	if (length(which(is.nan(hessLogLik)))>0){
+	    hessLogLik[which(is.nan(hessLogLik))]<-0
+	    print("WARNING: NaNs in the Hessian changed to 0!!!!")
+	}
+	if (length(which(is.na(hessLogLik)))>0){
+	    hessLogLik[which(is.na(hessLogLik))]<-0
+	    print("WARNING: NAs in the Hessian changed to 0!!!!")
+	}
+	if (length(which(is.infinite(hessLogLik)))>0){
+	    hessLogLik[which(is.infinite(hessLogLik))]<-0
+	    print("WARNING: Infs in the Hessian changed to 0!!!!")
+	}
 
-    mA<-gradLogLik%*%t(gradLogLik)
-    if (min(abs(diag(qr.R(qr(hessLogLik)))))<1e-07){print("WARNING : Log likelihood surface is very flat, confidence intervals are EXTREMELY APPROXIMATE.");mB<-pseudoinverse(hessLogLik)}
-    else{mB<-solve(hessLogLik)}
-    vCIs<-qnorm(1-(1-conf.level)/2)*sqrt(diag(mB%*%mA%*%t(mB))) 
+	mA<-gradLogLik%*%t(gradLogLik)
+	if (min(abs(diag(qr.R(qr(hessLogLik)))))<1e-07){print("WARNING : Log likelihood surface is very flat, confidence intervals are EXTREMELY APPROXIMATE.");mB<-pseudoinverse(hessLogLik)}
+	else{mB<-solve(hessLogLik)}
+	vCIs<-qnorm(1-(1-conf.level)/2)*sqrt(diag(mB%*%mA%*%t(mB))) 
 
-    lEstimatedPoint<-.ci.listParams(vEstimedPoint,params$paramPoint,KnownParams)        
-    ci.lower<-.ci.listParams(vEstimedPoint-vCIs,params$paramPoint,KnownParams)
-    ci.upper<-.ci.listParams(vEstimedPoint+vCIs,params$paramPoint,KnownParams)
-    lCI<-vector("list",length(lEstimatedPoint))
+	lEstimatedPoint<-.ci.listParams(vEstimedPoint,params$paramPoint,KnownParams)        
+	ci.lower<-.ci.listParams(vEstimedPoint-vCIs,params$paramPoint,KnownParams)
+	ci.upper<-.ci.listParams(vEstimedPoint+vCIs,params$paramPoint,KnownParams)
+	lCI<-vector("list",length(lEstimatedPoint))
 
-    lPoint.lower<-params
-    lPoint.upper<-params
-    vnames<-c()
-    for (i in 1:length(lEstimatedPoint)){ 
-	lCI[[i]]<-vector("list",3)
-	names(lCI[[i]])<-c("Lower.end","Estimated.Point","Upper.end")
-	lCI[[i]]$Lower.end<-ci.lower[[i]]
-	lCI[[i]]$Estimated.Point<-lEstimatedPoint[[i]]
-	lCI[[i]]$Upper.end<-ci.upper[[i]]
-	vnames[i]<-paste(names(lEstimatedPoint)[i],".confidence.interval",sep="")
-	lPoint.lower[[which(names(lPoint.lower)==names(lEstimatedPoint)[i])]]<-ci.lower[[i]]
-	lPoint.upper[[which(names(lPoint.upper)==names(lEstimatedPoint)[i])]]<-ci.upper[[i]]
-    }
-    names(lCI)<-vnames
+	lPoint.lower<-params
+	lPoint.upper<-params
+	vnames<-c()
+	for (i in 1:length(lEstimatedPoint)){ 
+	    lCI[[i]]<-vector("list",3)
+	    names(lCI[[i]])<-c("Lower.end","Estimated.Point","Upper.end")
+	    lCI[[i]]$Lower.end<-ci.lower[[i]]
+	    lCI[[i]]$Estimated.Point<-lEstimatedPoint[[i]]
+	    lCI[[i]]$Upper.end<-ci.upper[[i]]
+	    vnames[i]<-paste(names(lEstimatedPoint)[i],".confidence.interval",sep="")
+	    lPoint.lower[[which(names(lPoint.lower)==names(lEstimatedPoint)[i])]]<-ci.lower[[i]]
+	    lPoint.upper[[which(names(lPoint.upper)==names(lEstimatedPoint)[i])]]<-ci.upper[[i]]
+	}
+	names(lCI)<-vnames
 
-    lCI$lower.summary<-NA
-    lCI$lower.summary<-tryCatch({.Params.summary(lPoint.lower,EvolModel,designToEstim,NULL,t,-Inf,0,0,NA,lPrecalculates=list(tree.height=lPrecalculates$tree.height))},error=function(e){print(paste("Error in lower confidence interval calculation",e))})
-    lCI$upper.summary<-NA
-    lCI$upper.summary<-tryCatch({.Params.summary(lPoint.upper,EvolModel,designToEstim,NULL,t,-Inf,0,0,NA,lPrecalculates=list(tree.height=lPrecalculates$tree.height))},error=function(e){print(paste("Error in lower confidence interval calculation",e))})
+	lCI$lower.summary<-NA
+        lCI$lower.summary<-tryCatch({.Params.summary(lPoint.lower,EvolModel,designToEstim,NULL,t,-Inf,0,0,NA,lPrecalculates=list(tree.height=lPrecalculates$tree.height))},error=function(e){print(paste("Error in lower confidence interval calculation",e))})
+	lCI$upper.summary<-NA
+	lCI$upper.summary<-tryCatch({.Params.summary(lPoint.upper,EvolModel,designToEstim,NULL,t,-Inf,0,0,NA,lPrecalculates=list(tree.height=lPrecalculates$tree.height))},error=function(e){print(paste("Error in lower confidence interval calculation",e))})
 
 ## Do eigen CIs ------------------------------------------------------------------
 ## in code we use HL/hl instead of eig as originally this built confidence intervals for half-lives but it turned out that
 ## it was stabler and easier to build confidence intervals for the eigenvalues
-    if (is.element("A",names(params$paramPoint))){
-	eigA<-eigen(params$paramPoint$A)
-	P<-eigA$vectors
-	vEstimedHLs<-Re(eigA$values)
-	gradLogLikHLs<-grad(.ci.HL.loglikfunc,vEstimedHLs,method="simple",P=P,EigA=eigA$values,params=params,data=data,lPrecalculates=lPrecalculates,EvolModel=EvolModel,vVars=vVars,conditional=conditional,minLogLik=minLogLik)
+	if (is.element("A",names(params$paramPoint))){
+	    eigA<-eigen(params$paramPoint$A)
+	    P<-eigA$vectors
+	    vEstimedHLs<-Re(eigA$values)
+	    gradLogLikHLs<-grad(.ci.HL.loglikfunc,vEstimedHLs,method="simple",P=P,EigA=eigA$values,params=params,data=data,lPrecalculates=lPrecalculates,EvolModel=EvolModel,vVars=vVars,conditional=conditional,minLogLik=minLogLik)
 
-	gradLogLikHLs<-matrix(gradLogLikHLs,ncol=1)
-	## method simple not implemented for hessian Richardson takes too long ... so we need to call Jacobian on grad with simple
-	hessLogLikHLs<-jacobian(function(x,P,params,data,lPrecalculates,EvolModel,vVars,conditional,minLogLik){
-		grad(.ci.HL.loglikfunc,x,method="simple",P=P,EigA=eigA$values,params=params,data=data,lPrecalculates=lPrecalculates,EvolModel=EvolModel,vVars=vVars,conditional=conditional,minLogLik=minLogLik)
-	    },vEstimedHLs,method="simple",P=P,params=params,data=data,lPrecalculates=lPrecalculates,EvolModel=EvolModel,vVars=vVars,conditional=conditional,minLogLik=minLogLik
-	)
-	mAHLs<-gradLogLikHLs%*%t(gradLogLikHLs)
-	if (min(abs(diag(qr.R(qr(hessLogLikHLs)))))<1e-07){print("WARNING : Log likelihood surface is very flat, confidence intervals for eigenvalues are EXTREMELY APPROXIMATE.");mBHLs<-pseudoinverse(hessLogLikHLs)}
-	else{mBHLs<-solve(hessLogLikHLs)}
-	vCIsHLs<-qnorm(1-(1-conf.level)/2)*sqrt(diag(mBHLs%*%mAHLs%*%t(mBHLs))) 
+	    gradLogLikHLs<-matrix(gradLogLikHLs,ncol=1)
+	    ## method simple not implemented for hessian Richardson takes too long ... so we need to call Jacobian on grad with simple
+	    hessLogLikHLs<-jacobian(function(x,P,params,data,lPrecalculates,EvolModel,vVars,conditional,minLogLik){
+		    grad(.ci.HL.loglikfunc,x,method="simple",P=P,EigA=eigA$values,params=params,data=data,lPrecalculates=lPrecalculates,EvolModel=EvolModel,vVars=vVars,conditional=conditional,minLogLik=minLogLik)
+		},vEstimedHLs,method="simple",P=P,params=params,data=data,lPrecalculates=lPrecalculates,EvolModel=EvolModel,vVars=vVars,conditional=conditional,minLogLik=minLogLik
+	    )
+	    mAHLs<-gradLogLikHLs%*%t(gradLogLikHLs)
+	    if (min(abs(diag(qr.R(qr(hessLogLikHLs)))))<1e-07){print("WARNING : Log likelihood surface is very flat, confidence intervals for eigenvalues are EXTREMELY APPROXIMATE.");mBHLs<-pseudoinverse(hessLogLikHLs)}
+	    else{mBHLs<-solve(hessLogLikHLs)}
+	    vCIsHLs<-qnorm(1-(1-conf.level)/2)*sqrt(diag(mBHLs%*%mAHLs%*%t(mBHLs))) 
     
-	ci.HLs.lower<-vEstimedHLs-vCIsHLs
-	ci.HLs.upper<-vEstimedHLs+vCIsHLs
+	    ci.HLs.lower<-vEstimedHLs-vCIsHLs
+	    ci.HLs.upper<-vEstimedHLs+vCIsHLs
 	
-	lCI$eigenvalues.confidence.interval$eigenvalues.confidence.interval<-cbind(ci.HLs.lower,vEstimedHLs,ci.HLs.upper)
-        colnames(lCI$eigenvalues.confidence.interval$eigenvalues.confidence.interval)<-c("Lower.end","Estimated.eigenvalue","Upper.end")
+	    lCI$eigenvalues.confidence.interval$eigenvalues.confidence.interval<-cbind(ci.HLs.lower,vEstimedHLs,ci.HLs.upper)
+    	    colnames(lCI$eigenvalues.confidence.interval$eigenvalues.confidence.interval)<-c("Lower.end","Estimated.eigenvalue","Upper.end")
 
-	lPoint.HL.lower<-params
-	lPoint.HL.upper<-params
+	    lPoint.HL.lower<-params
+	    lPoint.HL.upper<-params
     
-	lCI$eigenvalues$lower.summary<-NA
-	lCI$eigenvalues$lower.summary<-tryCatch({.Params.summary(lPoint.HL.lower,EvolModel,designToEstim,NULL,t,-Inf,0,0,NA,lPrecalculates=list(tree.height=lPrecalculates$tree.height))},error=function(e){print(paste("Error in lower confidence interval calculation",e))})
-	lCI$eigenvalues$upper.summary<-NA
-	lCI$eigenvalues$upper.summary<-tryCatch({.Params.summary(lPoint.HL.upper,EvolModel,designToEstim,NULL,t,-Inf,0,0,NA,lPrecalculates=list(tree.height=lPrecalculates$tree.height))},error=function(e){print(paste("Error in lower confidence interval calculation",e))})
+	    lCI$eigenvalues$lower.summary<-NA
+	    lCI$eigenvalues$lower.summary<-tryCatch({.Params.summary(lPoint.HL.lower,EvolModel,designToEstim,NULL,t,-Inf,0,0,NA,lPrecalculates=list(tree.height=lPrecalculates$tree.height))},error=function(e){print(paste("Error in lower confidence interval calculation",e))})
+	    lCI$eigenvalues$upper.summary<-NA
+	    lCI$eigenvalues$upper.summary<-tryCatch({.Params.summary(lPoint.HL.upper,EvolModel,designToEstim,NULL,t,-Inf,0,0,NA,lPrecalculates=list(tree.height=lPrecalculates$tree.height))},error=function(e){print(paste("Error in lower confidence interval calculation",e))})
     
-	hlMinMax<-matrix(0,nrow=length(vEstimedHLs),ncol=2)
-	hlMinMax[,1]<-vEstimedHLs-designToEstim$sigmaRule*vEstimedHLs
-	hlMinMax[,2]<-vEstimedHLs+designToEstim$sigmaRule*vEstimedHLs
-	hlstep<-2*designToEstim$sigmaRule*vEstimedHLs/10000^(1/length(vEstimedHLs))
-	hlgrid<-.generategrid(hlMinMax,hlstep)    
-	for (i in 1:ncol(hlgrid)){vSmallHL<-which(abs(hlgrid[,i])<1e-10);if (length(vSmallHL>0)){hlgrid<-hlgrid[-vSmallHL,]}} ## remove small half lives
-	hlgrid<-cbind(hlgrid,apply(hlgrid,1,.ci.HL.loglikfunc,P=P,EigA=eigA$values,params=params,data=data,lPrecalculates=lPrecalculates,EvolModel=EvolModel,vVars=vVars,conditional=conditional,minLogLik=minLogLik))
-	hlnames<-c()
-	for (i in 1:length(vEstimedHLs)){hlnames<-c(hlnames,paste("Eig.dir.",i,sep=""))}
-	hlnames<-c(hlnames,"loglik")
-	colnames(hlgrid)<-hlnames
-	hlgrid<-as.data.frame(hlgrid)
-	lCI$eigenvalues$eigenvalues.support.grid<-hlgrid
+	    hlMinMax<-matrix(0,nrow=length(vEstimedHLs),ncol=2)
+	    hlMinMax[,1]<-vEstimedHLs-designToEstim$sigmaRule*vEstimedHLs
+	    hlMinMax[,2]<-vEstimedHLs+designToEstim$sigmaRule*vEstimedHLs
+	    hlstep<-2*designToEstim$sigmaRule*vEstimedHLs/10000^(1/length(vEstimedHLs))
+	    hlgrid<-.generategrid(hlMinMax,hlstep)    
+	    for (i in 1:ncol(hlgrid)){vSmallHL<-which(abs(hlgrid[,i])<1e-10);if (length(vSmallHL>0)){hlgrid<-hlgrid[-vSmallHL,]}} ## remove small half lives
+	    hlgrid<-cbind(hlgrid,apply(hlgrid,1,.ci.HL.loglikfunc,P=P,EigA=eigA$values,params=params,data=data,lPrecalculates=lPrecalculates,EvolModel=EvolModel,vVars=vVars,conditional=conditional,minLogLik=minLogLik))
+	    hlnames<-c()
+	    for (i in 1:length(vEstimedHLs)){hlnames<-c(hlnames,paste("Eig.dir.",i,sep=""))}
+	    hlnames<-c(hlnames,"loglik")
+	    colnames(hlgrid)<-hlnames
+	    hlgrid<-as.data.frame(hlgrid)
+	    lCI$eigenvalues$eigenvalues.support.grid<-hlgrid
+	}
     }
 ## -------------------------------------------------------------------------------
-    if ((nrow(regressCovar)==0)||(ncol(regressCovar)==0)){regressCovar<-NULL}
+    if ((!is.null(regressCovar))&&((nrow(regressCovar)==0)||(ncol(regressCovar)==0)||is.na(regressCovar))){regressCovar<-NULL}
     if (!is.null(regressCovar)){
+        if (is.null(lCI)){lCI<-vector("list",1);names(lCI)<-"regression.summary"}
 	lCI$regression.summary<-list()
 	vRegCIs<-qnorm(1-(1-conf.level)/2)*sqrt(diag(regressCovar))
 	currVar<-length(vRegCIs) ## we go from the end as at the beginning we could have some fixed effects
@@ -165,7 +170,7 @@
 	    lCI$regression.summary$mPsi0.regression.confidence.interval[,"Upper.end"]<-params$mPsi0+vRegCIs[(currVar-nrow(params$mPsi0)+1):currVar]
 	    currVar<-currVar-length(params$mPsi0)
 	}
-	if (is.element("Y0",names(designToEstim)) && designToEstim$Y0 && !designToEstim$y0AncState ){
+	if (is.element("y0",names(designToEstim)) && designToEstim$y0 && !designToEstim$y0AncState ){
 	    lCI$regression.summary$Y0.regression.confidence.interval<-matrix(NA,ncol=3,nrow=length(params$vY0))
 	    colnames(lCI$regression.summary$Y0.regression.confidence.interval)<-c("Lower.end","Estimated.Point","Upper.end")
 	    lCI$regression.summary$Y0.regression.confidence.interval[,"Estimated.Point"]<-params$vY0

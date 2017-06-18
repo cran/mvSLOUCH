@@ -54,7 +54,7 @@
 	}    
 	if (method == "psinv"){
 	    tryCatch({
-		    vP<-chol(V) ## make the transormation to have independent residuals, as described in
+		    vP<-chol(V) ## make the transformation to have independent residuals, as described in
 		    Pt<-solve(t(vP)) ## Box Jenkins, Time Series Analysis Holden-Day San Francisco 1970 p265-267
 	    	    pD<-Pt%*%D
 		    pY<-Pt%*%Y		
@@ -169,7 +169,7 @@
     }
     estimParams[which(abs(estimParams)<1e-15)]<-0
     if (UnknownIntercept){modelParams$EstimedIntercept<-estimParams[1:kY,1];CurrPos<-kY+1}else{CurrPos<-1}       
-    if (designToEstim$y0 && !designToEstim$y0AncState){modelParams$vY0<-estimParams[1:kY,1];CurrPos<-kY+1}
+    if (designToEstim$y0 && !designToEstim$y0AncState){modelParams$vY0<-matrix(estimParams[1:kY,1],ncol=1);CurrPos<-kY+1}
     
     ## we get y0 last as we might be mapping it back to optimal ancestral state
     ## get psi
@@ -196,6 +196,7 @@
     if (designToEstim$y0 && designToEstim$y0AncState){
     	modelParams$vY0<-modelParams$mPsi[,designToEstim$y0Regime]+modelParams$mPsi0
         if (!designToEstim$y0OnlyFixed){modelParams$vY0<-modelParams$vY0-modelParams$precalcMatrices[[1]]$A1B%*%modelParams$vX0}
+	modelParams$vY0<-matrix(modelParams$vY0,ncol=1)
     }    
     modelParams$mCovPhyl<-mCovPhyl
     modelParams$invSXX<-invSXX
@@ -348,7 +349,7 @@
 
     estimParams[which(abs(estimParams)<1e-15)]<-0
     if (UnknownIntercept){modelParams$EstimedIntercept<-estimParams[1:kY,1];CurrPos<-kY+1}else{CurrPos<-1}   
-    if (designToEstim$y0 && !designToEstim$y0AncState){modelParams$vY0<-estimParams[1:kY,1];CurrPos<-kY+1}    
+    if (designToEstim$y0 && !designToEstim$y0AncState){modelParams$vY0<-matrix(estimParams[1:kY,1],ncol=1);CurrPos<-kY+1}    
 
     if (designToEstim$psi){
         modelParams$mPsi<-matrix(estimParams[CurrPos:(CurrPos+length(modelParams$regimeTypes)*kY-1),1],nrow=kY,ncol=length(modelParams$regimeTypes),byrow=FALSE)

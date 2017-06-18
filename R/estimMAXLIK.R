@@ -44,10 +44,7 @@
 	names(MaxLikEstim)<-c("BrownResult","ParamsInModel","ParamSummary")
 	MaxLikEstim$BrownResult<-.bm.estim(dfData,PhylTree,modelParams$Merror)
 	MaxLikEstim$ParamsInModel<-list("Sxx"=MaxLikEstim$BrownResult$Sxx,"vX0"=MaxLikEstim$BrownResult$vX0)
-	if (EstimationParams$calcCI){
-             if(bShouldPrint){print("Calculating confidence intervals can take very long time")}
-	     MaxLikEstim$ParamSummary<-.Params.summary(MaxLikEstim$ParamsInModel,"bm",NULL,dfData[(PhylTree@nnodes-PhylTree@nterm+1):PhylTree@nnodes,],NULL,MaxLikEstim$BrownResult$LogLik,PhylTree@nterm,NULL,MaxLikEstim$BrownResult$RSS,lPrecalculates=lPrecalculates,KnownParams=EstimationParams$KnownParams,conf.level=EstimationParams$conf.level,vVars=EstimationParams$vVars,conditional=EstimationParams$conditional,minLogLik=minLogLik)
-        }else{MaxLikEstim$ParamSummary<-.Params.summary(MaxLikEstim$ParamsInModel,"bm",NULL,dfData[(PhylTree@nnodes-PhylTree@nterm+1):PhylTree@nnodes,],NULL,MaxLikEstim$BrownResult$LogLik,PhylTree@nterm,NULL,MaxLikEstim$BrownResult$RSS,lPrecalculates=list(tree.height=lPrecalculates$tree.height))}
+	MaxLikEstim$ParamSummary<-.Params.summary(MaxLikEstim$ParamsInModel,"bm",NULL,dfData[(PhylTree@nnodes-PhylTree@nterm+1):PhylTree@nnodes,],NULL,MaxLikEstim$BrownResult$LogLik,PhylTree@nterm,NULL,MaxLikEstim$BrownResult$RSS,lPrecalculates=lPrecalculates,KnownParams=EstimationParams$KnownParams,conf.level=EstimationParams$conf.level,vVars=EstimationParams$vVars,conditional=EstimationParams$conditional,minLogLik=minLogLik,bfullCI=EstimationParams$calcCI)
     }    
     if ((method=="grid")||(method=="gridigls")||(method=="gridgls")){## setup grid search
 	if (is.null(EstimationParams$mGrid)){mGrid<-.GenerateModelGrid(EstimationParams)}
@@ -93,10 +90,7 @@
 		MaxLik$ParamsInModel[[i]]<-.EvaluatePoint(EvolModel,data,vY,MaxLik$ParamsInModel[[i]],lPrecalculates,EstimationParams,tol,maxIter,bShouldPrint,TRUE,NULL,FALSE)$modelParams			
 		RSS<-.calc.phyl.LogLik.traits(data,lPrecalculates=lPrecalculates,EvolModel,modelParams=MaxLik$ParamsInModel[[i]],vVars=EstimationParams$vVars,conditional=EstimationParams$conditional,TRUE)
 	    }		    	
-	     if (EstimationParams$calcCI){
-                if(bShouldPrint){print("Calculating confidence intervals can take very long time")}
-	        MaxLik$ParamSummary[[i]]<-.Params.summary(MaxLik$ParamsInModel[[i]],EvolModel,EstimationParams$designToEstim,data,1,MaxLik$GridResult[i,"LogLik"],nrow(dfData),length(MaxLik$GridResult[i,])-2,RSS,lPrecalculates=lPrecalculates,KnownParams=EstimationParams$KnownParams,conf.level=EstimationParams$conf.level,vVars=EstimationParams$vVars,conditional=EstimationParams$conditional,minLogLik=minLogLik)
-    	    }else{MaxLik$ParamSummary[[i]]<-.Params.summary(MaxLik$ParamsInModel[[i]],EvolModel,EstimationParams$designToEstim,data,1,MaxLik$GridResult[i,"LogLik"],nrow(dfData),length(MaxLik$GridResult[i,])-2,RSS,lPrecalculates=list(tree.height=lPrecalculates$tree.height))}
+	    MaxLik$ParamSummary[[i]]<-.Params.summary(MaxLik$ParamsInModel[[i]],EvolModel,EstimationParams$designToEstim,data,1,MaxLik$GridResult[i,"LogLik"],nrow(dfData),length(MaxLik$GridResult[i,])-2,RSS,lPrecalculates=lPrecalculates,KnownParams=EstimationParams$KnownParams,conf.level=EstimationParams$conf.level,vVars=EstimationParams$vVars,conditional=EstimationParams$conditional,minLogLik=minLogLik,bfullCI=EstimationParams$calcCI)
 	    MaxLik$ParamsInModel[[i]]<-.cleanUpModelParams(MaxLik$ParamsInModel[[i]])
 	}
 	MaxLikEstim<-list("MaxLik"=MaxLik,"LogLikSurface"=mLogLikSurface)
@@ -146,10 +140,7 @@
 	    names(vParFound)<-names(EstimationParams$StartPoint)
 	    tmpModelParams<-.EvaluatePoint(EvolModel,data,vY,.par.transform(vParFound,EstimationParams,modelParams),lPrecalculates,EstimationParams,tol,maxIter,bShouldPrint,TRUE,NULL,TRUE,FALSE,minLogLik=minLogLik)
 	    RSS<-.calc.phyl.LogLik.traits(data,lPrecalculates=lPrecalculates,EvolModel,modelParams=modelParams,vVars=EstimationParams$vVars,conditional=EstimationParams$conditional,TRUE)
-	    if (EstimationParams$calcCI){
-        	if(bShouldPrint){print("Calculating confidence intervals can take very long time")}
-	        ParamSummary<-.Params.summary(modelParams,EvolModel,EstimationParams$designToEstim,data,1,tmpModelParams$LogLik,nrow(dfData),length(vParFound),RSS,lPrecalculates=lPrecalculates,KnownParams=EstimationParams$KnownParams,conf.level=EstimationParams$conf.level,vVars=EstimationParams$vVars,conditional=EstimationParams$conditional,minLogLik=minLogLik)
-    	    }else{ParamSummary<-.Params.summary(modelParams,EvolModel,EstimationParams$designToEstim,data,1,tmpModelParams$LogLik,nrow(dfData),length(vParFound),RSS,lPrecalculates=list(tree.height=lPrecalculates$tree.height))}
+	    ParamSummary<-.Params.summary(modelParams,EvolModel,EstimationParams$designToEstim,data,1,tmpModelParams$LogLik,nrow(dfData),length(vParFound),RSS,lPrecalculates=lPrecalculates,KnownParams=EstimationParams$KnownParams,conf.level=EstimationParams$conf.level,vVars=EstimationParams$vVars,conditional=EstimationParams$conditional,minLogLik=minLogLik,bfullCI=EstimationParams$calcCI)
 	    modelParams<-.cleanUpModelParams(tmpModelParams$modelParams)
 	    MaxLikEstim<-list("MaxLik"=vParFound,"ParamSummary"=ParamSummary,"LogLik"=tmpModelParams$LogLik,"ModelParams"=modelParams,"Method.output"=MaximEstim)
 	}

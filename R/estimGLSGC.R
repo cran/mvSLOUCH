@@ -1,4 +1,4 @@
-.glsgc.estim<-function(dfData,data,EvolModel,PhylTree,EstimationParams,modelParams,lPrecalculates=NULL,tol=c(0.0001,0.0001),maxIter=c(50,50),bShouldPrint=FALSE,maxTries=10,minLogLik=-Inf){
+.glsgc.estim<-function(dfData,data,EvolModel,PhylTree,EstimationParams,modelParams,lPrecalculates=NULL,tol=c(0.0001,0.0001),maxIter=c(50,50),bShouldPrint=FALSE,maxTries=15,minLogLik=-Inf){
     vY<-c(t(dfData)[1:EstimationParams$kY,])
     if (bShouldPrint){print("beginEstim")}
 
@@ -28,7 +28,9 @@
 		MaxLogLik<-tmpEvaluatedPoint$LogLik
 		if (is.infinite(MaxLogLik)||is.nan(MaxLogLik)||(is.na(MaxLogLik))){
 		    MaxLogLik<- minLogLik
-		    if (attempt==maxTries-1){vEstim[1:length(vEstim)]<-rnorm(length(vEstim))/10}else{vEstim<-jitter(vEstim)}
+		    #if (attempt==maxTries-1){## always jitter no matter what if bad try
+		    vEstim[1:length(vEstim)]<-rnorm(length(vEstim))/10
+		    #}else{vEstim<-jitter(vEstim)}
 		    print("Point generated error, randomly changing it. New start point : ")
 		    print(vEstim)
 		}
@@ -202,10 +204,7 @@
 	    }
         }                                                                        
 	RSS<-.calc.phyl.LogLik.traits(data,lPrecalculates=lPrecalculates,EvolModel,modelParams=tmpEvaluatedPoint$modelParams,vVars=EstimationParams$vVars,conditional=EstimationParams$conditional,TRUE,minLogLik=minLogLik,vVars2=vVars2)
-	if (EstimationParams$calcCI){
-	    if(bShouldPrint){print("Calculating confidence intervals can take very long time")}
-	    HeuristicSearchFinalFind$ParamSummary<-.Params.summary(HeuristicSearchFinalFind$ParamsInModel,EvolModel,EstimationParams$designToEstim,data,1,HeuristicSearchFinalFind$LogLik,nrow(dfData),length(vEstim),RSS,lPrecalculates=lPrecalculates,KnownParams=EstimationParams$KnownParams,conf.level=EstimationParams$conf.level,vVars=EstimationParams$vVars,conditional=EstimationParams$conditional,minLogLik=minLogLik)
-	}else{HeuristicSearchFinalFind$ParamSummary<-.Params.summary(HeuristicSearchFinalFind$ParamsInModel,EvolModel,EstimationParams$designToEstim,data,1,HeuristicSearchFinalFind$LogLik,nrow(dfData),length(vEstim),RSS,lPrecalculates=list(tree.height=lPrecalculates$tree.height))}
+	HeuristicSearchFinalFind$ParamSummary<-.Params.summary(HeuristicSearchFinalFind$ParamsInModel,EvolModel,EstimationParams$designToEstim,data,1,HeuristicSearchFinalFind$LogLik,nrow(dfData),length(vEstim),RSS,lPrecalculates=lPrecalculates,KnownParams=EstimationParams$KnownParams,conf.level=EstimationParams$conf.level,vVars=EstimationParams$vVars,conditional=EstimationParams$conditional,minLogLik=minLogLik,bfullCI=EstimationParams$calcCI)
 	HeuristicSearchFinalFind$ParamsInModel<-.cleanUpModelParams(HeuristicSearchFinalFind$ParamsInModel)
     },error=function(e){print(paste("Cannot evaluate final found point",e))})
     MaxLikHeuristicSearch$FinalFound<-HeuristicSearchFinalFind
@@ -218,10 +217,7 @@
         HeuristicSearchMaxFind$ParamsInModel<-MaxSearchPoint
 	HeuristicSearchMaxFind$LogLik<-MaxLogLik
 	RSS<-.calc.phyl.LogLik.traits(data,lPrecalculates=lPrecalculates,EvolModel,modelParams=HeuristicSearchMaxFind$ParamsInModel,vVars=EstimationParams$vVars,conditional=EstimationParams$conditional,TRUE,minLogLik=minLogLik,vVars2=vVars2)
-	if (EstimationParams$calcCI){
-	    if(bShouldPrint){print("Calculating confidence intervals can take very long time")}
-    	    HeuristicSearchMaxFind$ParamSummary<-.Params.summary(HeuristicSearchMaxFind$ParamsInModel,EvolModel,EstimationParams$designToEstim,data,1,HeuristicSearchMaxFind$LogLik,nrow(dfData),length(vEstim),RSS,lPrecalculates=lPrecalculates,KnownParams=EstimationParams$KnownParams,conf.level=EstimationParams$conf.level,vVars=EstimationParams$vVars,conditional=EstimationParams$conditional,minLogLik=minLogLik) 
-	}else{HeuristicSearchMaxFind$ParamSummary<-.Params.summary(HeuristicSearchMaxFind$ParamsInModel,EvolModel,EstimationParams$designToEstim,data,1,HeuristicSearchMaxFind$LogLik,nrow(dfData),length(vEstim),RSS,lPrecalculates=list(tree.height=lPrecalculates$tree.height))}
+	HeuristicSearchMaxFind$ParamSummary<-.Params.summary(HeuristicSearchMaxFind$ParamsInModel,EvolModel,EstimationParams$designToEstim,data,1,HeuristicSearchMaxFind$LogLik,nrow(dfData),length(vEstim),RSS,lPrecalculates=lPrecalculates,KnownParams=EstimationParams$KnownParams,conf.level=EstimationParams$conf.level,vVars=EstimationParams$vVars,conditional=EstimationParams$conditional,minLogLik=minLogLik,bfullCI=EstimationParams$calcCI)
 	HeuristicSearchMaxFind$ParamsInModel<-.cleanUpModelParams(HeuristicSearchMaxFind$ParamsInModel)
 	MaxLikHeuristicSearch$MaxLikFound<-HeuristicSearchMaxFind           
     }                        

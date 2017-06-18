@@ -97,35 +97,34 @@
 	}
 	if(!is.null(data)){RSS<-.calc.phyl.LogLik.traits(data,lPrecalculates=lPrecalculates,EvolModel,modelParams=modelParams,vVars=EstimationParams$vVars,conditional=EstimationParams$conditional,TRUE,minLogLik=minLogLik,vVars2=vVars2)}
 	else{RSS<-NA}
-	if (EstimationParams$calcCI){
-    	    if(bShouldPrint){print("Calculating confidence intervals can take very long time")}
-              modelParamsTmp<-modelParams
-              modelParamsTmp$B<-NA
-              if (EvolModel=="bm"){mCovPhyl<-.calc.phyl.cov(NULL,NULL,lPrecalculates$mAncestorTimes,NULL,EvolModel,modelParams)}
-              else{mCovPhyl<-.calc.phyl.cov(lPrecalculates$mTreeDist,lPrecalculates$mSpecDist[nrow(lPrecalculates$mSpecDist),],NULL,lPrecalculates$vSpeciesPairs,EvolModel,modelParams)}
+
+
+        modelParamsTmp<-modelParams
+        modelParamsTmp$B<-NA
+        if (EvolModel=="bm"){mCovPhyl<-.calc.phyl.cov(NULL,NULL,lPrecalculates$mAncestorTimes,NULL,EvolModel,modelParams)}
+        else{mCovPhyl<-.calc.phyl.cov(lPrecalculates$mTreeDist,lPrecalculates$mSpecDist[nrow(lPrecalculates$mSpecDist),],NULL,lPrecalculates$vSpeciesPairs,EvolModel,modelParams)}
  
-              if (EvolModel=="mvslouch"){
-		modelParams$precalcMatrices[[4]]$lDzetaKappa<-.decompEigenA.S(modelParamsTmp,lPrecalculates,EstimationParams$designToEstim,list(bCalcA=TRUE,bCovCalc=TRUE,dzetacalc=bDzeta,lexptcalc=TRUE,kappacalc=bKappa,interceptcalc=TRUE),EstimationParams$Data$mXmX0)[[4]]$lDzetaKappa
-                lDesign<-.slouch.mv.design.matrix.YcT(lPrecalculates$mSpecDist,lPrecalculates$mTreeDist,lPrecalculates$mAncestorTimes,modelParams,EstimationParams$designToEstim,EstimationParams$Data$mX,modelParams$precalcMatrices[[4]]$lDzeta,modelParams$precalcMatrices[[4]]$lDzetaKappa,modelParams$precalcMatrices[[3]]$lexpmtA,modelParams$precalcMatrices[[3]]$lexptjA,X0=EstimationParams$Fixed$vX0,lPrecalculates$invmAncestorTimes)
-                SYY<-mCovPhyl[c(sapply(((1:n)-1)*(kY+kX),function(x,v){x+v},"v"=1:kY)),c(sapply(((1:n)-1)*(kY+kX),function(x,v){x+v},"v"=1:kY))]
-	        SYX<-mCovPhyl[c(sapply(((1:n)-1)*(kY+kX),function(x,v){x+v},"v"=1:kY)),c(sapply(((1:n)-1)*(kY+kX),function(x,v){x+v},"v"=(kY+1):(kY+kX)))]
-    	        SXY<-mCovPhyl[c(sapply(((1:n)-1)*(kY+kX),function(x,v){x+v},"v"=(kY+1):(kY+kX))),c(sapply(((1:n)-1)*(kY+kX),function(x,v){x+v},"v"=1:kY))]
-                SXX<-mCovPhyl[c(sapply(((1:n)-1)*(kY+kX),function(x,v){x+v},"v"=(kY+1):(kY+kX))),c(sapply(((1:n)-1)*(kY+kX),function(x,v){x+v},"v"=(kY+1):(kY+kX)))]
-                invSXX<-solve(SXX)
-                V<-SYY-SYX%*%invSXX%*%SXY 
-              }
-              if (EvolModel=="ouch"){
-		lDesign<-.ouch.design.matrix(lPrecalculates$mSpecDist,lPrecalculates$mTreeDist,modelParams,EstimationParams$designToEstim,lexpmtA=modelParams$precalcMatrices[[3]]$lexpmtA,lexptjA=modelParams$precalcMatrices[[3]]$lexptjA)
-	        V<-mCovPhyl
-              }
-              if (EvolModel=="bm"){V<-mCovPhyl}
-              V[which(abs(V)<1e-15)]<-0
-              if ((EvolModel=="ouch")||(EvolModel=="mvslouch")){ 
-    		modelParams$regressCovar<-matrix(0,ncol=ncol(lDesign$D),nrow=ncol(lDesign$D))
-    		if (ncol(lDesign$D)>0){modelParams$regressCovar<-pseudoinverse(t(lDesign$D)%*%solve(V)%*%lDesign$D)}
-    	      }
-	      lPointSummary<-.Params.summary(modelParams,EvolModel,EstimationParams$designToEstim,data=data,t=t,LogLik=LogLik,n=ncol(lPrecalculates$mSpecDist),npar0=length(modelParams$vPoint),RSS=RSS,lPrecalculates=lPrecalculates,KnownParams=EstimationParams$KnownParams,conf.level=EstimationParams$conf.level,vVars=EstimationParams$vVars,conditional=EstimationParams$conditional,minLogLik=minLogLik)
-        }else{lPointSummary<-.Params.summary(modelParams,EvolModel,EstimationParams$designToEstim,data=data,t=t,LogLik=LogLik,n=ncol(lPrecalculates$mSpecDist),npar0=length(modelParams$vPoint),RSS=RSS,lPrecalculates=list(tree.height=lPrecalculates$tree.height))}
+        if (EvolModel=="mvslouch"){
+	    modelParams$precalcMatrices[[4]]$lDzetaKappa<-.decompEigenA.S(modelParamsTmp,lPrecalculates,EstimationParams$designToEstim,list(bCalcA=TRUE,bCovCalc=TRUE,dzetacalc=bDzeta,lexptcalc=TRUE,kappacalc=bKappa,interceptcalc=TRUE),EstimationParams$Data$mXmX0)[[4]]$lDzetaKappa
+    	    lDesign<-.slouch.mv.design.matrix.YcT(lPrecalculates$mSpecDist,lPrecalculates$mTreeDist,lPrecalculates$mAncestorTimes,modelParams,EstimationParams$designToEstim,EstimationParams$Data$mX,modelParams$precalcMatrices[[4]]$lDzeta,modelParams$precalcMatrices[[4]]$lDzetaKappa,modelParams$precalcMatrices[[3]]$lexpmtA,modelParams$precalcMatrices[[3]]$lexptjA,X0=EstimationParams$Fixed$vX0,lPrecalculates$invmAncestorTimes)
+    	    SYY<-mCovPhyl[c(sapply(((1:n)-1)*(kY+kX),function(x,v){x+v},"v"=1:kY)),c(sapply(((1:n)-1)*(kY+kX),function(x,v){x+v},"v"=1:kY))]
+	    SYX<-mCovPhyl[c(sapply(((1:n)-1)*(kY+kX),function(x,v){x+v},"v"=1:kY)),c(sapply(((1:n)-1)*(kY+kX),function(x,v){x+v},"v"=(kY+1):(kY+kX)))]
+    	    SXY<-mCovPhyl[c(sapply(((1:n)-1)*(kY+kX),function(x,v){x+v},"v"=(kY+1):(kY+kX))),c(sapply(((1:n)-1)*(kY+kX),function(x,v){x+v},"v"=1:kY))]
+    	    SXX<-mCovPhyl[c(sapply(((1:n)-1)*(kY+kX),function(x,v){x+v},"v"=(kY+1):(kY+kX))),c(sapply(((1:n)-1)*(kY+kX),function(x,v){x+v},"v"=(kY+1):(kY+kX)))]
+    	    invSXX<-solve(SXX)
+    	    V<-SYY-SYX%*%invSXX%*%SXY 
+        }
+        if (EvolModel=="ouch"){
+	    lDesign<-.ouch.design.matrix(lPrecalculates$mSpecDist,lPrecalculates$mTreeDist,modelParams,EstimationParams$designToEstim,lexpmtA=modelParams$precalcMatrices[[3]]$lexpmtA,lexptjA=modelParams$precalcMatrices[[3]]$lexptjA)
+	    V<-mCovPhyl
+	}
+	if (EvolModel=="bm"){V<-mCovPhyl}
+	V[which(abs(V)<1e-15)]<-0
+	if ((EvolModel=="ouch")||(EvolModel=="mvslouch")){ 
+	    modelParams$regressCovar<-matrix(0,ncol=ncol(lDesign$D),nrow=ncol(lDesign$D))
+    	    if (ncol(lDesign$D)>0){modelParams$regressCovar<-pseudoinverse(t(lDesign$D)%*%solve(V)%*%lDesign$D)}
+	}
+	lPointSummary<-.Params.summary(modelParams,EvolModel,EstimationParams$designToEstim,data=data,t=t,LogLik=LogLik,n=ncol(lPrecalculates$mSpecDist),npar0=length(modelParams$vPoint),RSS=RSS,lPrecalculates=lPrecalculates,KnownParams=EstimationParams$KnownParams,conf.level=EstimationParams$conf.level,vVars=EstimationParams$vVars,conditional=EstimationParams$conditional,minLogLik=minLogLik,bfullCI=EstimationParams$calcCI)
     }
     list(modelParams=modelParams,LogLik=LogLik,PointSummary=lPointSummary)
 }

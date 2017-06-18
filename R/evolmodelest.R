@@ -1,5 +1,7 @@
-estimate.evolutionary.model<-function(phyltree,dfdata,regimes=NULL,root.regime=NULL,M.error=NULL,repeats=3,model.setups=NULL,predictors=NULL,kY=NULL,doPrint=FALSE,pESS=NULL){
+estimate.evolutionary.model<-function(phyltree,dfdata,regimes=NULL,root.regime=NULL,M.error=NULL,repeats=3,model.setups=NULL,predictors=NULL,kY=NULL,doPrint=FALSE,pESS=NULL,estimate.root.state=FALSE){
 
+#    if(estimate.root.state){if ((is.null(regimes))||(length(unique(regimes))==1)){estimate.root.state<-FALSE}}    
+    
     testedModels<-list()
     j<-1
     BestModel<-list(BestModel=NA,aic.c=10000,i=NA,model=NA,evolmodel=NA)
@@ -13,13 +15,15 @@ estimate.evolutionary.model<-function(phyltree,dfdata,regimes=NULL,root.regime=N
     if (is.null(model.setups)){
 	model.setups<-.generate.basic.model.setups()    
     }else{
-	model.setups<-switch(model.setups,
-	    univariate=.generate.univ.model.setups(),
-	    basic=.generate.basic.model.setups(),
-	    fundamental=.generate.fund.model.setups(),
-	    extended=.generate.ext.model.setups(),
-	    all=.generate.all.model.setups()	    
-	)
+	if (!is.list(model.setups)){
+	    model.setups<-switch(model.setups,
+		univariate=.generate.univ.model.setups(),
+		basic=.generate.basic.model.setups(),
+		fundamental=.generate.fund.model.setups(),
+		extended=.generate.ext.model.setups(),
+		all=.generate.all.model.setups()	    
+	    )
+	}
     }
     for (i in 1:repeats){
 	for (k in 1:length(model.setups)){
@@ -40,6 +44,11 @@ estimate.evolutionary.model<-function(phyltree,dfdata,regimes=NULL,root.regime=N
 		    BestModel$evolmodel<-"BM"
 		}
 		
+		if (!(is.null(BMres))&&(!is.null(BMres$ParamSummary$aic.c))) {
+                    testedModels[[j-1]]$aic.c<-BMres$ParamSummary$aic.c
+                }
+
+		
 		if (!is.null(pESS)){
 		    calcESS<-.calcESSanalytical(phyltree,proc.params=BMres$ParamsInModel,evolmodel="bm",Merror=M.error,vNAs=vNAs,ESS.method=pESS)
 		    testedModels[[j-1]]$ESScalcs<-calcESS
@@ -59,7 +68,7 @@ estimate.evolutionary.model<-function(phyltree,dfdata,regimes=NULL,root.regime=N
 		if(doPrint){print(paste("Doing estimation for ouch model with A: ",model.setups[[k]]$Atype," with diagonal: ",model.setups[[k]]$diagA," Syy: ",model.setups[[k]]$Syytype,sep=""))}
 		OUres<-NULL
 		tryCatch({
-		    OUres<-ouchModel(phyltree=phyltree,data=dfdata,regimes=regimes,regimes.times=NULL,root.regime=root.regime,predictors=predictors,M.error=M.error,Atype=model.setups[[k]]$Atype,Syytype=model.setups[[k]]$Syytype,calcCI=FALSE,diagA=model.setups[[k]]$diagA)
+		    OUres<-ouchModel(phyltree=phyltree,data=dfdata,regimes=regimes,regimes.times=NULL,root.regime=root.regime,predictors=predictors,M.error=M.error,Atype=model.setups[[k]]$Atype,Syytype=model.setups[[k]]$Syytype,calcCI=FALSE,diagA=model.setups[[k]]$diagA,estimate.root.state=estimate.root.state)
 		},error=function(e){print(e)})
 		testedModels[[j]]<-list()
 		testedModels[[j]]$result<-OUres;testedModels[[j]]$aic.c<-NA;testedModels[[j]]$model<-model.setups[[k]];j<-j+1
@@ -74,6 +83,7 @@ estimate.evolutionary.model<-function(phyltree,dfdata,regimes=NULL,root.regime=N
 			    else{BestModel$model.call<-paste("OUOU: ouch model with A: ",model.setups[[k]]$Atype," with diagonal: ",model.setups[[k]]$diagA," Syy: ",model.setups[[k]]$Syytype,sep="")}
 			    BestModel$model<-model.setups[[k]]
 			}
+			testedModels[[j-1]]$aic.c<-OUres$MaxLikFound$ParamSummary$aic.c
 			if (!is.null(pESS)){
 			    calcESS<-.calcESSanalytical(phyltree,proc.params=OUres$MaxLikFound$ParamsInModel,evolmodel="ouch",Merror=M.error,vNAs=vNAs,ESS.method=pESS)
 			    testedModels[[j-1]]$ESScalcs<-calcESS
@@ -90,15 +100,16 @@ estimate.evolutionary.model<-function(phyltree,dfdata,regimes=NULL,root.regime=N
 	                    } 
 			}
 		    }else{
-			if (OUres$FinalFound$ParamSummar$aic.c < BestModel$aic.c){
+			if (OUres$FinalFound$ParamSummary$aic.c < BestModel$aic.c){
 			    BestModel$BestModel<-OUres$FinalFound
-			    BestModel$aic.c<-OUres$FinalFound$ParamSummar$aic.c
+			    BestModel$aic.c<-OUres$FinalFound$ParamSummary$aic.c
 			    BestModel$i<-i
 			    BestModel$evolmodel<-"ouch"
 			    if (ncol(BestModel$BestModel$ParamsInModel$A) ==1){BestModel$model.call<-paste("OU: ouch model with A: ",model.setups[[k]]$Atype," with diagonal: ",model.setups[[k]]$diagA," Syy: ",model.setups[[k]]$Syytype,sep="")}
 			    else{BestModel$model.call<-paste("OUOU: ouch model with A: ",model.setups[[k]]$Atype," with diagonal: ",model.setups[[k]]$diagA," Syy: ",model.setups[[k]]$Syytype,sep="")}
 			    BestModel$model<-model.setups[[k]]
 			}
+			testedModels[[j-1]]$aic.c<-OUres$FinalFound$ParamSummary$aic.c
 			if (!is.null(pESS)){
 			    calcESS<-.calcESSanalytical(phyltree,proc.params=OUres$FinalFound$ParamsInModel,evolmodel="ouch",Merror=M.error,vNAs=vNAs,ESS.method=pESS)
 			    testedModels[[j-1]]$ESScalcs<-calcESS
@@ -119,19 +130,21 @@ estimate.evolutionary.model<-function(phyltree,dfdata,regimes=NULL,root.regime=N
 	    }
 	    if (model.setups[[k]]$evolmodel=="mvslouch"){
 		if (is.null(kY)){
-		    dfdata.mvsl<-dfdata[,c(setdiff(1:ncol(dfdata),predictors),predictors)]
-		    kY<-ncol(dfdata)-predictors
+		    if (!is.null(predictors)){
+			dfdata.mvsl<-dfdata[,c(setdiff(1:ncol(dfdata),predictors),predictors)]
+			kY<-ncol(dfdata)-predictors
+		    }else{kY<-1;dfdata.mvsl<-dfdata}
 		}else{dfdata.mvsl<-dfdata}
 		if(doPrint){print(paste("Doing estimation for mvlslouch model with A: ",model.setups[[k]]$Atype," with diagonal: ",model.setups[[k]]$diagA," Syy: ",model.setups[[k]]$Syytype,sep=""))}
 	    	mvslres<-NULL
 	    	tryCatch({
-	    	    mvslres<-mvslouchModel(phyltree=phyltree,data=dfdata.mvsl,kY,regimes=regimes,regimes.times=NULL,root.regime=root.regime,predictors=predictors,M.error=M.error,Atype=model.setups[[k]]$Atype,Syytype=model.setups[[k]]$Syytype,calcCI=FALSE,diagA=model.setups[[k]]$diagA)
+	    	    mvslres<-mvslouchModel(phyltree=phyltree,data=dfdata.mvsl,kY,regimes=regimes,regimes.times=NULL,root.regime=root.regime,predictors=predictors,M.error=M.error,Atype=model.setups[[k]]$Atype,Syytype=model.setups[[k]]$Syytype,calcCI=FALSE,diagA=model.setups[[k]]$diagA,estimate.root.state=estimate.root.state)
 		},error=function(e){print(e)})
 		testedModels[[j]]<-list()
 		testedModels[[j]]$result<-mvslres;testedModels[[j]]$aic.c<-NA;testedModels[[j]]$model<-model.setups[[k]];j<-j+1
     		if (!is.null(mvslres)){
 		    if (is.list(mvslres$MaxLikFound)){
-			if (mvslres$MaxLikFound$ParamSummar$aic.c < BestModel$aic.c){
+			if (mvslres$MaxLikFound$ParamSummary$aic.c < BestModel$aic.c){
 			    BestModel$BestModel<-mvslres$MaxLikFound
 			    BestModel$aic.c<-mvslres$MaxLikFound$ParamSummary$aic.c
 			    BestModel$i<-i
@@ -139,13 +152,14 @@ estimate.evolutionary.model<-function(phyltree,dfdata,regimes=NULL,root.regime=N
 			    BestModel$model<-model.setups[[k]]
 			    BestModel$evolmodel<-"mvslouch"
 			}
+			testedModels[[j-1]]$aic.c<-mvslres$MaxLikFound$ParamSummary$aic.c
 			if (!is.null(pESS)){
 			    calcESS<-.calcESSanalytical(phyltree,proc.params=mvslres$MaxLikFound$ParamsInModel,evolmodel="mvslouch",Merror=M.error,vNAs=vNAs,ESS.method=pESS)
 			    testedModels[[j-1]]$ESScalcs<-calcESS
 			    ESScrit<-.getESScriteria(mvslres$MaxLikFound$ParamSummary$LogLik,mvslres$MaxLikFound$ParamSummary$dof,calcESS$ESS.model.selection,calcESS$ESS.factor.model.selection,calcESS$rhon,mvslres$MaxLikFound$ParamSummary$RSS)
 			    if (ESScrit$aic.c < BestModelESS$aic.c){
 				    BestModelESS$BestModel<-mvslres$MaxLikFound
-				    BestModelESS$aic.c<-mvslres$MaxLikFound$ParamSummary$aic.c
+				    BestModelESS$aic.c<-ESScrit$aic.c
 				    BestModelESS$i<-i
 				    BestModelESS$model.call<-paste("OUBM: mvslouch model with A: ",model.setups[[k]]$Atype," with diagonal: ",model.setups[[k]]$diagA," Syy: ",model.setups[[k]]$Syytype,sep="")
 				    BestModelESS$model<-model.setups[[k]]
@@ -154,7 +168,7 @@ estimate.evolutionary.model<-function(phyltree,dfdata,regimes=NULL,root.regime=N
 			    }
 			}
 		    }else{
-			if (mvslres$FinalFound$ParamSummar$aic.c < BestModel$aic.c){
+			if (mvslres$FinalFound$ParamSummary$aic.c < BestModel$aic.c){
 			    BestModel$BestModel<-mvslres$FinalFound
 			    BestModel$aic.c<-mvslres$FinalFound$ParamSummary$aic.c
 			    BestModel$i<-i
@@ -162,13 +176,14 @@ estimate.evolutionary.model<-function(phyltree,dfdata,regimes=NULL,root.regime=N
 			    BestModel$model<-model.setups[[k]]
 			    BestModel$evolmodel<-"mvslouch"
 			}
+			testedModels[[j-1]]$aic.c<-mvslres$FinalFound$ParamSummary$aic.c
 			if (!is.null(pESS)){
 			    calcESS<-.calcESSanalytical(phyltree,proc.params=mvslres$FinalFound$ParamsInModel,evolmodel="mvslouch",Merror=M.error,vNAs=vNAs,ESS.method=pESS)
 			    testedModels[[j-1]]$ESScalcs<-calcESS
 			    ESScrit<-.getESScriteria(mvslres$FinalFound$ParamSummary$LogLik,mvslres$FinalFound$ParamSummary$dof,calcESS$ESS.model.selection,calcESS$ESS.factor.model.selection,calcESS$rhon,mvslres$FinalFound$ParamSummary$RSS)
 			    if (ESScrit$aic.c < BestModelESS$aic.c){
 				    BestModelESS$BestModel<-mvslres$FinalFound
-				    BestModelESS$aic.c<-mvslres$FinalFound$ParamSummary$aic.c
+				    BestModelESS$aic.c<-ESScrit$aic.c
 				    BestModelESS$i<-i
 				    BestModelESS$model.call<-paste("OUBM: mvslouch model with A: ",model.setups[[k]]$Atype," with diagonal: ",model.setups[[k]]$diagA," Syy: ",model.setups[[k]]$Syytype,sep="")
 				    BestModelESS$model<-model.setups[[k]]
@@ -183,6 +198,7 @@ estimate.evolutionary.model<-function(phyltree,dfdata,regimes=NULL,root.regime=N
 	}
     }   
     BestModel<-.describe.best.model(BestModel)
+    model.setups<-rep(model.setups,repeats)
     res<-NA
     if (!is.null(pESS)){
 	BestModelESS<-.describe.best.model(BestModelESS)

@@ -1,4 +1,4 @@
-.PhyloSDEestim<-function(phyltree,data,kY,regimes=NULL,regimes.times=NULL,root.regime=NULL,predictors=NULL,params=NULL,M.error=NULL){
+.PhyloSDEestim<-function(phyltree,data,kY,regimes=NULL,regimes.times=NULL,root.regime=NULL,predictors=NULL,params=NULL,M.error=NULL,estimate.root.state=FALSE){
 ## predictors have to be given as column numbers
     if (is.null(params)){params<-list()}
     if (!is.element("EvolModel",names(params))){params$EvolModel<-"mvslouch"}
@@ -54,6 +54,8 @@
 	}
     	kX<-ncol(data)-kY
 
+     if(estimate.root.state){if ((is.null(regimes))||(length(unique(regimes))==1)){estimate.root.state<-FALSE}}
+
 	if (!is.element("method",names(params))){params$method<-"glsgc"}
 	if (params$EvolModel=="bm"){params$method<-"maxlik"}
 	if (!is.element("bShouldPrint",names(params))){params$bShouldPrint<-FALSE}
@@ -61,7 +63,7 @@
 	if (!is.element("maxIter",names(params))){params$maxIter<-.set.maxiter(params$method)}
 	if (!is.element("maxTries",names(params))){params$maxTries<-10}
 	if (!is.element("minLogLik",names(params))){params$minLogLik<- -Inf}
-	params$EstimParams<-.set.estimparams(params,kY,kX,length(regimes.types))
+	params$EstimParams<-.set.estimparams(params,kY,kX,length(regimes.types),estimate.root.state)
 	if (params$EstimParams$designToEstim$y0AncState){
 	    if (!is.null(root.regime)){params$EstimParams$designToEstim$y0Regime<-which(regimes.types.orig==root.regime)}
 	    else{
@@ -319,8 +321,7 @@
 	if (is.element("RSS",names(listobj$upper.summary))){listobj$upper.summary$RSS<-NULL}
     }
     if (is.element("regressCovar",names(listobj))){listobj$regressCovar<-NULL}    
-    sapply(listobj,function(obj,vregime.names,vY.names,vX.names,predictors,EvolModel){if (is.list(obj)){
-    .correct.names(obj,vregime.names,vY.names,vX.names,predictors,EvolModel)}else{obj}},vregime.names=vregime.names,vY.names=vY.names,vX.names=vX.names,predictors=predictors,EvolModel=EvolModel,simplify=FALSE)
+    sapply(listobj,function(obj,vregime.names,vY.names,vX.names,predictors,EvolModel){if (is.list(obj)){.correct.names(obj,vregime.names,vY.names,vX.names,predictors,EvolModel)}else{obj}},vregime.names=vregime.names,vY.names=vY.names,vX.names=vX.names,predictors=predictors,EvolModel=EvolModel,simplify=FALSE)
 }
 
 .set.tol<-function(method){
@@ -357,7 +358,7 @@
     maxiter
 }
 
-.set.estimparams<-function(params,kY,kX,numregs){
+.set.estimparams<-function(params,kY,kX,numregs,estimate.root.state=FALSE){
     if (!is.element("EstimParams",names(params))){EstimParams<-list()}
     else{EstimParams<-params$EstimParams}
     EstimParams$vVars<-NULL
@@ -389,7 +390,8 @@
     if ((!is.element("B",names(EstimParams$designToEstim)))&&(params$EvolModel=="mvslouch")){EstimParams$designToEstim$B<-TRUE}
     if ((!is.element("BX0",names(EstimParams$designToEstim)))&&(params$EvolModel=="mvslouch")){EstimParams$designToEstim$BX0<-FALSE}
     if ((!is.element("UseX0",names(EstimParams$designToEstim)))&&(params$EvolModel=="mvslouch")){EstimParams$designToEstim$UseX0<-TRUE}	
-    if (!is.element("y0AncState",names(EstimParams$designToEstim))||(numregs==1)){EstimParams$designToEstim$y0AncState<-TRUE}
+    if ((!is.element("y0AncState",names(EstimParams$designToEstim))&&(!estimate.root.state))||(numregs==1)){EstimParams$designToEstim$y0AncState<-TRUE}
+    if (!is.element("y0AncState",names(EstimParams$designToEstim))&&(numregs>1)&&(estimate.root.state)){EstimParams$designToEstim$y0AncState<-FALSE}
     if ((!is.element("y0OnlyFixed",names(EstimParams$designToEstim)))&&(params$EvolModel=="mvslouch")){EstimParams$designToEstim$y0OnlyFixed<-FALSE}
     if (!is.element("SimpReg",names(EstimParams$designToEstim))){EstimParams$designToEstim$SimpReg<-FALSE}    	
     if ((!is.element("iRegLin",names(EstimParams$designToEstim)))&&(params$EvolModel=="mvslouch")){EstimParams$designToEstim$iRegLin<-TRUE}

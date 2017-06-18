@@ -63,7 +63,8 @@
 	    kY<-length(vLambda)
 	    
 	    V<-matrix(0:(kY^2-1),nrow=kY,ncol=kY,byrow=TRUE)
-	    V<-apply(V,c(1,2),.CalcVlq2,"vlambda"=vLambda,"t"=t,"k"=kY)
+	    if (t>=0){V<-apply(V,c(1,2),.CalcVlq2,"vlambda"=vLambda,"t"=t,"k"=kY)}
+	    if (t<0){V<-apply(V,c(1,2),.CalcVlq,"vlambda"=vLambda,"t"=(-1)*t,"k"=kY)}
 	    
 	    invPSP<-invP%*%S%*%t(invP)
 	    invPSP[which(Mod(invPSP)<1e-15)]<-0
@@ -71,7 +72,7 @@
 	    ## the integral has to be real no matter what the decomposition of A is we don't want complex R classes so need to take Real ie 0*0i
 	}
 	else{
-	    if (lAcalcs$TwoByTwo){Integral<-.calc.integral.evAStevA.2dim(t,S,lAcalcs$A)}
+	    if (lAcalcs$TwoByTwo){Integral<-.calc.integral.evAStevA.2dim(abs(t),S,lAcalcs$A)}
 	    else{print("Cannot calculate the integral for this class of matrices")}	
 	}
     }

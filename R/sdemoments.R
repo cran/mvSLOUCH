@@ -15,15 +15,22 @@
     vMean
 }
 
-.calc.cov.ouch.mv<-function(t,lAcalcs,lScalcs,stationary=FALSE){
+.calc.cov.ouch.mv<-function(t,lAcalcs,lScalcs,stationary=FALSE,method="minus.v"){
     invA<-lAcalcs$invA
     kY<-nrow(lAcalcs$A)
-    expmtA<-.calc.exptA(-t,lAcalcs)
+    mCov<-matrix(NA,kY,kY)
+    if (method=="minus.v"){
+        Int11<-.calc.integral.evAStevA(-t,lScalcs$S11,lAcalcs)
+	mCov<-Int11
+    }
+    if (method=="plus.v"){
+        expmtA<-.calc.exptA(-t,lAcalcs)
 ## ----------------------------------------------------------------------------------
-    Int11<-.calc.integral.evAStevA(t,lScalcs$S11,lAcalcs)
+	Int11<-.calc.integral.evAStevA(t,lScalcs$S11,lAcalcs)
 ## ----------------------------------------------------------------------------------    
-    if (!stationary){ mCov<-expmtA%*%Int11%*%t(expmtA)}
-    else{mCov<-Int11}
+	if (!stationary){ mCov<-expmtA%*%Int11%*%t(expmtA)}
+	else{mCov<-Int11}    
+    }
     mCov<-(mCov+t(mCov))/2            
     mCov[which(abs(mCov)<1e-15)]<-0
     colnames(mCov)<-NULL
@@ -49,7 +56,7 @@
 }
 
 
-.calc.cov.slouch.mv<-function(t,lAcalcs,lScalcs,tol=1e-10){
+.calc.cov.slouch.mv<-function(t,lAcalcs,lScalcs,tol=1e-10,method="minus.v"){
 ## once again invP can be calculated from eigA but more effective to do this once
 ## same with invA
 ## the idea of the function is just to glue everything together and only calculate time depedent bits
@@ -58,20 +65,34 @@
     kY<-nrow(A1B)
     kX<-ncol(A1B)
     tA1B<-t(A1B) ## slightly more effective no need to call t()
-#    exptA<-.calc.exptA(t,lAcalcs)
+    exptA<-.calc.exptA(t,lAcalcs)
     expmtA<-.calc.exptA(-t,lAcalcs)
     A1BS22tA1B<-A1B%*%lScalcs$S22%*%tA1B
 ## ----------------------------------------------------------------------------------
-    Int11<-.calc.integral.evAStevA(t,lScalcs$S11,lAcalcs)
-    Int21<-.calc.integral.evAStevA(t,A1B%*%lScalcs$S21,lAcalcs)
-    Int12<-.calc.integral.evAStevA(t,lScalcs$S12%*%tA1B,lAcalcs)
-    Int22<-.calc.integral.evAStevA(t,A1BS22tA1B,lAcalcs) 
+    if (method=="plus.v"){
+	Int11<-.calc.integral.evAStevA(t,lScalcs$S11,lAcalcs)
+	Int21<-.calc.integral.evAStevA(t,A1B%*%lScalcs$S21,lAcalcs)
+	Int12<-.calc.integral.evAStevA(t,lScalcs$S12%*%tA1B,lAcalcs)
+	Int22<-.calc.integral.evAStevA(t,A1BS22tA1B,lAcalcs) 
+    }
+    if (method=="minus.v"){
+	Int11<-.calc.integral.evAStevA(-t,lScalcs$S11,lAcalcs)
+	Int21<-.calc.integral.evAStevA(-t,A1B%*%lScalcs$S21,lAcalcs)
+	Int12<-.calc.integral.evAStevA(-t,lScalcs$S12%*%tA1B,lAcalcs)
+	Int22<-.calc.integral.evAStevA(-t,A1BS22tA1B,lAcalcs) 
+    }
 ## ----------------------------------------------------------------------------------    
 
     CovXX<-t*lScalcs$S22
     CovYX<-(diag(1,nrow=kY,ncol=kY)-expmtA)%*%invA%*%(lScalcs$S12+A1B%*%lScalcs$S22)-t*A1B%*%lScalcs$S22
     CovXY<-t(CovYX)
-    CovYY<-expmtA%*%(Int11+Int12+Int21+Int22)%*%t(expmtA)  - A1B%*%CovXY - CovYX%*%tA1B-t*A1BS22tA1B
+    CovYY<-matrix(NA,nrow=nrow(A1B),ncol=nrow(A1B))
+    if (method=="plus.v"){
+	CovYY<-expmtA%*%(Int11+Int12+Int21+Int22)%*%t(expmtA)  - A1B%*%CovXY - CovYX%*%tA1B-t*A1BS22tA1B
+    }
+    if (method=="minus.v"){
+	CovYY<-(Int11+Int12+Int21+Int22)  - A1B%*%CovXY - CovYX%*%tA1B-t*A1BS22tA1B
+    }
     mCov<-rbind(cbind(CovYY,CovYX),cbind(CovXY,CovXX))
 
     mCov[which(abs(mCov)<1e-15)]<-0
