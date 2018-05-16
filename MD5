@@ -1,4 +1,4 @@
-c7b539de13b52e5c616f28589d211630 *DESCRIPTION
+51119cc85e4cd350f92d570aa9c6b873 *DESCRIPTION
 0632cc7589c46bbf4981f0a778f1ef2a *LICENCE
 a6e64f479853bd929560cd9c9c830aa7 *NAMESPACE
 d14ebf66288b5e6c4f69c9143c3e1c5a *R/MVslouchSimulStudy.R
@@ -40,7 +40,7 @@ adbe81cd2a6c0d65f4d36917c56e33fd *man/SummarizeMVSLOUCH.Rd
 b02e8a7135b174fe5d80fb5c56807ad7 *man/fitch.mvsl.Rd
 4fba28d34fd57c2991f673a43fa86ef8 *man/generate.model.setups.Rd
 7ea6d8e87445fb7d5d5827ef5abf902c *man/mvSLOUCH-internal.Rd
-430b63395bd560d6a778cb3b0ca269e3 *man/mvSLOUCH-package.Rd
+58cce1fe9034ebc74acd7867fed9e27c *man/mvSLOUCH-package.Rd
 3ed6c54a48bfe0d5e6ad40805970f4a8 *man/mvslouchModel.Rd
 950f288be12e043affa8d2c06142a1e6 *man/ouchModel.Rd
 eb23286f0ccf6695248d34f18f8ba640 *man/simulBMProcPhylTree.Rd
