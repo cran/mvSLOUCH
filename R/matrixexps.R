@@ -1,7 +1,49 @@
+## This file is part of mvSLOUCH
+
+## This software comes AS IS in the hope that it will be useful WITHOUT ANY WARRANTY, 
+## NOT even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
+## Please understand that there may still be bugs and errors. Use it at your own risk. 
+## We take no responsibility for any errors or omissions in this package or for any misfortune 
+## that may befall you or others as a result of its use. Please send comments and report 
+## bugs to Krzysztof Bartoszek at krzbar@protonmail.ch .
+
+.my_cov2cor<-function(M){
+    corrM<-matrix(NaN,nrow=nrow(M),ncol=ncol(M))
+    vvar0<-which(sapply(diag(M),function(y){isTRUE(all.equal(y,0))}))
+    if (length(vvar0)==0){
+	corrM<-cov2cor(M) ##produces matrix, no need to correct if 1-dim
+    }else{
+	if (length(vvar0)<nrow(M)){
+    	    if (length(vvar0)==nrow(M)-1){
+		corrM[-vvar0,-vvar0]<-1
+    	    }else{
+    		corrM[-vvar0,-vvar0]<-cov2cor(M[-vvar0,-vvar0]) ##produces matrix, no need to correct if 1-dim
+    	    }
+    	}
+    }
+    corrM
+}
+
+
+
+.is_det0<-function(M=NULL,eigM=NULL){
+## TRUE if det(M)=0, FALSE if det(M)=/=0
+    bisdet0<-FALSE
+    if (is.null(eigM)){
+	if (!is.null(M)){
+	    eigM<-eigen(M)$values
+	}else{.my_stop("ERROR: .is_det0 no matrix provided!",TRUE)}
+    }
+    bisdet0<-isTRUE(all.equal(prod(eigM),0))
+    bisdet0
+}
+
+
+
 .calc.exptA<-function(t,lAcalcs=NULL,A=NULL){
     exptA<-NA
     if (is.null(lAcalcs)){## precalculate matrices if not done
-	if(is.null(A)){print("No A matrix to work with");return(exptA);}
+	if(is.null(A)){.my_message("No A matrix to work with. \n",FALSE);return(exptA);}
         else{
 	    lAcalcs<-.decompEigenA.S(list(A=A,B=NULL),NULL,NA,list(bCalcA=TRUE,bCovCalc=FALSE,dzetacalc=FALSE,lexptcalc=FALSE,kappacalc=FALSE,interceptcalc=FALSE),NULL)[[1]]
 	    exptA<-.calc.exptA(t,lAcalcs)
@@ -14,7 +56,7 @@
 	    exptA<-Re(P%*%diag(exp(t*vLambda),ncol=kY,nrow=kY)%*%lAcalcs$invP) 
 	}else{
 	    if (lAcalcs$TwoByTwo){exptA<-.calc.exptA.2dim(t,lAcalcs$A)}
-	    else{print("Cannot exponentiate this type of matrix right now")}
+	    else{.my_message("Cannot exponentiate this type of matrix right now. \n",FALSE)}
 	}
     }
     exptA[which(abs(exptA)<1e-15)]<-0
@@ -50,7 +92,7 @@
 .calc.integral.evAStevA<-function(t,S,lAcalcs=NULL,A=NULL){
     Integral<-NA    
     if (is.null(lAcalcs)){## precalculate matrices if not done
-    	    if(is.null(A)){print("No A matrix to work with");return(Integral);}
+    	    if(is.null(A)){.my_message("No A matrix to work with. \n",FALSE);return(Integral);}
 	    else{
 		lAcalcs<-.decompEigenA.S(list(A=A,B=NULL),NULL,NA,list(bCalcA=TRUE,bCovCalc=FALSE,dzetacalc=FALSE,lexptcalc=FALSE,kappacalc=FALSE,interceptcalc=FALSE),NULL)[[1]]
 		Integral<-.calc.integral.evAStevA(t,S,lAcalcs,A)
@@ -73,7 +115,7 @@
 	}
 	else{
 	    if (lAcalcs$TwoByTwo){Integral<-.calc.integral.evAStevA.2dim(abs(t),S,lAcalcs$A)}
-	    else{print("Cannot calculate the integral for this class of matrices")}	
+	    else{.my_message("Cannot calculate the integral for this class of matrices. \n",FALSE)}	
 	}
     }
     Integral[which(abs(Integral)<1e-15)]<-0

@@ -1,12 +1,27 @@
+## This file is part of mvSLOUCH
+
+## This software comes AS IS in the hope that it will be useful WITHOUT ANY WARRANTY, 
+## NOT even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
+## Please understand that there may still be bugs and errors. Use it at your own risk. 
+## We take no responsibility for any errors or omissions in this package or for any misfortune 
+## that may befall you or others as a result of its use. Please send comments and report 
+## bugs to Krzysztof Bartoszek at krzbar@protonmail.ch .
+
+
 ## Function from the slouch package. Author : Jason Pienaar
 'fitch.mvsl'<-function (phyltree, niche, deltran = FALSE, acctran = FALSE, 
 root = NULL) 
 {
 ## ----- Added Krzysztof Bartoszek ----------------------------------------
-    tree.data<-.ouch2slouch.mvsl(phyltree)
-    niche<-c(rep(NA,phyltree@nnodes-phyltree@nterm),as.character(niche))
+    return_tree<-TRUE
+    if (inherits(phyltree,"phylo")){
+	if (!is.element("path_from_root",names(phyltree))){phyltree<-phyltree_paths(phyltree);return_tree<-TRUE}
+	tree.data<-.ape2slouch.mvsl(phyltree)
+	niche<-c(rep(NA,phyltree$Nnode),as.character(niche))
+    }else{
+	stop(sQuote("phyltree"), " must be of class ", sQuote("phylo"))
+    }    
 ## ------------------------------------------------------------------------
-    
     niche <- as.factor(niche)
     anc.char <- as.character(tree.data$ancestor)
     anc.num <- as.numeric(anc.char)
@@ -174,5 +189,24 @@ root = NULL)
         message("Try deltran OR acctran = TRUE in the function call in order to implement a delayed or accelerated character transformation")
     }
     f.states <- .make.states.mvsl(dat)
-    return(f.states)
+## ----- Added Krzysztof Bartoszek ----------------------------------------
+## reorder nodes to be consistent with phylo object edge numbering
+    f_states_phylo<-rep(NA,nrow(phyltree$edge))
+    for (i in 1:nrow(phyltree$edge)){## for each edge
+	i_node_ending<-phyltree$edge[i,2]
+	c_node_ending<-as.character(i_node_ending)
+	if (is.element(i_node_ending,phyltree$tip_species_index)){
+	    i_tip_index<-which(phyltree$tip_species_index==i_node_ending)
+	    c_node_ending<-phyltree$tip.label[i_tip_index]
+	}
+	f_states_phylo[i]<-as.character(f.states[which(tree.data$species==c_node_ending)])
+    }
+    root_regime<-f.states[which(tree.data$species==as.character(phyltree$root_index))]
+    if (return_tree){
+	lres<-list(branch_regimes=f_states_phylo,root_regime=root_regime,phyltree=phyltree)##,tree.data=tree.data,f.states=f.states)
+    }else{
+	lres<-list(branch_regimes=f_states_phylo,root_regime=root_regime)##,tree.data=tree.data,f.states=f.states)
+    }
+## ------------------------------------------------------------------------
+    return(lres)
 }

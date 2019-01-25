@@ -1,10 +1,20 @@
+## This file is part of mvSLOUCH
+
+## This software comes AS IS in the hope that it will be useful WITHOUT ANY WARRANTY, 
+## NOT even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
+## Please understand that there may still be bugs and errors. Use it at your own risk. 
+## We take no responsibility for any errors or omissions in this package or for any misfortune 
+## that may befall you or others as a result of its use. Please send comments and report 
+## bugs to Krzysztof Bartoszek at krzbar@protonmail.ch .
+
+
 ## ------------- parametrization of symmetric positive definite matrix ------------------------------
 .sym.par <- function (x,nchar) {
 ## function taken from ouch package
     mSym<-NA
     nchar <- floor(sqrt(2*length(x)))
     if (nchar*(nchar+1)!=2*length(x)) {
-        print("a symmetric matrix is parameterized by a triangular number of parameters")
+        .my_warning("a symmetric matrix is parameterized by a triangular number of parameters \n",FALSE,FALSE)
     }
     y <- matrix(0,nchar,nchar)
     y[lower.tri(y,diag=TRUE)] <- x
@@ -69,13 +79,13 @@
 }
 
 .row.rot<-function(M,cG,sG){## algorithm 5.1.6 p203
-    if (nrow(M)!=2){print("Cannot perform .row.rot when M does not have 2 rows");rotM<-NA}
+    if (nrow(M)!=2){.my_message("Cannot perform .row.rot when M does not have 2 rows \n",FALSE);rotM<-NA}
     else{rotM<-apply(M,2,function(x){c(cG*x[1]-sG*x[2],sG*x[1]+cG*x[2])})}
     rotM
 }
 
 .col.rot<-function(M,cG,sG){## algorithm 5.1.7 p203
-    if (ncol(M)!=2){print("Cannot perform .col.rot when M does not have 2 columns");rotM<-NA}
+    if (ncol(M)!=2){.my_message("Cannot perform .col.rot when M does not have 2 columns \n",FALSE);rotM<-NA}
     else{rotM<-apply(M,1,function(x){c(cG*x[1]-sG*x[2],sG*x[1]+cG*x[2])})}
     rotM
 }
@@ -136,7 +146,7 @@
 ## the reason is for the parametrization of U,V on the diagonal after Givens zeroing
 ## we can have negative values, ie rho does not hold information on the sign
     A<-NA
-    if (length(vParams)!=n^2){print(paste("Cannot calculate A, vParams should be of length : ",n^2))}
+    if (length(vParams)!=n^2){.my_message(paste("Cannot calculate A, vParams should be of length : ",n^2," \n"),FALSE)}
     else{
 	k<-(length(vParams)-n)/2
 	D<-diag(vParams[c(1:n)],n,n)
@@ -173,7 +183,7 @@
     A<-NA
     mQcSigns<-NULL
     if(!is.null(mCsigns)){mQcSigns<-mCsigns}
-    if (length(vParams)!=n^2){print(paste("Number of parameters describing A must be ",n,"^2=",n^2))}
+    if (length(vParams)!=n^2){.my_message(paste("Number of parameters describing A must be ",n,"^2=",n^2," \n"),FALSE)}
     else{
 	if (n==1){A<-vParams[1]}
 	else{
@@ -196,7 +206,7 @@
 .par.inv.transform.invert.qr.matrix<-function(A,mCSigns=NULL,tol=1e-15,minRdiag=0.01){
     n<-nrow(A)    
     vParams<-rep(NA,n^2)
-    if (ncol(A)!=n){print("A must be a square matrix")}
+    if (ncol(A)!=n){.my_message("A must be a square matrix.\n",FALSE)}
     else{
 	if (n==1){vParams[1]<-A[1,1];mCSigns=1}
 	else{
@@ -230,13 +240,13 @@
 ## the eigenvalue decomposition of A=PJP^(T) P parametrized by givens rotations
 ## it is assumed that the eigenvectors (P's columns )are of unit length 
     A<-NA
-    if (length(vParams)!=n^2){print(paste("Cannot calculate A, vParams should be of length : ",n^2))}
+    if (length(vParams)!=n^2){.my_message(paste("Cannot calculate A, vParams should be of length : ",n^2," \n"),FALSE)}
     else{
 	if (n==1){A<-matrix(vParams[1],1,1)}
 	else{
 	    k<-n*(n-1)/2
 	    if (is.complex(vParams[1:n])){
-	    	print("Thera are complex eigenvalues, calling complex calculations!")
+	    	.my_message("Thera are complex eigenvalues, calling complex calculations! \n",FALSE)
 		A<-.par.transform.decomp.matrix(vParams,n)
 	    }else{
 		J<-diag(vParams[1:n],n,n) ## the eigenvalues	    
@@ -251,13 +261,13 @@
 .par.inv.transform.decomp.sym.matrix<-function(A,tol=1e-15){
     n<-nrow(A)    
     vParams<-rep(NA,n^2)
-    if (ncol(A)!=n){print("A must be a square matrix")}
+    if (ncol(A)!=n){.my_message("A must be a square matrix. \n",FALSE)}
     else{
 	if (n==1){vParams<-A[1,1]}
 	else{
 	    eigA<-eigen(A)
 	    if(is.complex(eigA$values)){
-		print("A has complex eigen values, calling complex parametrization!")
+		.my_message("A has complex eigen values, calling complex parametrization! \n",FALSE)
 		vParams<-.par.inv.transform.decomp.matrix(A)
 	    }else{
 	        k<-n*(n-1)/2
@@ -273,29 +283,37 @@
 ## ----------------- real eigenvalues --------------------------------------------------------------
 
 ## ---------------- positive definite --------------------------------------------------------------
-.par.transform.decomp.pos.real.matrix<-function(vParams,n,mCSigns=NULL,minEigenValue=0.01){
+.par.transform.decomp.pos.real.matrix<-function(vParams,n,mCSigns=NULL,minEigenValue=1.5e-8){
 ## first n parameters are the logs of the eigenvalues -> we want all to be positive
 ## next numbers are somehow the eigenvectors
     vParams[1:n]<-exp(rev(sort(vParams[1:n])))+minEigenValue
     .par.transform.decomp.real.matrix(vParams,n,mCSigns)    
 }
 
-.par.inv.transform.decomp.pos.real.matrix<-function(A,eigenSigns=NULL,mCSigns=NULL,tol=1e-15,minEigenValue=0.01){
+.par.inv.transform.decomp.pos.real.matrix<-function(A,eigenSigns=NULL,mCSigns=NULL,tol=1e-15,minEigenValue=1.5e-8){
     lAparams<-.par.inv.transform.decomp.real.matrix(A,eigenSigns,mCSigns,tol)
     n<-nrow(A)
+    vTooSmall<-which(lAparams$vParams[1:n]<minEigenValue)
+    if (length(vTooSmall)>0){
+	lAparams$vParams[vTooSmall]<-(1.25)*minEigenValue
+    }
     lAparams$vParams[1:n]<-log(lAparams$vParams[1:n]-minEigenValue)
     lAparams
 }
 
-.par.transform.decomp.neg.real.matrix<-function(vParams,n,mCSigns=NULL,maxEigenValue=0.01){
+.par.transform.decomp.neg.real.matrix<-function(vParams,n,mCSigns=NULL,maxEigenValue=1.5e-8){
 ## first n parameters are the logs of the eigenvalues -> we want all to be positive
 ## next numbers are somehow the eigenvectors
     vParams[1:n]<-(-1)*exp(rev(sort(vParams[1:n])))-maxEigenValue
     .par.transform.decomp.real.matrix(vParams,n,mCSigns)    
 }
 
-.par.inv.transform.decomp.neg.real.matrix<-function(A,eigenSigns=NULL,mCSigns=NULL,tol=1e-15,maxEigenValue=0.01){
+.par.inv.transform.decomp.neg.real.matrix<-function(A,eigenSigns=NULL,mCSigns=NULL,tol=1e-15,maxEigenValue=1.5e-8){
     lAparams<-.par.inv.transform.decomp.real.matrix(A,eigenSigns,mCSigns,tol)
+    vTooBig<-which(lAparams$vParams[1:n]>(-1)*maxEigenValue)
+    if (length(vTooBig)>0){
+	lAparams$vParams[vTooBig]<-(-1.25)*maxEigenValue
+    }
     n<-nrow(A)
     lAparams$vParams[1:n]<-log((-1)*lAparams$vParams[1:n]-maxEigenValue)
     lAparams
@@ -309,17 +327,17 @@
 ## in PJP^-1
     A<-NA
     eigenSigns<-NA
-    if (length(vParams)!=n^2){print(paste("Cannot calculate A, vParams should be of length : ",n^2))}
+    if (length(vParams)!=n^2){.my_message(paste("Cannot calculate A, vParams should be of length : ",n^2," \n"),FALSE)}
     else{
 	if (n==1){A<-matrix(vParams[1],1,1);eigenSigns<-c(1)}
 	else{	    
 	    if (is.complex(vParams[1:n])){
-	    	print("Thera are complex eigenvalues, calling complex calculations!")
+	    	.my_message("Thera are complex eigenvalues, calling complex calculations! \n",FALSE)
 		A<-.par.transform.decomp.matrix(vParams,n)
 	    }else{
 		k<-n*(n-1)/2
 		J<-diag(vParams[1:n],n,n) ## the eigenvalues	    
-		if (length(which(diag(J)==0))>0){print("WARNING : we have zero eigenvalues, matrix is singular")}
+		if (length(which(diag(J)==0))>0){.my_warning("WARNING : we have zero eigenvalues, matrix is singular. \n",FALSE,FALSE)}
 		lQparam<-.par.transform.orth.matrix.givens(vParams[(n+1):(n+k)],n,mCSigns)
 		Q<-lQparam$Q
 		mQcSigns<-lQparam$cSigns
@@ -354,7 +372,7 @@
 .par.inv.transform.decomp.real.matrix<-function(A,eigenSigns=NULL,mCSigns=NULL,tol=1e-15){
     n<-nrow(A)    
     vParams<-rep(NA,n^2)
-    if (ncol(A)!=n){print("A must be a square matrix")}
+    if (ncol(A)!=n){.my_message("A must be a square matrix. \n",FALSE)}
     else{
 	if (n==1){vParams<-A[1,1];mCSigns=1}
 	else{
@@ -363,7 +381,7 @@
 		eigA$vectors<-apply(rbind(eigenSigns,eigA$vectors),2,function(x){if (sign(x[2])!=x[1]){x<-(-1)*x};x[-1]}) ## we want to fix the eigenvector matrix
 	    }
 	    if(is.complex(eigA$values)){
-		print("A has complex eigen values, calling complex parametrization!")
+		.my_message("A has complex eigen values, calling complex parametrization! \n",FALSE)
 		vParams<-.par.inv.transform.decomp.matrix(A,eigenSigns,mCSigns)
 	    }else{
 	        k<-n*(n-1)/2
@@ -381,7 +399,7 @@
 		    k<-nrow(mR)
 		    orgcolR<-mR[,i]
 		    colR<-c(rep(NA,i-1),rep(0,n-i+1))
-		    if (i>1){## This turned out to be slightly faster then a while loop
+		    if (i>1){## This turned out to be slightly faster than a while loop
 			if (i>2){colR[2:(i-1)]<-tan(orgcolR[2:(i-1)]*0.5*pi/(sqrt(1-cumsum(orgcolR[1:(i-2)]^2))))}
 			colR[1]<-tan(orgcolR[1]*0.5*pi)		    
 		    }
@@ -396,12 +414,12 @@
 ## -------------------------------------------------------------------------------------------------
 ## ----------------- general case ------------------------------------------------------------------
 .par.transform.decomp.matrix<-function(vParams,n){
-    print("Cannot do parametrization with general complex eigenvalues yet")
+    .my_message("Cannot do parametrization with general complex eigenvalues yet. \n",FALSE)
     matrix(NA,n,n)
 }
 
 .par.inv.transform.decomp.matrix<-function(A,eigenSigns,mCSigns){
-    print("Cannot do deparametrization with general complex eigenvalues yet")
+    .my_message("Cannot do deparametrization with general complex eigenvalues yet. \n",FALSE)
     rep(NA,nrow(A)^2)
 }
 ## -------------------------------------------------------------------------------------------------
@@ -415,7 +433,7 @@
     if (is.null(vDiagQ)){vDiagQ<-rep(1,n)}
     if (is.null(mCSigns)){mCSignsQ<-matrix(1,2,k)}
     else{mCSignsQ<-mCSigns}
-    if (length(vParams)!=k){print(paste("Cannot calculate Q, vParams should be of lenght : ",n*(n-1)/2));}
+    if (length(vParams)!=k){.my_message(paste("Cannot calculate Q, vParams should be of lenght : ",n*(n-1)/2," \n"),FALSE);}
     else{
 	if (n==1){Q<-matrix(vParams[1],1,1)}## vParams[1] has to be 1 or -1 for orthogonality
 	else{
@@ -447,7 +465,7 @@
     vParams<-rep(NA,k)
     if (is.null(mCSigns)){mCSignsQ<-matrix(1,2,k)}
     else{mCSignsQ<-mCSigns}
-    if (ncol(Q)!=n){print("Q must be a square matrix")}
+    if (ncol(Q)!=n){.my_message("Q must be a square matrix. \n",FALSE)}
     else{
 	if (n==1){vParams<-Q[1,1]}
 	else{
@@ -477,7 +495,7 @@
 		vCorrectNum<-which(abs(abs(GtQ)-diag(1,n,n))<tol) ## if on the diagonal
 		GtQ[vCorrectNum]<-diag(1,n,n)[vCorrectNum]
 		invGtQ<-solve(GtQ)
-		if (length(GtQ[!GtQ==invGtQ])>0){print(paste("Q matrix was not orthogonal or perhaps numerical errors, errors : ",GtQ[!GtQ==invGtQ]-invGtQ[!GtQ==invGtQ]))}
+		if (length(GtQ[!GtQ==invGtQ])>0){.my_message(paste("Q matrix was not orthogonal or perhaps numerical errors, errors : ",GtQ[!GtQ==invGtQ]-invGtQ[!GtQ==invGtQ]," \n"),FALSE)}
 	    }
 	}
     }

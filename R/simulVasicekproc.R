@@ -1,3 +1,12 @@
+## This file is part of mvSLOUCH
+
+## This software comes AS IS in the hope that it will be useful WITHOUT ANY WARRANTY, 
+## NOT even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
+## Please understand that there may still be bugs and errors. Use it at your own risk. 
+## We take no responsibility for any errors or omissions in this package or for any misfortune 
+## that may befall you or others as a result of its use. Please send comments and report 
+## bugs to Krzysztof Bartoszek at krzbar@protonmail.ch .
+
 .ouch.simulate<-function(step,duration,modelParams,regimes=NULL,regimes.times=NULL,mCov=NULL){
     if (is.null(regimes)){
 	if (is.null(colnames(modelParams$mPsi))){
@@ -8,7 +17,7 @@
     if (is.null(regimes.times)){regimes.times<-seq(0,duration,length.out=length(regimes)+1)}
 
     kY<-nrow(modelParams$A)
-    modelParams$precalcMatrices<-.decompEigenA.S(modelParams,NULL,NULL,list(bCalcA=TRUE,bCovCalc=TRUE,dzetacalc=FALSE,lexptcalc=FALSE,kappacalc=FALSE,interceptcalc=FALSE),NULL)
+    modelParams$precalcMatrices<-.decompEigenA.S(modelParams,list(vSpecies_times=duration),NULL,list(bCalcA=TRUE,bCovCalc=TRUE,dzetacalc=FALSE,lexptcalc=FALSE,kappacalc=FALSE,interceptcalc=FALSE),NULL)
     mTrajectory<-matrix(NA,ncol=kY+1,nrow=ceiling(duration/step)+1)
     mTrajectory[1,]<-c(0,c(modelParams$vY0[,1]))
     i<-2
@@ -43,7 +52,7 @@
     modelParams$vY0<-Y
     vMean<-.calc.mean.ouch.mv(expmtA,Y,modelParams$mPsi,modelParams$mPsi0,lRegs$exptjA,lRegs$regimes)
     if (is.null(mCov)){mCov<-.calc.cov.ouch.mv(curr.time,modelParams$precalcMatrices[[1]],modelParams$precalcMatrices[[2]])}
-    rmvnorm(n=1,mean=vMean,sigma=mCov)
+    mvtnorm::rmvnorm(n=1,mean=vMean,sigma=mCov)
 }
 
 .bm.simulate<-function(step,duration,modelParams,regimes=NULL,regimes.times=NULL,mCov=NULL){
@@ -64,7 +73,7 @@
 }
 
 .draw.bm<-function(curr.time,Y,Sigmasq){
-    rmvnorm(n=1,mean=Y,sigma=curr.time*Sigmasq)
+    mvtnorm::rmvnorm(n=1,mean=Y,sigma=curr.time*Sigmasq)
 }
 
 .mvslouch.simulate<-function(step,duration,modelParams,regimes=NULL,regimes.times=NULL,mCov=NULL){
@@ -78,7 +87,7 @@
 
     kY<-nrow(modelParams$A)
     kX<-ncol(modelParams$B)
-    modelParams$precalcMatrices<-.decompEigenA.S(modelParams,NULL,NULL,list(bCalcA=TRUE,bCovCalc=TRUE,dzetacalc=FALSE,lexptcalc=FALSE,kappacalc=FALSE,interceptcalc=FALSE),NULL)
+    modelParams$precalcMatrices<-.decompEigenA.S(modelParams,list(vSpecies_times=duration),NULL,list(bCalcA=TRUE,bCovCalc=TRUE,dzetacalc=FALSE,lexptcalc=FALSE,kappacalc=FALSE,interceptcalc=FALSE),NULL)
     mTrajectory<-matrix(NA,ncol=kY+kX+1,nrow=ceiling(duration/step)+1)
     mTrajectory[1,]<-c(0,c(modelParams$vY0[,1],modelParams$vX0[,1]))
     i<-2
@@ -114,7 +123,7 @@
     modelParams$vX0<-vX
     vMean<-.calc.mean.slouch.mv(expmtA,modelParams$precalcMatrices[[1]]$A1B,Y,vX,modelParams$mPsi,modelParams$mPsi0,lRegs$exptjA,lRegs$regimes)
     if (is.null(mCov)){mCov<-.calc.cov.slouch.mv(curr.time,modelParams$precalcMatrices[[1]],modelParams$precalcMatrices[[2]])}
-    rmvnorm(n=1,mean=vMean,sigma=mCov)
+    mvtnorm::rmvnorm(n=1,mean=vMean,sigma=mCov)
 }
 
 

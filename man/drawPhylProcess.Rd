@@ -11,7 +11,7 @@ The function does draw anything else (like axes) but the realization
 of the process. Any additions are up to the user.
 }
 \usage{
-drawPhylProcess(PhylTraitProcess, phyltree = NULL, vColours = "black", 
+drawPhylProcess(PhylTraitProcess, vTraitsToPlot=NULL, vColours = "black", 
 plotlayout = c(1, 1), additionalfigs = FALSE, modelParams = NULL, 
 EvolModel = NULL, xlimits = NULL, ylimits = NULL)
 }
@@ -19,15 +19,16 @@ EvolModel = NULL, xlimits = NULL, ylimits = NULL)
 \arguments{
   \item{PhylTraitProcess}{
 The simulated realization of the process, the direct output of one of the package's simulation 
-function or a matrix
-(if \code{fullTrajectory} is \code{TRUE}).
+function or a matrix (if \code{fullTrajectory} is \code{TRUE}).
 In the second case the matrix consists of k+1 columns, where k is the number of traits. The first column
 are the time instances, the next k the values of the traits at that instance. Since evolution
 takes place on a phylogenetic tree - there should be multiple copies of the same time moment, i.e.
 one for each branch of the tree.
 }
-  \item{phyltree}{The phylogenetic tree, currently not used in the function but parameter is for 
-  future development}
+  \item{vTraitsToPlot}{A vector providing the column numbers of the traits to plot. If \code{NULL}, then all
+  traits are plotted. The column numbers have to be obtained from the \cr \code{PhylTraitProcess} object,
+  the matrix \code{$trajectory} for each branch. Notice that the first column is time! The same trait
+  may be plotted multiple times (but a warning will be raised).}
   \item{vColours}{A vector of colours to be used for each trait. If length is less than the number of 
   traits then colours are recycled}
   \item{plotlayout}{How many plots per page if more than one trait, i.e. \code{par(mfrow=plotlayout))}.}
@@ -58,36 +59,30 @@ Bartoszek, K. and Pienaar, J. and Mostad. P. and Andersson, S. and Hansen, T. F.
 
 \author{Krzysztof Bartoszek}
 
-%% ~Make other sections like Warning with \section{Warning }{....} ~
-%%\seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
-%%}
 
 \examples{
-\dontrun{ ##It takes too long to run this
-### We will first simulate a small phylogenetic tree using functions from ape and ouch.
+set.seed(12345)
+### We will first simulate a small phylogenetic tree using functions from ape.
 ### For simulating the tree one could also use alternative functions, eg. sim.bd.taxa 
 ### from the TreeSim package
-phyltree<-ape2ouch(rtree(5))
+phyltree<-ape::rtree(4)
 
-### Correct the names of the internal node labels.
-phyltree@nodelabels[1:(phyltree@nnodes-phyltree@nterm)]<-as.character(
-1:(phyltree@nnodes-phyltree@nterm))
+## The line below is not necessary but advisable for speed
+phyltree<-phyltree_paths(phyltree)
 
 ### Define a vector of regimes.
-regimes<-c("small","small","small","large","small","small","large","large","large")
+#regimes<-c("small","small","large","small","small","large","large","large")
+regimes<-c("small","small","large","small","small","large")
 
 ### Define SDE parameters to be able to simulate data under the OUOU model.
 OUOUparameters<-list(vY0=matrix(c(1,-1,0.5),nrow=3,ncol=1),
 A=rbind(c(9,0,0),c(0,5,0),c(0,0,1)),mPsi=cbind("small"=c(1,-1,0.5),
 "large"=c(-1,1,0.5)),Syy=rbind(c(1,0.25,0.3),c(0,1,0.2),c(0,0,1)))
 
-### Now simulate the data and remove the values corresponding to the internal nodes.
+### Now simulate the data keeping the whole trajectory
 OUOUdata<-simulOUCHProcPhylTree(phyltree,OUOUparameters,regimes,NULL,fullTrajectory=TRUE)
-drawPhylProcess(PhylTraitProcess=OUOUdata)
-}
+drawPhylProcess(PhylTraitProcess=OUOUdata,plotlayout=c(1,3))
 
 }
 
-\keyword{models}
 \keyword{hplot}

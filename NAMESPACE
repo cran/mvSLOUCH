@@ -2,11 +2,17 @@
 exportPattern(".")
 
 # Import all packages listed as Imports or Depends
-importFrom(ouch, ape2ouch, brown)
-importFrom(numDeriv, grad, jacobian)
-importFrom(mvtnorm, dmvnorm, rmvnorm)
-importFrom(corpcor, pseudoinverse)
-importFrom(ape, rtree)
-importFrom(stats, cov2cor, nlminb, optim, qnorm, qt, rexp, rnorm, runif)
+importFrom(mvtnorm, rmvnorm)
+importFrom(ape, rtree, node.depth.edgelength, drop.tip)
+importFrom(ouch, ape2ouch)
+importFrom(stats, cov, cov2cor, lm, nlminb, optim, qnorm, qt, rexp, rnorm, runif)
 importFrom(graphics, abline, legend, mtext, par, plot, points)
+importFrom(PCMBase, PCM, PCMParamCount ,PCMCreateLikelihood, PCMLik, PCMParamLoadOrStore, PCMOptions)
 importFrom("methods", "as")
+importFrom(matrixcalc, is.diagonal.matrix, is.positive.semi.definite, is.singular.matrix, is.symmetric.matrix)
+importFrom(Matrix,nearPD)
+importFrom(abind, abind)
+
+
+
+

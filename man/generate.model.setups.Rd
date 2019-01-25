@@ -7,7 +7,7 @@
 \description{
 The function generates a list of models that will be used by the 
 function \cr \code{\link{estimate.evolutionary.model}}. A minimum
-example list will be \code{list(list(evolmodel="BM"))}.
+example list will be \code{list(list(evolmodel="bm"))}.
 }
 \usage{
 generate.model.setups()
@@ -15,6 +15,12 @@ generate.model.setups()
 \details{
 The function should really be a hidden one but is left available for the user as an
 example how such a list of models should be generated.
+
+The setting \code{Atype="Any"} means that one assumes the matrix \code{A} is eigendecomposable.
+If \code{A} is defective, then the output will be erroneous.
+
+None of the "signs" options for the model is generated, see the description of 
+\code{mvslouchModel} and \code{ouchModel}.
 }
 \value{
 A list with different models is returned. Each element of the list is a list with the following 
@@ -27,7 +33,7 @@ fields.
 \code{"SingleValueDiagonal"}, \code{"Diagonal"},
 \code{"UpperTri"}, \code{"LowerTri"}, \code{"SymmetricPositiveDefinite"},
 \code{"Symmetric"}, \code{"DecomposablePositive"}, \cr \code{"DecomposableNegative"}, 
-\code{"DecomposableReal"}, \code{"Invertible"},  \code{"TwoByTwo"}.
+\code{"DecomposableReal"}, \code{"Invertible"},  \code{"TwoByTwo"}, \code{"Any"}.
 }
 \item{\code{Syytype} }{The class of the \code{A} matrix, ignored if \code{evolmodel} equals 
 \code{"BM"}. Otherwise it can take one of the following values: 
@@ -47,10 +53,10 @@ Bartoszek, K. and Pienaar, J. and Mostad. P. and Andersson, S. and Hansen, T. F.
 \author{Krzysztof Bartoszek}
 
 \seealso{
-\code{\link{estimate.evolutionary.model}}
+\code{\link{estimate.evolutionary.model}}, \code{\link{mvslouchModel}}, \code{\link{ouchModel}} 
 }
 \examples{
-generate.model.setups()
+model_setups<-generate.model.setups()
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
