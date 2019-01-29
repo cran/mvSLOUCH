@@ -64,7 +64,7 @@ estimate.evolutionary.model<-function(phyltree,mData,regimes=NULL,root.regime=NU
     
     for (i in 1:repeats){
 	for (k in 1:length(model.setups)){
-	    if ((model.setups[[k]]$evolmodel=="bm") && (repeats==1)){
+	    if ((model.setups[[k]]$evolmodel=="bm") && (i==1)){
 	    ## no point in doing BM more than once as it will always give the same estimation result
 		if (doPrint){.my_message("Doing estimation for BM model.\n",TRUE)}
 		BMres<-NULL
