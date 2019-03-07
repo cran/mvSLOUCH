@@ -1,4 +1,4 @@
-f63d1b4a622cfa01cfc58d44b19624eb *DESCRIPTION
+54bb2d5ecce4d3c283301a8e3b0ad339 *DESCRIPTION
 0632cc7589c46bbf4981f0a778f1ef2a *LICENCE
 fd0fc8ce76a80c240c356ef5f05379cb *NAMESPACE
 c12be5894115090b6f7e5fe05ba47f1a *R/PhyloSDEestim.R
@@ -15,8 +15,8 @@ cf87394780d6b6e2f24b7da682c9354f *R/getESS.R
 5a8a7efa822941d06aa687630b6c761c *R/matrixexps.R
 c6d607939b83d5e1115f75e28f90dde2 *R/matrixparametrizations.R
 aafb025b35ff9d097030bd6f7ac12ff6 *R/modelparams.R
-88350c73d95796d6eef7debeebe639ac *R/modelparamssummary.R
-359470064c70a4cf1436b1036cd00f6a *R/modelparamstransform.R
+ed1e85e2ffded41ae52bcb668318ed9b *R/modelparamssummary.R
+5a9041134a1d45f4256ae1dc269fdb90 *R/modelparamstransform.R
 2d4c9ce98a6d4bdbde1f01451cc09f4b *R/phylgls.R
 be32e36aca6f1f0624c1011770588033 *R/phyltree_paths.R
 b03156e95d78612777ef01e56601573a *R/precalcs.R

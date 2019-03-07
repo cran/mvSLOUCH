@@ -394,11 +394,15 @@
 	modelParams$pcmbase_model_box<-EstimationParams$pcmbase_model_box
 	bFull<-FALSE
     }
+        
+    if (!is.element("regimeTimes",names(modelParams))){modelParams$regimeTimes<-regimes.times}
+    if (!is.element("regimes",names(modelParams))){modelParams$regimes<-regimes}
+    if (!is.element("regimeTypes",names(modelParams))){modelParams$regimeTypes<-regimes.types}
+    if (!is.element("regimes.types.orig",names(modelParams))){modelParams$regimes.types.orig<-regimes.types.orig} ## this has to be passed as PCMBase will use original regime names while in GLS we just use the regime indices
     
     modelParams$pcmbase_model_box<-.update_pcmbase_box_params(modelParams,EvolModel)
-    modelParams$regimeTimes<-regimes.times
-    modelParams$regimes<-regimes
-    modelParams$regimeTypes<-regimes.types
+    
+    if (!is.element("M_error",names(modelParams))){modelParams$M_error<-Merror}
     lEvalPoint<-vector("list",length(t))
 
     ## mData is assumed to be in the following format
@@ -411,16 +415,16 @@
         if (is.element("A",names(modelParams))){EstimationParams$Fixed$A<-modelParams$A}
         if (is.element("Syy",names(modelParams))){EstimationParams$Fixed$Syy<-modelParams$Syy}
         
-        if (is.null(LogLik)){lEvalPoint<-sapply(t,function(tcalc){
+        if (is.null(LogLik)){lEvalPoint<-sapply(t,function(tcalc,EvolModel,PhylTree,mData,mY,modelParams,lPrecalculates,EstimationParams,tol,maxIter,bShouldPrint,minLogLik){
     		lres<-list(t=NA)
     		tryCatch({lres<-.EvaluatePoint(EvolModel,PhylTree,mData,mY,modelParams,lPrecalculates,EstimationParams,tol[2],maxIter[2],bShouldPrint,FALSE,list(A=EstimationParams$Fixed$A,Syy=EstimationParams$Fixed$Syy),TRUE,TRUE,minLogLik=minLogLik,t=tcalc)},error=function(e){.my_message("Error in evaluating point to summarize: \n",FALSE);.my_message(e,FALSE);.my_message("\n",FALSE)})
     		lres
-    	    },simplify=FALSE)}
-        else{lEvalPoint<-sapply(t,function(tcalc){
+    	    },EvolModel=EvolModel,PhylTree=PhylTree,mData=mData,mY=mY,modelParams=modelParams,lPrecalculates=lPrecalculates,EstimationParams=EstimationParams,tol=tol,maxIter=maxIter,bShouldPrint=bShouldPrint,minLogLik=minLogLik,simplify=FALSE)}
+        else{lEvalPoint<-sapply(t,function(tcalc,EvolModel,PhylTree,mData,mY,modelParams,lPrecalculates,EstimationParams,tol,maxIter,bShouldPrint,minLogLik){
     		lres<-list(t=NA)
     		tryCatch({lres<-.EvaluatePoint(EvolModel,PhylTree,mData,mY,modelParams,lPrecalculates,EstimationParams,tol[2],maxIter[2],bShouldPrint,FALSE,list(A=EstimationParams$Fixed$A,Syy=EstimationParams$Fixed$Syy),FALSE,TRUE,minLogLik=LogLik,t=tcalc)},error=function(e){.my_message("Error in evaluating point to summarize: \n",FALSE);.my_message(e,FALSE);.my_message("\n",FALSE)})
 		lres    	    
-    	    },simplify=FALSE)}
+    	    },EvolModel=EvolModel,PhylTree=PhylTree,mData=mData,mY=mY,modelParams=modelParams,lPrecalculates=lPrecalculates,EstimationParams=EstimationParams,tol=tol,maxIter=maxIter,bShouldPrint=bShouldPrint,minLogLik=minLogLik,simplify=FALSE)}
     }
     else{
         if (is.null(LogLik)){lEvalPoint<-sapply(t,function(tcalc){

@@ -70,7 +70,15 @@
 	    if (is.element("regimes.types.orig",names(model_params))){
 		index_Psi_reg<-which(model_params$regimes.types.orig==reg_name)
 	    }else{
-		index_Psi_reg<-which(names(model_params$pcmbase_model_box$Theta[1,])==cpcmbase_reg)
+		if (is.element(reg_name,colnames(model_params$mPsi))){
+		    index_Psi_reg<-which(colnames(model_params$mPsi)==reg_name)
+		}else{
+		    if (length(names(model_params$pcmbase_model_box$Theta[1,]))==ncol(model_params$mPsi)){
+			index_Psi_reg<-which(names(model_params$pcmbase_model_box$Theta[1,])==cpcmbase_reg)		    
+		    }else{
+			.my_stop("Cannot identify regimes in pcmabase_model_box_update")
+		    }
+		}
 	    }
 	    model_params$pcmbase_model_box$Theta[,which(names(model_params$pcmbase_model_box$Theta[1,])==cpcmbase_reg)] <- model_params$mPsi[,index_Psi_reg]
     	}
@@ -113,9 +121,16 @@
 	    if (is.element("regimes.types.orig",names(model_params))){
 		index_Psi_reg<-which(model_params$regimes.types.orig==reg_name)
 	    }else{
-		index_Psi_reg<-which(names(model_params$pcmbase_model_box$Theta[1,])==cpcmbase_reg)
+		if (is.element(reg_name,colnames(model_params$mPsi))){
+		    index_Psi_reg<-which(colnames(model_params$mPsi)==reg_name)
+		}else{
+		    if (length(names(model_params$pcmbase_model_box$Theta[1,]))==ncol(model_params$mPsi)){
+			index_Psi_reg<-which(names(model_params$pcmbase_model_box$Theta[1,])==cpcmbase_reg)		    
+		    }else{
+			.my_stop("Cannot identify regimes in pcmabase_model_box_update")
+		    }
+		}	
 	    }
-
 	    model_params$pcmbase_model_box$Theta[,which(names(model_params$pcmbase_model_box$Theta[1,])==cpcmbase_reg)]<- c(model_params$mPsi[,index_Psi_reg],rep(0,kX))
     	}
     }
