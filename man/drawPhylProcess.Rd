@@ -65,14 +65,15 @@ set.seed(12345)
 ### We will first simulate a small phylogenetic tree using functions from ape.
 ### For simulating the tree one could also use alternative functions, eg. sim.bd.taxa 
 ### from the TreeSim package
-phyltree<-ape::rtree(4)
+phyltree<-ape::rtree(3)
 
 ## The line below is not necessary but advisable for speed
 phyltree<-phyltree_paths(phyltree)
 
 ### Define a vector of regimes.
 #regimes<-c("small","small","large","small","small","large","large","large")
-regimes<-c("small","small","large","small","small","large")
+#regimes<-c("small","small","large","small","small","large")
+regimes<-c("small","small","large","small")
 
 ### Define SDE parameters to be able to simulate data under the OUOU model.
 OUOUparameters<-list(vY0=matrix(c(1,-1,0.5),nrow=3,ncol=1),

@@ -1,4 +1,4 @@
-54bb2d5ecce4d3c283301a8e3b0ad339 *DESCRIPTION
+2fe6de708e88a00f0ba03f3e6b6dfa2f *DESCRIPTION
 0632cc7589c46bbf4981f0a778f1ef2a *LICENCE
 fd0fc8ce76a80c240c356ef5f05379cb *NAMESPACE
 c12be5894115090b6f7e5fe05ba47f1a *R/PhyloSDEestim.R
@@ -18,7 +18,7 @@ aafb025b35ff9d097030bd6f7ac12ff6 *R/modelparams.R
 ed1e85e2ffded41ae52bcb668318ed9b *R/modelparamssummary.R
 5a9041134a1d45f4256ae1dc269fdb90 *R/modelparamstransform.R
 2d4c9ce98a6d4bdbde1f01451cc09f4b *R/phylgls.R
-be32e36aca6f1f0624c1011770588033 *R/phyltree_paths.R
+bea0edeaa2fc232eca8e1c2b62b9cb5a *R/phyltree_paths.R
 b03156e95d78612777ef01e56601573a *R/precalcs.R
 247d6a321de5b5197cbaf18c9897e943 *R/regimes.R
 fe65f2a983d4bd861c1d56a7898d8891 *R/sdecovariancephyl.R
@@ -34,7 +34,7 @@ d32239bcb673463ab874e80d47fae504 *inst/GPL-3
 ef8affb607a4669479eb0719444386cd *man/SummarizeBM.Rd
 b531c8e9a2a38aadf5144d0972f701a6 *man/SummarizeMVSLOUCH.Rd
 5c9cdd2a32776164ccc4f04a1b5a72e2 *man/SummarizeOUCH.Rd
-1df846e0a411d535a629a00d42c03554 *man/drawPhylProcess.Rd
+2a01b0218091a1555ba978697cfa3889 *man/drawPhylProcess.Rd
 316855942407c3fe946049fe24b4a830 *man/estimate.evolutionary.model.Rd
 c9e0c9bd2dc556fbec419e6e142cbf0b *man/fitch.mvsl.Rd
 43998b575ed42f821a4fc92f11767a3b *man/generate.model.setups.Rd

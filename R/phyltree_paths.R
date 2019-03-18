@@ -147,6 +147,11 @@ phyltree_paths<-function(phyltree){
     if (is.element("likFun_BM_all",names(phyltree))){phyltree$likFun_BM_all<-NULL}
     if (is.element("kX",names(phyltree))){phyltree$kX<-NULL}
     if (is.element("kYX",names(phyltree))){phyltree$kYX<-NULL}
+    ## field node.label as from version 1.2.9 PCMBase requires unique node.labels
+    ## mvSLOUCH makes no use of this field, while PCMBase permits it to be NULL
+    ## hence as it is user provided it is easier just to remove it here
+    ## before calling PCMBase's likelihood functions
+    if (is.element("node.label",names(phyltree))){phyltree$node.label<-NULL}
     phyltree
 }
 
