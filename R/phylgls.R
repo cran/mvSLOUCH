@@ -29,7 +29,6 @@
 	    vfullintercept<-.get_fullGLSintercept(evolmodel,vIntercept,mD[,1],designToEstim$YnonCondX,model_params)
 	    mY<-.correct_phylGLS_response_by_intercept(mY,vfullintercept)
 	    mD<-mD[,-1,drop=FALSE]
-
 	    glsmodel<-NA
 	    if ((bConditional)){
 		if (bShouldPrint){.my_message("Conditional GLS estimation not implemented yet. Doing unconditional GLS. \n",TRUE)}
@@ -61,9 +60,13 @@
 		if (!is.na(prevB[1])){diff_ests<-.calc.vec.dist(c(prevB),c(model_params$B))}
 	    }else{diff_ests<-0}
 	}
+	else{
+	    model_params<-.extract_from_signs(evolmodel,model_params,designToEstim)
+	}
 	mY<-mYorg
 	iter<-iter+1
     }
+
     model_params
 }
 
@@ -124,8 +127,16 @@
 	if ((is.element("signsvX0",names(designToEstim)))&&(length(which(!is.na(designToEstim$signsvX0)))>0)){
 	    vToExtractvX0<-which(is.na(designToEstim$signsvX0))
 	    mEstGLSvX0<-matrix(0,ncol=1,nrow=kX)
-	    mEstGLSvX0[-vToExtractvX0]<-designToEstim$signsvX0[-vToExtractvX0]
-	    mEstGLSvX0[vToExtractvX0]<-vestim_params[CurrPos:(CurrPos+length(vToExtractvX0)-1)]
+	    if (length(vToExtractvX0)<length(mEstGLSvX0)){
+		if (length(vToExtractvX0)>0){
+		    mEstGLSvX0[-vToExtractvX0]<-designToEstim$signsvX0[-vToExtractvX0]
+		}else{
+		    mEstGLSvX0<-designToEstim$signsvX0
+		}		
+	    }
+	    if (length(vToExtractvX0)>0){
+		mEstGLSvX0[vToExtractvX0]<-vestim_params[CurrPos:(CurrPos+length(vToExtractvX0)-1)]
+	    }
 	    updateCurrPos<-length(vToExtractvX0)
 	}else{
 	    mEstGLSvX0<-matrix(vestim_params[CurrPos:(CurrPos+kX-1)],nrow=kX,ncol=1)
@@ -147,8 +158,16 @@
 	if ((is.element("signsvY0",names(designToEstim)))&&(length(which(!is.na(designToEstim$signsvY0)))>0)){
 	    vToExtractvY0<-which(is.na(designToEstim$signsvY0))
 	    mEstGLSvY0<-matrix(0,ncol=1,nrow=kY)
-	    mEstGLSvY0[-vToExtractvY0]<-designToEstim$signsvY0[-vToExtractvY0]
-	    mEstGLSvY0[vToExtractvY0]<-vestim_params[1:length(vToExtractvY0)]
+	    if (length(vToExtractvY0)<length(mEstGLSvY0)){
+		if (length(vToExtractvY0)>0){
+		    mEstGLSvY0[-vToExtractvY0]<-designToEstim$signsvY0[-vToExtractvY0]
+		}else{
+		    mEstGLSvY0<-designToEstim$signsvY0
+		}
+	    }
+	    if (length(vToExtractvY0)>0){
+		mEstGLSvY0[vToExtractvY0]<-vestim_params[1:length(vToExtractvY0)]
+	    }
 	    updateCurrPos<-length(vToExtractvY0)+1
 	}else{
 	    mEstGLSvY0<-matrix(vestim_params[1:kY],ncol=1)
@@ -161,8 +180,16 @@
 	if ((is.element("signsmPsi",names(designToEstim)))&&(length(which(!is.na(designToEstim$signsmPsi)))>0)){
 	    vToExtractmPsi<-which(is.na(designToEstim$signsmPsi))
 	    mEstGLSmPsi<-matrix(0,nrow=kY,ncol=length(model_params$regimeTypes))
-	    mEstGLSmPsi[-vToExtractmPsi]<-designToEstim$signsmPsi[-vToExtractmPsi]
-	    mEstGLSmPsi[vToExtractmPsi]<-vestim_params[CurrPos:(CurrPos+length(vToExtractmPsi)-1)]
+	    if (length(vToExtractmPsi)<length(mEstGLSmPsi)){
+		if (length(vToExtractmPsi)>0){
+		    mEstGLSmPsi[-vToExtractmPsi]<-designToEstim$signsmPsi[-vToExtractmPsi]
+		}else{
+		    mEstGLSmPsi<-designToEstim$signsmPsi
+		}
+	    }
+	    if (length(vToExtractmPsi)>0){
+		mEstGLSmPsi[vToExtractmPsi]<-vestim_params[CurrPos:(CurrPos+length(vToExtractmPsi)-1)]
+	    }
 	    updateCurrPos<-length(vToExtractmPsi)
 	}else{
 	    mEstGLSmPsi<-matrix(vestim_params[CurrPos:(CurrPos+length(model_params$regimeTypes)*kY-1)],nrow=kY,ncol=length(model_params$regimeTypes),byrow=FALSE)
@@ -174,8 +201,16 @@
         if ((is.element("signsvmPsi0",names(designToEstim)))&&(length(which(!is.na(designToEstim$signsmPsi0)))>0)){
 	    vToExtractmPsi0<-which(is.na(designToEstim$signsmPsi0))
 	    mEstGLSmPsi0<-matrix(0,ncol=1,nrow=kY)
-	    mEstGLSmPsi0[-vToExtractmPsi0]<-designToEstim$signsmPsi0[-vToExtractmPsi0]
-	    mEstGLSmPsi0[vToExtractmPsi0]<-vestim_params[CurrPos:(CurrPos+length(vToExtractmPsi0)-1)]
+	    if (length(vToExtractmPsi0)<length(mEstGLSmPsi0)){
+		if (length(vToExtractmPsi0)>0){
+		    mEstGLSmPsi0[-vToExtractmPsi0]<-designToEstim$signsmPsi0[-vToExtractmPsi0]
+		}else{
+		    mEstGLSmPsi0<-designToEstim$signsmPsi0
+		}
+	    }
+	    if (length(vToExtractmPsi0)>0){
+		mEstGLSmPsi0[vToExtractmPsi0]<-vestim_params[CurrPos:(CurrPos+length(vToExtractmPsi0)-1)]
+	    }
 	    updateCurrPos<-length(vToExtractmPsi0)
 	}else{
 	    mEstGLSmPsi0<-matrix(vestim_params[CurrPos:(CurrPos+kY-1)],nrow=kY,ncol=1)
@@ -210,8 +245,16 @@
 	if ((is.element("signsvY0",names(designToEstim)))&&(length(which(!is.na(designToEstim$signsvY0)))>0)){
 	    vToExtractvY0<-which(is.na(designToEstim$signsvY0))
 	    mEstGLSvY0<-matrix(0,ncol=1,nrow=kY)
-	    mEstGLSvY0[-vToExtractvY0]<-designToEstim$signsvY0[-vToExtractvY0]
-	    mEstGLSvY0[vToExtractvY0]<-vestim_params[1:length(vToExtractvY0)]
+	    if (length(vToExtractvY0)<length(mEstGLSvY0)){
+		if (length(vToExtractvY0)>0){
+		    mEstGLSvY0[-vToExtractvY0]<-designToEstim$signsvY0[-vToExtractvY0]
+		}else{
+		    mEstGLSvY0<-designToEstim$signsvY0
+		}
+	    }
+	    if (length(vToExtractvY0)>0){
+		mEstGLSvY0[vToExtractvY0]<-vestim_params[1:length(vToExtractvY0)]
+	    }
 	    updateCurrPos<-length(vToExtractvY0)+1
 	}else{
 	    mEstGLSvY0<-matrix(vestim_params[1:kY],ncol=1)
@@ -225,8 +268,16 @@
 	if ((is.element("signsmPsi",names(designToEstim)))&&(length(which(!is.na(designToEstim$signsmPsi)))>0)){
 	    vToExtractmPsi<-which(is.na(designToEstim$signsmPsi))
 	    mEstGLSmPsi<-matrix(0,nrow=kY,ncol=length(model_params$regimeTypes))
-	    mEstGLSmPsi[-vToExtractmPsi]<-designToEstim$signsmPsi[-vToExtractmPsi]
-	    mEstGLSmPsi[vToExtractmPsi]<-vestim_params[CurrPos:(CurrPos+length(vToExtractmPsi)-1)]
+	    if (length(vToExtractmPsi)<length(mEstGLSmPsi)){
+		if (length(vToExtractmPsi)>0){
+		    mEstGLSmPsi[-vToExtractmPsi]<-designToEstim$signsmPsi[-vToExtractmPsi]
+		}else{
+		    mEstGLSmPsi<-designToEstim$signsmPsi
+		}
+	    }
+	    if (length(vToExtractmPsi)>0){
+		mEstGLSmPsi[vToExtractmPsi]<-vestim_params[CurrPos:(CurrPos+length(vToExtractmPsi)-1)]
+	    }
 	    updateCurrPos<-length(vToExtractmPsi)
 	}else{
 	    mEstGLSmPsi<-matrix(vestim_params[CurrPos:(CurrPos+length(model_params$regimeTypes)*kY-1)],nrow=kY,ncol=length(model_params$regimeTypes),byrow=FALSE)
@@ -240,8 +291,16 @@
 	if ((is.element("signsmPsi0",names(designToEstim)))&&(length(which(!is.na(designToEstim$signsmPsi0)))>0)){
 	    vToExtractmPsi0<-which(is.na(designToEstim$signsmPsi0))
 	    mEstGLSmPsi0<-matrix(0,ncol=1,nrow=kY)
-	    mEstGLSmPsi0[-vToExtractmPsi0]<-designToEstim$signsmPsi0[-vToExtractmPsi0]
-	    mEstGLSmPsi0[vToExtractmPsi0]<-vestim_params[CurrPos:(CurrPos+length(vToExtractmPsi0)-1)]
+	    if (length(vToExtractmPsi0)<length(mEstGLSmPsi0)){
+		if (length(vToExtractmPsi0)>0){
+		    mEstGLSmPsi0[-vToExtractmPsi0]<-designToEstim$signsmPsi0[-vToExtractmPsi0]
+		}else{
+		    mEstGLSmPsi0<-designToEstim$signsmPsi0
+		}
+	    }
+	    if (length(vToExtractmPsi0)>0){
+		mEstGLSmPsi0[vToExtractmPsi0]<-vestim_params[CurrPos:(CurrPos+length(vToExtractmPsi0)-1)]
+	    }
 	    updateCurrPos<-length(vToExtractmPsi0)
 	}else{
 	    mEstGLSmPsi0<-matrix(vestim_params[CurrPos:(CurrPos+kY-1)],nrow=kY,ncol=1)
@@ -257,9 +316,15 @@
 	    mEstGLSB<-matrix(0,nrow=kY,ncol=kX)
 	    mTmpB<-t(mEstGLSB)
 	    ## R fills in by default by column
-	    mTmpB[vToExtractB]<-vestim_params[CurrPos:(CurrPos+length(vToExtractB)-1)]
+	    if (length(vToExtractB)>0){
+		mTmpB[vToExtractB]<-vestim_params[CurrPos:(CurrPos+length(vToExtractB)-1)]
+	    }
 	    mEstGLSB<-t(mTmpB)
-	    mEstGLSB[-vToExtractB]<-designToEstim$signsB[-vToExtractB]
+	    if (length(vToExtractB)<length(mEstGLSB)){
+		if (length(vToExtractB)>0){
+		    mEstGLSB[-vToExtractB]<-designToEstim$signsB[-vToExtractB]
+		}else{mEstGLSB<-designToEstim$signsB}
+	    }
 	    updateCurrPos<-length(vToExtractB)
 	}else{
 	    mEstGLSB<-matrix(vestim_params[CurrPos:(CurrPos+kX*kY-1)],nrow=kY,ncol=kX,byrow=TRUE)
@@ -274,8 +339,16 @@
 	if ((is.element("signsvX0",names(designToEstim)))&&(length(which(!is.na(designToEstim$signsvX0)))>0)){
 	    vToExtractvX0<-which(is.na(designToEstim$signsvX0))
 	    mEstGLSvX0<-matrix(0,ncol=1,nrow=kX)
-	    mEstGLSvX0[-vToExtractvX0]<-designToEstim$signsvX0[-vToExtractvX0]
-	    mEstGLSvX0[vToExtractvX0]<-vestim_params[CurrPos:(CurrPos+length(vToExtractvX0)-1)]
+	    if (length(vToExtractvX0)<length(mEstGLSvX0)){
+	        if (length(vToExtractvX0)>0){
+	    	    mEstGLSvX0[-vToExtractvX0]<-designToEstim$signsvX0[-vToExtractvX0]
+	        }else{
+	    	    mEstGLSvX0<-designToEstim$signsvX0
+	        }
+	    }
+	    if (length(vToExtractvX0)>0){
+		mEstGLSvX0[vToExtractvX0]<-vestim_params[CurrPos:(CurrPos+length(vToExtractvX0)-1)]
+	    }
 	    updateCurrPos<-length(vToExtractvX0)
 	}else{
 	    mEstGLSvX0<-matrix(vestim_params[CurrPos:(CurrPos+kX-1)],nrow=kX,ncol=1)
@@ -298,6 +371,111 @@
     model_params$pcmbase_model_box<-.update_pcmbase_box_params_mvslouch(model_params,vDo=vDoParamsUpdate)
     model_params
 }
+
+
+
+.extract_from_signs<-function(evolmodel,model_params,designToEstim){
+## there is no need for information on conditionalYcT or not
+## as information if B was estimated via GLS sits in designToEstim$B
+## while at this point we do not care how the values were calculated we only want to extract them
+
+    vDoParamsUpdate<-c("H"=FALSE,"Theta"=FALSE,"Sigma_x"=FALSE,"X0"=FALSE)
+    if (evolmodel=="mvslouch" || evolmodel=="ouch"){kY<-nrow(model_params$A)}else{kY<-0}
+    if (evolmodel=="mvslouch" || evolmodel=="bm"){kX<-nrow(model_params$Sxx)}else{kX<-0}
+
+    CurrPos<-1
+    if (evolmodel=="mvslouch" || evolmodel=="ouch"){
+	if (designToEstim$y0 && !designToEstim$y0AncState){
+	    if ((is.element("signsvY0",names(designToEstim)))&&(length(which(!is.na(designToEstim$signsvY0)))>0)){
+		vToExtractvY0<-which(!is.na(designToEstim$signsvY0))
+		mEstGLSvY0<-matrix(0,ncol=1,nrow=kY)
+		if (length(vToExtractvY0)>0){
+		    mEstGLSvY0[vToExtractvY0]<-designToEstim$signsvY0[vToExtractvY0]
+		    updateCurrPos<-length(vToExtractvY0)+1
+		    model_params$vY0<-mEstGLSvY0;if(updateCurrPos>1){vDoParamsUpdate["X0"]<-TRUE}
+		}	    
+	    }	
+	}
+    
+    
+	## we get y0 last as we might be mapping it back to optimal ancestral state
+	if (designToEstim$psi){
+	    if ((is.element("signsmPsi",names(designToEstim)))&&(length(which(!is.na(designToEstim$signsmPsi)))>0)){
+		vToExtractmPsi<-which(!is.na(designToEstim$signsmPsi))
+		mEstGLSmPsi<-matrix(0,nrow=kY,ncol=length(model_params$regimeTypes))
+		if (length(vToExtractmPsi)>0){
+		    mEstGLSmPsi[vToExtractmPsi]<-designToEstim$signsmPsi[vToExtractmPsi]
+		    updateCurrPos<-length(vToExtractmPsi)
+	    	    model_params$mPsi<-mEstGLSmPsi;if(updateCurrPos>0){vDoParamsUpdate["Theta"]<-TRUE}
+		}	    
+	    }
+	}
+	## get psi0
+	if (designToEstim$psi0){
+	    if ((is.element("signsmPsi0",names(designToEstim)))&&(length(which(!is.na(designToEstim$signsmPsi0)))>0)){
+		vToExtractmPsi0<-which(!is.na(designToEstim$signsmPsi0))
+	        mEstGLSmPsi0<-matrix(0,ncol=1,nrow=kY)
+		if (length(vToExtractmPsi0)>0){
+		    mEstGLSmPsi0[vToExtractmPsi0]<-designToEstim$signsmPsi0[vToExtractmPsi0]
+	    	    updateCurrPos<-length(vToExtractmPsi0)
+		    model_params$mPsi0<-mEstGLSmPsi0
+		}
+	    }
+	}
+    }
+    if (evolmodel=="mvslouch"){
+	## get B
+	if (is.element("B",names(designToEstim)) && designToEstim$B){
+	    if ((is.element("signsB",names(designToEstim)))&&(length(which(!is.na(designToEstim$signsB)))>0)){
+		vToExtractB<-which(!is.na(designToEstim$signsB))
+		mEstGLSB<-matrix(0,nrow=kY,ncol=kX)
+		if (length(vToExtractB)>0){
+		    mEstGLSB[vToExtractB]<-designToEstim$signsB[vToExtractB]
+		    updateCurrPos<-length(vToExtractB)
+		    model_params$B<-mEstGLSB;if(updateCurrPos>0){vDoParamsUpdate["H"]<-TRUE}
+		    model_params$precalcMatrices[[1]]$A1B<-model_params$precalcMatrices[[1]]$invA%*%model_params$B
+		}
+	    }	
+	}
+    }
+    
+    if (evolmodel=="mvslouch" || evolmodel=="bm"){
+	## get X0        
+	if (is.element("X0",names(designToEstim)) &&designToEstim$X0){
+	    if ((is.element("signsvX0",names(designToEstim)))&&(length(which(!is.na(designToEstim$signsvX0)))>0)){
+		vToExtractvX0<-which(!is.na(designToEstim$signsvX0))
+		mEstGLSvX0<-matrix(0,ncol=1,nrow=kX)
+		if (length(vToExtractvX0)>0){
+	    	    mEstGLSvX0[-vToExtractvX0]<-designToEstim$signsvX0[-vToExtractvX0]
+	    	    updateCurrPos<-length(vToExtractvX0)
+	    	    model_params$vX0<-mEstGLSvX0;vDoParamsUpdate["X0"]<-TRUE
+		}	
+	    }
+	}
+    }
+
+    if (evolmodel=="mvslouch" || evolmodel=="ouch"){
+	## get y0
+	if (designToEstim$y0 && designToEstim$y0AncState){
+	    model_params$vY0<-matrix(model_params$mPsi[,designToEstim$y0Regime,drop=FALSE],ncol=1,nrow=kY)
+	    if (is.element("mPsi0",names(model_params))&&(!is.null(model_params$mPsi0))&&(!is.na(model_params$mPsi0[1]))){
+		model_params$vY0<-matrix(model_params$vY0+model_params$mPsi0,ncol=1,nrow=kY)
+	    }
+    	    ## how to deal with this for det(A)=0?
+    	    if ((is.element("y0OnlyFixed",designToEstim))&&(!designToEstim$y0OnlyFixed)&&(!is.na(model_params$precalcMatrices[[1]]$A1B[1]))){model_params$vY0<-model_params$vY0-model_params$precalcMatrices[[1]]$A1B%*%model_params$vX0}
+	    model_params$vY0<-matrix(model_params$vY0,ncol=1)
+    	    vDoParamsUpdate["X0"]<-TRUE
+	}    
+    }
+
+    model_params$pcmbase_model_box=switch(evolmodel,
+	bm=.update_pcmbase_box_params_bm(model_params,vDo=vDoParamsUpdate),
+	ouch=.update_pcmbase_box_params_ouch(model_params,vDo=vDoParamsUpdate),
+	mvslouch=.update_pcmbase_box_params_mvslouch(model_params,vDo=vDoParamsUpdate)
+    )
+    model_params
+}
+
 
 .design_matrix_construction<-function(evolmodel,n,model_params=NULL,designToEstim=NULL,kYX=NULL,mX=NULL){
     mD=switch(evolmodel,
@@ -503,7 +681,7 @@
 	    vmPsinotGLS<-which(!is.na(designToEstim$signsmPsi))
 	    vtmppsi<-designToEstim$signsmPsi
 	    vtmppsi[which(is.na(vtmppsi))]<-0
-	    vinterceptcorrect<-vinterceptcorrect+mD[,(currXcol):(currXcol+length(modelParams$regimeTypes)*kY-1)]%*%vtmppsi
+	    vinterceptcorrect<-vinterceptcorrect+mD[,(currXcol):(currXcol+length(modelParams$regimeTypes)*kY-1),drop=FALSE]%*%vtmppsi
 	    if (length(vmPsinotGLS)>0){
 	    ## should work as all seems to be columnwise
 		mD<-mD[,-c(vmPsinotGLS+currXcol-1),drop=FALSE]
@@ -522,7 +700,7 @@
 	    mPsi0notGLS<-which(!is.na(designToEstim$signsmPsi0))
 	    vtmppsi0<-designToEstim$signsmPsi0
 	    vtmppsi0[which(is.na(vtmppsi0))]<-0
-	    vinterceptcorrect<-vinterceptcorrect+mD[,currXcol:(currXcol+kY-1)]%*%vtmppsi0
+	    vinterceptcorrect<-vinterceptcorrect+mD[,currXcol:(currXcol+kY-1),drop=FALSE]%*%vtmppsi0
 	    if (length(mPsi0notGLS)>0){
 		mD<-mD[,-c(mPsi0notGLS+currXcol-1),drop=FALSE]
 		updateXcol<-updateXcol-length(mPsi0notGLS);iNumToEstim<-iNumToEstim-length(mPsi0notGLS)
@@ -592,7 +770,7 @@
 		vBnotGLS<-which(!is.na(designToEstim$signsB))
 		vtmpB<-designToEstim$signsB
 		vtmpB[which(is.na(vtmpB))]<-0
-		vinterceptcorrect<-vinterceptcorrect+mDtmp[,(currXcol):(currXcol+kY*kX-1)]%*%vtmpB
+		vinterceptcorrect<-vinterceptcorrect+mDtmp[,(currXcol):(currXcol+kY*kX-1),drop=FALSE]%*%vtmpB
 		if (length(vBnotGLS)>0){
 		    mDtmp<-mDtmp[,-c(vBnotGLS+currXcol-1),drop=FALSE]
 		    updateXcol<-updateXcol-length(vBnotGLS);iNumToEstim<-iNumToEstim-length(vBnotGLS)

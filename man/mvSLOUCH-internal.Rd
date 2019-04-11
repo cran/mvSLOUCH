@@ -67,6 +67,7 @@
 \alias{.dzetaKappa.matrix2}                      
 \alias{.dzetaKappa.simp.intercept}               
 \alias{.EvaluatePoint}                           
+\alias{.extract_from_signs}                     
 \alias{.extract_GLS_results}                     
 \alias{.extract_GLS_results_bm}                  
 \alias{.extract_GLS_results_mvslouch}            

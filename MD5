@@ -1,4 +1,4 @@
-2fe6de708e88a00f0ba03f3e6b6dfa2f *DESCRIPTION
+4db2667f3c68174e58a0dae62c31da44 *DESCRIPTION
 0632cc7589c46bbf4981f0a778f1ef2a *LICENCE
 fd0fc8ce76a80c240c356ef5f05379cb *NAMESPACE
 c12be5894115090b6f7e5fe05ba47f1a *R/PhyloSDEestim.R
@@ -17,7 +17,7 @@ c6d607939b83d5e1115f75e28f90dde2 *R/matrixparametrizations.R
 aafb025b35ff9d097030bd6f7ac12ff6 *R/modelparams.R
 ed1e85e2ffded41ae52bcb668318ed9b *R/modelparamssummary.R
 5a9041134a1d45f4256ae1dc269fdb90 *R/modelparamstransform.R
-2d4c9ce98a6d4bdbde1f01451cc09f4b *R/phylgls.R
+e0a91dc0db9cd36d6c717823d480556a *R/phylgls.R
 bea0edeaa2fc232eca8e1c2b62b9cb5a *R/phyltree_paths.R
 b03156e95d78612777ef01e56601573a *R/precalcs.R
 247d6a321de5b5197cbaf18c9897e943 *R/regimes.R
@@ -38,7 +38,7 @@ b531c8e9a2a38aadf5144d0972f701a6 *man/SummarizeMVSLOUCH.Rd
 316855942407c3fe946049fe24b4a830 *man/estimate.evolutionary.model.Rd
 c9e0c9bd2dc556fbec419e6e142cbf0b *man/fitch.mvsl.Rd
 43998b575ed42f821a4fc92f11767a3b *man/generate.model.setups.Rd
-6133424e65fb93261617fd54247f5813 *man/mvSLOUCH-internal.Rd
+7144d17ba79dc1bcff2b56793632a073 *man/mvSLOUCH-internal.Rd
 def0eec0a70a678e87260115c533a461 *man/mvSLOUCH-package.Rd
 9e9d640a545e339327d4e0e014f01c09 *man/mvslouchModel.Rd
 e7ca18f364575a8fa71a094d07457756 *man/ouchModel.Rd
