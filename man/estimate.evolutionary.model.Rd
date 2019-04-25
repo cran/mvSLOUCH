@@ -41,7 +41,10 @@ and is a vector for regimes on that lineage. If \code{NULL}, then a constant reg
 the whole tree.
 }
   \item{root.regime}{
-The regime at the root of the tree. If not given, taken as first element of regimes.
+The regime at the root of the tree. If not given, then it is taken as the regime that is present
+on the root's daughter lineages and is the most frequent one in the \code{regimes} vector. If more
+than one regime has the same maximum frequency, then alphabetically first one of the maximum ones
+is taken.
 }
   \item{M.error}{
 An optional measurement error covariance structure. The measurement errors between species are assumed 

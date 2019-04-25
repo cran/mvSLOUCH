@@ -1,4 +1,4 @@
-4db2667f3c68174e58a0dae62c31da44 *DESCRIPTION
+11439fd2da9999e9bebb223076fb056a *DESCRIPTION
 0632cc7589c46bbf4981f0a778f1ef2a *LICENCE
 fd0fc8ce76a80c240c356ef5f05379cb *NAMESPACE
 c12be5894115090b6f7e5fe05ba47f1a *R/PhyloSDEestim.R
@@ -20,7 +20,7 @@ ed1e85e2ffded41ae52bcb668318ed9b *R/modelparamssummary.R
 e0a91dc0db9cd36d6c717823d480556a *R/phylgls.R
 bea0edeaa2fc232eca8e1c2b62b9cb5a *R/phyltree_paths.R
 b03156e95d78612777ef01e56601573a *R/precalcs.R
-247d6a321de5b5197cbaf18c9897e943 *R/regimes.R
+dfb1068c5daf43c311918a4ab0966289 *R/regimes.R
 fe65f2a983d4bd861c1d56a7898d8891 *R/sdecovariancephyl.R
 276eec3a6aaadb9cf8efdc0aa04d207b *R/sdemoments.R
 b492eea3caaf64334857ecf9f4a75507 *R/simulVasicekproc.R
@@ -35,14 +35,14 @@ ef8affb607a4669479eb0719444386cd *man/SummarizeBM.Rd
 b531c8e9a2a38aadf5144d0972f701a6 *man/SummarizeMVSLOUCH.Rd
 5c9cdd2a32776164ccc4f04a1b5a72e2 *man/SummarizeOUCH.Rd
 2a01b0218091a1555ba978697cfa3889 *man/drawPhylProcess.Rd
-316855942407c3fe946049fe24b4a830 *man/estimate.evolutionary.model.Rd
+81a3b00519b77e23f23567e4b6b6d9e7 *man/estimate.evolutionary.model.Rd
 c9e0c9bd2dc556fbec419e6e142cbf0b *man/fitch.mvsl.Rd
 43998b575ed42f821a4fc92f11767a3b *man/generate.model.setups.Rd
 7144d17ba79dc1bcff2b56793632a073 *man/mvSLOUCH-internal.Rd
 def0eec0a70a678e87260115c533a461 *man/mvSLOUCH-package.Rd
-9e9d640a545e339327d4e0e014f01c09 *man/mvslouchModel.Rd
-e7ca18f364575a8fa71a094d07457756 *man/ouchModel.Rd
-a37b6849504ac3e1ae37903a4513f1af *man/parametric.bootstrap.Rd
+64e546b84abe27a971ed22b73d7fec3e *man/mvslouchModel.Rd
+680cd7dd860ead005b331bc0156b4cc7 *man/ouchModel.Rd
+99ce5a73c355b0e084cc659fb2aa8fdc *man/parametric.bootstrap.Rd
 c59cad7390455bd7d7b8e9218697a6d6 *man/phyltree_paths.Rd
 739d2d92bb0777c91342a8a87865ff92 *man/simulBMProcPhylTree.Rd
 fb61c5b973826404058e01539bb4d60f *man/simulMVSLOUCHProcPhylTree.Rd

@@ -41,7 +41,10 @@ In between are the times where the regimes (niches) changed. If \code{NULL} then
 considered to be a regime.
 }
   \item{root.regime}{
-The regime at the root of the tree. If not given taken as first element of regimes.
+The regime at the root of the tree. If not given, then it is taken as the regime that is present
+on the root's daughter lineages and is the most frequent one in the \code{regimes} vector. If more
+than one regime has the same maximum frequency, then alphabetically first one of the maximum ones
+is taken.
 }
   \item{predictors}{
 A vector giving the numbers of the columns from

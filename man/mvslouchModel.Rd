@@ -32,7 +32,7 @@ a warning is thrown and generic names are generated.
   \item{kY}{Number of "Y" (response) variables.}
   \item{regimes}{
 A vector or list of regimes. If vector then each entry corresponds to each of \code{phyltree}'s
-branches, i.e. to each row of \code{phyltree$edge}.If list then each list entry corresponds to a tip node
+branches, i.e. to each row of \code{phyltree$edge}. If list then each list entry corresponds to a tip node
 and is a vector for regimes on that lineage. If \code{NULL}, then a constant regime is assumed on
 the whole tree.
 }
@@ -42,7 +42,10 @@ of the species. In between are the times where the regimes (niches) changed. If 
 then each branch is considered to be a regime.
 }
   \item{root.regime}{
-The regime at the root of the tree. If not given taken as first element of regimes.
+The regime at the root of the tree. If not given, then it is taken as the regime that is present
+on the root's daughter lineages and is the most frequent one in the \code{regimes} vector. If more
+than one regime has the same maximum frequency, then alphabetically first one of the maximum ones
+is taken.
 }
   \item{predictors}{
 A vector giving the numbers of the columns from \code{data} which are to be considered predictor ones, 

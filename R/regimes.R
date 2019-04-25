@@ -81,7 +81,15 @@
 	    if (is.null(names(phyltree$edge.length))){names(phyltree$edge.length)<-regimes}
 	    else{if (!all(regimes==names(phyltree$edge.length))){names(phyltree$edge.length)<-regimes;.my_warning("WARNING: provided regimes differ from those in phylogenetic tree (names of edge.length field). Using provided regimes.",TRUE,TRUE)}}
     	    
-    	    if (is.null(root.regime)){root.regime<-regimes[1]}
+    	    if (is.null(root.regime)){
+    		v_root_branches<-which(phyltree$edge[,1]==phyltree$root_index)
+    		v_cand_regs<-unique(regimes[v_root_branches])
+    		if (length(v_cand_regs)>1){
+    		    root.regime<-names(which.max(table(regimes)[as.character(v_cand_regs)]))
+    		}else{
+    		    root.regime<-v_cand_regs
+    		}    		
+    	    }
     	    if (is.null(names(phyltree$edge.length))){names(phyltree$edge.length)<-regimes}
     	    vregimes<-regimes
     	    regimes<-sapply(phyltree$path.from.root,function(lnodes_lineage,vregimes){
