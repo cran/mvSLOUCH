@@ -100,7 +100,7 @@ estimate.evolutionary.model<-function(phyltree,mData,regimes=NULL,root.regime=NU
 		if (is.element("start_point_for_optim",names(model.setups[[k]]))){
 		    if ((i==2)||(repeats==1)){lStartPoint<-model.setups[[k]]$start_point_for_optim;bdoanalytical_start<-FALSE}
 		}
-		if ((!bdoanalytical_start)&&(i==1)){
+		if ((bdoanalytical_start)&&(i==1)){
 		    lStartPoint<-.createStartPointsASyyB(mData,phyltree$tree_height,model.setups[[k]],ncol(mData),FALSE)		    
 		}
 		
@@ -143,7 +143,7 @@ estimate.evolutionary.model<-function(phyltree,mData,regimes=NULL,root.regime=NU
 		if (is.element("start_point_for_optim",names(model.setups[[k]]))){
 		    if ((i==2)||(repeats==1)){lStartPoint<-model.setups[[k]]$start_point_for_optim;bdoanalytical_start<-FALSE}
 		}
-		if ((!bdoanalytical_start)&&(i==1)){
+		if ((bdoanalytical_start)&&(i==1)){
 		    lStartPoint<-.createStartPointsASyyB(mData.mvsl,phyltree$tree_height,model.setups[[k]],kY,TRUE)		    
 		}
 		
