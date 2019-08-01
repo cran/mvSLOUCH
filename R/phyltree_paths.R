@@ -172,6 +172,11 @@ phyltree_paths<-function(phyltree){
 	if (!is.na(vedge_names[1])){names(vedge_names)<-names(phyltree$edge.length)}
 	
 	phyltree<-ape::drop.tip(phyltree,vtips,trim.internal=FALSE,collapse.singles=FALSE)
+	v_new_empty_tips<-which(phyltree$tip.label=="NA")## a new tip could be created if a whole clade is in vtips, e.g. a cherry
+	while(length(v_new_empty_tips)>0){## this has to stop as we know that there are tips with measurements in the tree	
+	    phyltree<-ape::drop.tip(phyltree,v_new_empty_tips,trim.internal=FALSE,collapse.singles=FALSE)
+	    v_new_empty_tips<-which(phyltree$tip.label=="NA")## a new tip could be created if a whole clade is in vtips, e.g. a cherry
+	}
 
 	if (!is.na(vedge_regime[1])){phyltree$edge.regime<-vedge_regime[names(phyltree$edge.length)]}
 	if (!is.na(vedge_jump[1])){phyltree$edge.jump<-vedge_jump[names(phyltree$edge.length)]}

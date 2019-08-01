@@ -230,9 +230,9 @@
 			    phylLogLik$R2<-"Not calculated due to error"
 			    
 			    tryCatch({
-				vIntercp<-apply(mData,2,mean)
+				vIntercp<-apply(mData,2,mean,na.rm=TRUE)
 				mInterceptCentredData<-mData-matrix(c(vIntercp),nrow=n,ncol=length(vIntercp),byrow=TRUE)
-				RSS_null_model<-sum((mInterceptCentredData)^2)
+				RSS_null_model<-sum((mInterceptCentredData)^2,na.rm=TRUE)
 				phylLogLik$RSS<-.pcmbaseDphylGaussian_RSS(mData,phyltree,modelParams$pcmbase_model_box)
 				phylLogLik$R2<-1-phylLogLik$RSS/RSS_null_model
 				

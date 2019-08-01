@@ -224,7 +224,18 @@
 	    }
 	    RSS<-NA
 	    if (bRSScalc){
-		RSS<- .pcmbaseDphylGaussian_RSS(mX,phyltree,pcmbase_model_box)		
+		RSS<-list(RSS=NA,R2=NA)
+		vIntercp<-apply(mX,2,mean,na.rm=TRUE)
+                mInterceptCentredData<-mX-matrix(c(vIntercp),nrow=n,ncol=length(vIntercp),byrow=TRUE)
+                RSS_null_model<-sum((mInterceptCentredData)^2,na.rm=TRUE)
+		RSS$RSS<- .pcmbaseDphylGaussian_RSS(mX,phyltree,pcmbase_model_box)		
+		RSS$R2<-1-(RSS$RSS)/RSS_null_model
+		if (!is.element("RSS",names(RSS))||is.na(RSS$RSS)||(RSS$RSS<0)){
+            	    RSS$RSS_comment<-"RSS is negative, consider rerunning estimation or a different (also non-phylogenetic) model of evolution"
+                }
+                if (!is.element("R2",names(RSS))||is.na(RSS$R2)||(RSS$R2<0)){
+            	    RSS$R2_comment<-"R2 is negative, consider rerunning estimation or a different (also non-phylogenetic) model of evolution"
+                }
 	    }
     }    
     list(vX0=matrix(vX0,ncol=1,nrow=length(vX0)),StS=StS,Sxx=Sxx,LogLik=LogLik,RSS=RSS,regressCovar=mRegressCovar)

@@ -80,7 +80,7 @@
     nV<-nrow(V)
     corrV<-cov2cor(V)    
     sumoffdiagabscorrV<-sum(abs(corrV[upper.tri(corrV,diag=FALSE)]))
-    rhoabsV<-mean(abs(corrV[upper.tri(corrV,diag=FALSE)]))
+    rhoabsV<-mean(abs(corrV[upper.tri(corrV,diag=FALSE)]),na.rm=TRUE)
 
     ESS.factor<-0
     ESS<-1
@@ -227,14 +227,14 @@
         if (ESS.method=="mvreg"){ESS.factor<-ESS.factor.mvreg;ESS<-ESS.mvreg;ESS.factor.model.selection<-ESS.factor.reg;ESS.model.selection<-ESS.reg}
     }
     rhon<-matrix(0,procdim,procdim)
-    if (procdim==1){rhon[1,1]<-mean(c(corrV[upper.tri(corrV,diag=FALSE)]))}
+    if (procdim==1){rhon[1,1]<-mean(c(corrV[upper.tri(corrV,diag=FALSE)]),na.rm=TRUE)}
     else{
 	for(i in 1:procdim){
 	    for(j in 1:procdim){
 		itraits<-which(((1:nrow(corrV))-1)%%procdim+1 == i)
 		jtraits<-which(((1:nrow(corrV))-1)%%procdim+1 == j)
 		corrVij<-corrV[itraits,jtraits]
-		rhon[i,j]<-mean(c(corrVij[upper.tri(corrVij,diag=FALSE)]))
+		rhon[i,j]<-mean(c(corrVij[upper.tri(corrVij,diag=FALSE)],na.rm=TRUE))
 	    }
 	}
     }

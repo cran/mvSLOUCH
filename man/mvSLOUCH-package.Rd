@@ -31,8 +31,8 @@ bugs to Krzysztof Bartoszek at krzbar@protonmail.ch .
 \tabular{ll}{
 Package: \tab mvSLOUCH\cr
 Type: \tab Package\cr
-Version: \tab 2.0.0\cr
-Date: \tab 2018-05-16\cr
+Version: \tab 2.0.7\cr
+Date: \tab 2019-08-01\cr
 License: \tab GPL (>= 2)\cr
 LazyLoad: \tab yes\cr
 }

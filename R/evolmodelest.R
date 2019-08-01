@@ -62,10 +62,12 @@ estimate.evolutionary.model<-function(phyltree,mData,regimes=NULL,root.regime=NU
 	M_error_for_ESS<-M.error
     }else{phyltreeESS<-NULL;BestModelESS<-NULL;vNAs_forESS<-NULL;M_error_for_ESS<-NULL}
     
+    used_model_setups<-list()
     for (i in 1:repeats){
 	for (k in 1:length(model.setups)){
 	    if ((model.setups[[k]]$evolmodel=="bm") && (i==1)){
 	    ## no point in doing BM more than once as it will always give the same estimation result
+		used_model_setups<-c(used_model_setups,model.setups[k])
 		if (doPrint){.my_message("Doing estimation for BM model.\n",TRUE)}
 		BMres<-NULL
 		tryCatch({
@@ -81,7 +83,7 @@ estimate.evolutionary.model<-function(phyltree,mData,regimes=NULL,root.regime=NU
 		    vNAs_forESS<-vNAs
     		}
 
-		l_estres_postproc<-.postproc_estres(BMres, BestModel, "bm", model.setups[[k]], i, pESS, BestModelESS=BestModelESS, phyltreeESS=phyltreeESS, mData=mData_forESS, M.error=M_error_for_ESS,vNAs=vNAs_forESS)
+		l_estres_postproc<-.postproc_estres(BMres, BestModel, "bm", model.setups[[k]], j-1, pESS, BestModelESS=BestModelESS, phyltreeESS=phyltreeESS, mData=mData_forESS, M.error=M_error_for_ESS,vNAs=vNAs_forESS)
 		BestModel<-l_estres_postproc$BestModel
 		testedModels[[j-1]]$aic.c<-l_estres_postproc$aic.c
 		testedModels[[j-1]]$bic<-l_estres_postproc$bic
@@ -92,6 +94,7 @@ estimate.evolutionary.model<-function(phyltree,mData,regimes=NULL,root.regime=NU
 		BestModelESS<-l_estres_postproc$BestModelESS    		
 	    }
 	    if (model.setups[[k]]$evolmodel=="ouch"){
+		used_model_setups<-c(used_model_setups,model.setups[k])
 		if(doPrint){.my_message(paste("Doing estimation for ouch model with A: ",model.setups[[k]]$Atype," with diagonal: ",model.setups[[k]]$diagA," Syy: ",model.setups[[k]]$Syytype,"\n",sep=""),TRUE)}
 		OUres<-NULL
 		lStartPoint<-NULL
@@ -117,7 +120,7 @@ estimate.evolutionary.model<-function(phyltree,mData,regimes=NULL,root.regime=NU
 		    if (length(vNAs)==0){vNAs<-NULL}
 		    vNAs_forESS<-vNAs
     		}
-    		l_estres_postproc<-.postproc_estres(OUres, BestModel, "ouch", model.setups[[k]], i, pESS, BestModelESS=BestModelESS, phyltreeESS=phyltreeESS, mData=mData_forESS, M.error=M_error_for_ESS,vNAs=vNAs_forESS)
+    		l_estres_postproc<-.postproc_estres(OUres, BestModel, "ouch", model.setups[[k]], j-1, pESS, BestModelESS=BestModelESS, phyltreeESS=phyltreeESS, mData=mData_forESS, M.error=M_error_for_ESS,vNAs=vNAs_forESS)
 		BestModel<-l_estres_postproc$BestModel
 		testedModels[[j-1]]$aic.c<-l_estres_postproc$aic.c
 		testedModels[[j-1]]$bic<-l_estres_postproc$bic
@@ -128,6 +131,7 @@ estimate.evolutionary.model<-function(phyltree,mData,regimes=NULL,root.regime=NU
 		BestModelESS<-l_estres_postproc$BestModelESS    		
 	    }
 	    if (model.setups[[k]]$evolmodel=="mvslouch"){
+		used_model_setups<-c(used_model_setups,model.setups[k])
 		if (is.null(kY)){
 		    if (!is.null(predictors)){
 			mData.mvsl<-mData[,c(setdiff(1:ncol(mData),predictors),predictors)]
@@ -160,7 +164,7 @@ estimate.evolutionary.model<-function(phyltree,mData,regimes=NULL,root.regime=NU
 		    if (length(vNAs)==0){vNAs<-NULL}
 		    vNAs_forESS<-vNAs
     		}
-    		l_estres_postproc<-.postproc_estres(mvslres, BestModel, "mvslouch", model.setups[[k]], i, pESS, BestModelESS=BestModelESS, phyltreeESS=phyltreeESS, mData=mData_forESS, M.error=M_error_for_ESS,vNAs=vNAs_forESS)
+    		l_estres_postproc<-.postproc_estres(mvslres, BestModel, "mvslouch", model.setups[[k]], j-1, pESS, BestModelESS=BestModelESS, phyltreeESS=phyltreeESS, mData=mData_forESS, M.error=M_error_for_ESS,vNAs=vNAs_forESS)
 		BestModel<-l_estres_postproc$BestModel
 		testedModels[[j-1]]$aic.c<-l_estres_postproc$aic.c
 		testedModels[[j-1]]$bic<-l_estres_postproc$bic
@@ -173,7 +177,8 @@ estimate.evolutionary.model<-function(phyltree,mData,regimes=NULL,root.regime=NU
 	}
     }   
     tryCatch({BestModel<-.describe.best.model(BestModel)},error=function(e){.my_message("Cannot describe best model, please go into returned object: ",TRUE);.my_message(e,TRUE);.my_message("\n",TRUE)})
-    model.setups<-rep(model.setups,repeats)
+    model.setups<-used_model_setups
+    ##model.setups<-rep(model.setups,repeats)
     res<-NA
     if ((!is.null(pESS))&&(pESS!="only_calculate")){
 	tryCatch({BestModelESS<-.describe.best.model(BestModelESS)},error=function(e){.my_message("Cannot describe best ESS model, please go into returned object: ",TRUE);.my_message(e,TRUE);.my_message("\n",TRUE)})
@@ -719,7 +724,7 @@ generate.model.setups<-function(){
     if ((!matrixcalc::is.symmetric.matrix(Sigma)) || (!matrixcalc::is.positive.definite(Sigma))){
 	Sigma<-as.matrix(Matrix::nearPD(Sigma)$mat)
     }
-    SyyStartPoint<-.changeSigmatoSyy(Sigma[1:kY,1:kY],model_setup$Syytype,diagSyy,signsSyy,FALSE)		    
+    SyyStartPoint<-.changeSigmatoSyy(Sigma[1:kY,1:kY,drop=FALSE],model_setup$Syytype,diagSyy,signsSyy,FALSE)		    
     if (bDoB){
     	BStartPoint<-matrix(0,nrow=kY,ncol=ncol(mData)-kY)
 	
