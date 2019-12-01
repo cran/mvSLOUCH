@@ -11,10 +11,10 @@ of multivariate Brownian motion \deqn{\begin{array}{rcl}dX(t) & = & \Sigma dB(t)
 OU \deqn{\begin{array}{rcl}dY(t) & = & -A(Y(t)-\Psi(t))dt + \Sigma dB(t)\end{array}}{dY(t) = -A(Y(t)-Psi(t))dt + SdB(t)}
 and OUBM  
 \deqn{\begin{array}{rcl}
-dY(t) & = & -A(Y(t)-\Psi(t)- A^{-1}BX(t))dt + \Sigma_{yy} dB(t) \\ dX(t) & = & \Sigma_{xx} dB(t)
+dY(t) & = & -A(Y(t)-(\Psi(t)- A^{-1}BX(t)))dt + \Sigma_{yy} dB(t) \\ dX(t) & = & \Sigma_{xx} dB(t)
 \end{array}
 }{
-dY(t)  =  -A(Y(t)-Psi(t)- solve(A)BX(t))dt + Syy dB(t) 
+dY(t)  =  -A(Y(t)-(Psi(t)- solve(A)BX(t)))dt + Syy dB(t) 
 
 dX(t)  = Sxx dB(t)
 }
@@ -31,8 +31,8 @@ bugs to Krzysztof Bartoszek at krzbar@protonmail.ch .
 \tabular{ll}{
 Package: \tab mvSLOUCH\cr
 Type: \tab Package\cr
-Version: \tab 2.0.7\cr
-Date: \tab 2019-08-01\cr
+Version: \tab 2.1\cr
+Date: \tab 2019-11-30\cr
 License: \tab GPL (>= 2)\cr
 LazyLoad: \tab yes\cr
 }
@@ -68,8 +68,13 @@ The package uses the functions \code{.sym.par()} and \code{.sym.unpar()} from th
 In the case the mvOUBM model with a single response trait the package \pkg{slouch} is a 
 recommended alternative.
 
-The package uses \pkg{PCMBase}'s \code{mvlik()} function as the engine to do calculate
-the likelihood and phylogenetic least squares.
+The package uses \pkg{PCMBase}'s \code{PCMLik()} function as the engine to do calculate
+the likelihood and phylogenetic least squares. If the \pkg{PCMBaseCpp} package is 
+installed \pkg{mvSLOUCH} can take advantage of it to significantly decrease
+the running time. However, \pkg{PCMBaseCpp} will not be used on Windows machines,
+due to observed issues with the handling of exceptions at the interface of R and \pkg{Rcpp},
+causing R to crash. The exceptions are due to nearly singular covariance structures
+that result when the search procedure falls into a bad region of the parameter space.
 }
 
 \author{
@@ -123,7 +128,8 @@ Pienaar et al (in prep) An overview of comparative methods for
 \keyword{datagen}
 
 \examples{
-set.seed(12345)
+RNGversion("3.6.1")
+set.seed(12345, kind = "Mersenne-Twister", normal.kind = "Inversion")
 ### We will first simulate a small phylogenetic tree using functions from ape.
 ### For simulating the tree one could also use alternative functions, 
 ## eg. sim.bd.taxa from the TreeSim package
@@ -156,6 +162,7 @@ OUBMdata<-OUBMdata[phyltree$tip.label,,drop=FALSE]
 
 ### Recover the parameters of the SDEs.
 BMestim<-BrownianMotionModel(phyltree,BMdata)
+RNGversion(getRversion())
 \dontrun{ ##It takes too long to run this from this point
 OUOUestim<-ouchModel(phyltree,OUOUdata,regimes,Atype="DecomposablePositive",
 Syytype="UpperTri",diagA="Positive")

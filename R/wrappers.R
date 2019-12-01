@@ -9,8 +9,6 @@
 
 
 
-
-
 BrownianMotionModel<-function(phyltree,mData,predictors=NULL,M.error=NULL,min_bl=0.0003){
     .internal_BrownianMotionModel(phyltree,mData,predictors,M.error,min_bl)
 }
@@ -35,8 +33,6 @@ BrownianMotionModel<-function(phyltree,mData,predictors=NULL,M.error=NULL,min_bl
         maxiter<-c(10,100);
         .my_warning("WARNING: maxiter passed in a wrong way, setting it to default of c(10,100)",TRUE,FALSE)
     }
-
-    if (Atype=="DecomposableNegative"){diagA="Negative"}
 
     setres<-.set_sing_bl_threshold(min_bl)
     pcmbase_min_bl<-setres$pcmbase_min_bl
@@ -65,7 +61,6 @@ mvslouchModel<-function(phyltree,mData,kY,regimes=NULL,regimes.times=NULL,root.r
         .my_warning("WARNING: maxiter passed in a wrong way, setting it to default of c(10,50,100)",TRUE,FALSE)
     }
 
-    if (Atype=="DecomposableNegative"){diagA<-"Negative"}
     EvolModel<-"mvslouch"
 
     setres<-.set_sing_bl_threshold(min_bl)

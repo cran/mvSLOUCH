@@ -439,8 +439,9 @@
     	    },simplify=FALSE)}
     }
     
-    ## here we have names of list entries as numbers
-    names(lEvalPoint)<-t
+    ## here we have names of list entries as numbers casted to a string
+##    names(lEvalPoint)<-as.character(t)
+    names(lEvalPoint)<-as.character(paste0("t_",t))
     for (i in 1:length(t)){
         lEvalPoint[[i]]$modelParams<-.cleanUpModelParams(lEvalPoint[[i]]$modelParams)
         lEvalPoint[[i]]<-.correct.names(lEvalPoint[[i]],regimes.types.orig,if(EvolModel!="bm"){colnames(mData)[1:EstimationParams$kY]}else{NULL},if ((EvolModel=="mvslouch")||(EvolModel=="bm")||(EvolModel=="slouch")){colnames(mData)[(EstimationParams$kY+1):(EstimationParams$kY+EstimationParams$kX)]}else{NULL},predictors,EvolModel)

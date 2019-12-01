@@ -45,9 +45,11 @@ length of the longest path from root to tip.}
 \seealso{\code{\link{ape}}, \code{phangorn}}
 
 \examples{
-    set.seed(12345)
+    RNGversion("3.6.1")
+    set.seed(12345, kind = "Mersenne-Twister", normal.kind = "Inversion")
     phyltree<-ape::rtree(5)
     phyltree_augmented<-phyltree_paths(phyltree)
+    RNGversion(getRversion())
 }
 
 \keyword{manip}

@@ -164,9 +164,60 @@
         model_BM_kX<-PCMBase::PCM("BM",k=kX,regimes=names(pcmbase_model_box$Sigma_x[1,1,]))
 	model_BM_all<-PCMBase::PCM("BM",k=kYX,regimes=names(pcmbase_model_box$Sigma_x[1,1,]))
 	phyltree_tmp<-.phyltree_remove_path_fields(phyltree)
-	phyltree$likFun_OU <- PCMBase::PCMCreateLikelihood(X=t(mData), tree=phyltree_tmp, model=model_OU)
-	phyltree$likFun_BM_kX <- PCMBase::PCMCreateLikelihood(X=t(mData[,(kYX-kX+1):kYX,drop=FALSE]), tree=phyltree_tmp, model=model_BM_kX)
-	phyltree$likFun_BM_all <- PCMBase::PCMCreateLikelihood(X=t(mData), tree=phyltree_tmp, model=model_BM_all)    
+	phyltree$likFun_OU <- NA
+	phyltree$likFun_BM_kX <- NA
+	phyltree$likFun_BM_all <- NA
+	
+	
+	if (requireNamespace("PCMBaseCpp",quietly=TRUE)){
+#	    metaICpp_OU <- PCMBaseCpp::PCMInfoCpp(X=t(mData), tree=phyltree_tmp, model=model_OU)
+#	    phyltree$likFun_OU <- PCMBase::PCMCreateLikelihood(X=t(mData), tree=phyltree_tmp, model=model_OU,metaI = metaICpp_OU)
+#	    metaICpp_BM_kx <- PCMBaseCpp::PCMInfoCpp(X=t(mData[,(kYX-kX+1):kYX,drop=FALSE]), tree=phyltree_tmp, model=model_BM_kX)
+#	    phyltree$likFun_BM_kX <- PCMBase::PCMCreateLikelihood(X=t(mData[,(kYX-kX+1):kYX,drop=FALSE]), tree=phyltree_tmp, model=model_BM_kX,metaI = metaICpp_BM_kx)
+#	    metaICpp_BM_all <- PCMBaseCpp::PCMInfoCpp(X=t(mData), tree=phyltree_tmp, model=model_BM_all)
+#	    phyltree$likFun_BM_all <- PCMBase::PCMCreateLikelihood(X=t(mData), tree=phyltree_tmp, model=model_BM_all,metaI = metaICpp_BM_all)    
+
+    	    vNArows<-which(apply(mData,1,function(x){all(is.na(x))}))
+            if (length(vNArows)>0){ 	    
+                ## here it is assumed that the order of rows corresponds to the order of tips
+                phyltree_tmp<-.phyltree_remove_tips(phyltree_tmp,vNArows)
+                mData<-mData[-vNArows,,drop=FALSE]
+                mData<-mData[phyltree_tmp$tip.label,,drop=FALSE] ## need to reorder in case species order changed                  
+        	## Cpp does not support rows that are all NA but non Cpp version does
+        	## not removing rows as then one needs to reorder data in case tip order changed
+        	## after dropping tips
+	    	## phyltree$likFun_OU <- PCMBase::PCMCreateLikelihood(X=t(mData), tree=phyltree_tmp, model=model_OU)
+		## phyltree$likFun_BM_all <- PCMBase::PCMCreateLikelihood(X=t(mData), tree=phyltree_tmp, model=model_BM_all)    
+	    }
+	    ##else{
+		##phyltree$likFun_OU <- PCMBase::PCMCreateLikelihood(X=t(mData), tree=phyltree_tmp, model=model_OU,metaI = PCMBaseCpp::PCMInfoCpp)
+		##phyltree$likFun_BM_all <- PCMBase::PCMCreateLikelihood(X=t(mData), tree=phyltree_tmp, model=model_BM_all,metaI = PCMBaseCpp::PCMInfoCpp)    
+	    ##}
+	    phyltree$likFun_OU <- PCMBase::PCMCreateLikelihood(X=t(mData), tree=phyltree_tmp, model=model_OU,metaI = PCMBaseCpp::PCMInfoCpp)
+	    phyltree$likFun_BM_all <- PCMBase::PCMCreateLikelihood(X=t(mData), tree=phyltree_tmp, model=model_BM_all,metaI = PCMBaseCpp::PCMInfoCpp)    
+    
+	    mData_kx<-mData[,(kYX-kX+1):kYX,drop=FALSE]
+	    vNArows<-which(apply(mData_kx,1,function(x){all(is.na(x))}))
+            if (length(vNArows)>0){ 	    
+                phyltree_tmp<-.phyltree_remove_tips(phyltree_tmp,vNArows)
+                mData_kx<-mData_kx[-vNArows,,drop=FALSE]
+                mData_kx<-mData_kx[phyltree_tmp$tip.label,,drop=FALSE] ## need to reorder in case species order changed                  
+	    	## Cpp does not support rows that are all NA but non Cpp version does
+        	## not removing rows as then one needs to reorder data in case tip order changed
+        	## after dropping tips
+		##phyltree$likFun_BM_kX <- PCMBase::PCMCreateLikelihood(X=t(mData_kx), tree=phyltree_tmp, model=model_BM_kX)
+	    }
+	    ##else{phyltree$likFun_BM_kX <- PCMBase::PCMCreateLikelihood(X=t(mData_kx), tree=phyltree_tmp, model=model_BM_kX,metaI = PCMBaseCpp::PCMInfoCpp)}
+	    phyltree$likFun_BM_kX <- PCMBase::PCMCreateLikelihood(X=t(mData_kx), tree=phyltree_tmp, model=model_BM_kX,metaI = PCMBaseCpp::PCMInfoCpp)
+	    phyltree$b_usePCMBaseCpp<-TRUE
+	}
+	else{
+	    phyltree$likFun_OU <- PCMBase::PCMCreateLikelihood(X=t(mData), tree=phyltree_tmp, model=model_OU)
+	    phyltree$likFun_BM_kX <- PCMBase::PCMCreateLikelihood(X=t(mData[,(kYX-kX+1):kYX,drop=FALSE]), tree=phyltree_tmp, model=model_BM_kX)
+	    phyltree$likFun_BM_all <- PCMBase::PCMCreateLikelihood(X=t(mData), tree=phyltree_tmp, model=model_BM_all)    
+	    phyltree$b_usePCMBaseCpp<-FALSE
+	}
+	## phyltree_tmp, mData is not used after this place in this function
 	phyltree$kX<-kX
 	phyltree$kYX<-kYX
     }

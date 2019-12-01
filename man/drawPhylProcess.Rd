@@ -61,7 +61,8 @@ Bartoszek, K. and Pienaar, J. and Mostad. P. and Andersson, S. and Hansen, T. F.
 
 
 \examples{
-set.seed(12345)
+RNGversion("3.6.1")
+set.seed(12345, kind = "Mersenne-Twister", normal.kind = "Inversion")
 ### We will first simulate a small phylogenetic tree using functions from ape.
 ### For simulating the tree one could also use alternative functions, eg. sim.bd.taxa 
 ### from the TreeSim package
@@ -83,6 +84,7 @@ A=rbind(c(9,0,0),c(0,5,0),c(0,0,1)),mPsi=cbind("small"=c(1,-1,0.5),
 ### Now simulate the data keeping the whole trajectory
 OUOUdata<-simulOUCHProcPhylTree(phyltree,OUOUparameters,regimes,NULL,fullTrajectory=TRUE)
 drawPhylProcess(PhylTraitProcess=OUOUdata,plotlayout=c(1,3))
+RNGversion(getRversion())
 
 }
 

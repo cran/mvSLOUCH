@@ -123,7 +123,8 @@ Pienaar et al (in prep) An overview of comparative methods for
 }
 
 \examples{
-set.seed(12345)
+RNGversion("3.6.1")
+set.seed(12345, kind = "Mersenne-Twister", normal.kind = "Inversion")
 ### We will first simulate a small phylogenetic tree using functions from ape.
 ### For simulating the tree one could also use alternative functions, eg. sim.bd.taxa 
 ### from the TreeSim package
@@ -144,6 +145,7 @@ A=rbind(c(9,0,0),c(0,5,0),c(0,0,1)),mPsi=cbind("small"=c(1,-1,0.5),
 jumpobj<-list(jumptype="RandomLineage",jumpprob=0.5,jumpdistrib="Normal",
 vMean=rep(0,3),mCov=diag(1,3,3))
 OUOUdata<-simulOUCHProcPhylTree(phyltree,OUOUparameters,regimes,NULL,jumpsetup=jumpobj)
+RNGversion(getRversion())
 }
 \keyword{models}
 \keyword{multivariate}

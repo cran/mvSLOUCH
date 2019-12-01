@@ -197,7 +197,7 @@
 	    }
 	    else{ModelParams$A<-lAparams}
 	}
-	if (!is.null(EstimationParams$diagA)){
+	if ((!is.null(EstimationParams$diagA))&&(EstimationParams$Atype!="SymmetricPositiveDefinite")){
 	    diag(ModelParams$A)=switch(EstimationParams$diagA,
 		Positive={exp(diag(ModelParams$A))+ifelse(is.null(EstimationParams$minAdiag),0,EstimationParams$minAdiag)},
 		Negative={(-1)*exp(diag(ModelParams$A))-ifelse(is.null(EstimationParams$maxAdiag),0,EstimationParams$maxAdiag)}
@@ -572,7 +572,7 @@
 		ModelParams$A[which(EstimationParams$signsA=="-")]<- log((-1)*ModelParams$A[which(EstimationParams$signsA=="-")])
 		ModelParams$A[which(EstimationParams$signsA=="+")]<- log(ModelParams$A[which(EstimationParams$signsA=="+")])
 	}
-	if (!is.null(EstimationParams$diagA)){
+	if ((!is.null(EstimationParams$diagA))&&(EstimationParams$Atype!="SymmetricPositiveDefinite")){	
 	    diag(ModelParams$A)=switch(EstimationParams$diagA,
 		Positive={log(diag(ModelParams$A)-ifelse(is.null(EstimationParams$minAdiag),0,EstimationParams$minAdiag))},
 		Negative={log((-1)*diag(ModelParams$A)-ifelse(is.null(EstimationParams$maxAdiag),0,EstimationParams$maxAdiag))}

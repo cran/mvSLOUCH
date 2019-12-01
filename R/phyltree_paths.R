@@ -152,11 +152,12 @@ phyltree_paths<-function(phyltree){
     ## hence as it is user provided it is easier just to remove it here
     ## before calling PCMBase's likelihood functions
     if (is.element("node.label",names(phyltree))){phyltree$node.label<-NULL}
+    if (is.element("b_usePCMBaseCpp",names(phyltree))){phyltree$b_usePCMBaseCpp<-NULL}
     phyltree
 }
 
 .phyltree_remove_tips<-function(phyltree,vtips){
-# called in loglik.R
+# called in loglik.R, regimes.R 
 # function assumes vtips is numeric
     if (length(vtips>0)){
 	vedge_regime<-NA

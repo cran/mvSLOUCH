@@ -154,7 +154,8 @@ Pienaar et al (in prep) An overview of comparative methods for
 \code{\link{parametric.bootstrap}}
 }
 \examples{
-set.seed(12345)
+RNGversion("3.6.1")
+set.seed(12345, kind = "Mersenne-Twister", normal.kind = "Inversion")
 ### We will first simulate a small phylogenetic tree using functions from ape.
 ### For simulating the tree one could also use alternative functions, eg. sim.bd.taxa 
 ### from the TreeSim package
@@ -180,7 +181,7 @@ OUBMdata<-OUBMdata[phyltree$tip.label,,drop=FALSE]
 OUBM.summary<-SummarizeMVSLOUCH(phyltree,OUBMdata,OUBMparameters,
 regimes,t=c(1),dof=11,maxiter=2)
 
-
+RNGversion(getRversion())
 \dontrun{ ##It takes too long to run this
 ## now less trivial simulation setup
 phyltree<-ape::rtree(5)
@@ -215,6 +216,7 @@ OUBMbootstrap<-parametric.bootstrap(estimated.model=OUBMestim,phyltree=phyltree,
 values.to.bootstrap=c("evolutionary.regression","optimal.regression"),
 regimes=regimes,root.regime="small",M.error=NULL,predictors=c(3),kY=2,
 numboot=5,Atype="DecomposablePositive",Syytype="UpperTri",diagA="Positive")
+
 }
 }
 \keyword{models}

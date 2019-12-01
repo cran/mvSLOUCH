@@ -24,7 +24,7 @@
 
 .sym.unpar <- function (x) {
 ## function taken from ouch package
-  y <- t(chol(x))
+  y <- t(.my_chol(x))
   y[lower.tri(y,diag=TRUE)]
 }
 

@@ -257,7 +257,7 @@
 .callPCMBase_mvlik<-function(mData,phyltree, pcmbase_model_box,b_islog=TRUE,minLogLik=-Inf,b_useLikFunc=TRUE){
 ## called in estimBM.R, loglik.R, phylgls.R
     phyltree_org<-phyltree
-
+    
     phyltree<-.phyltree_remove_path_fields(phyltree)
     phylLogLik<- minLogLik
     ## mData has to be a matrix we do not correct it to as.matrix() at this stage
@@ -296,10 +296,13 @@
     pcmbase_model_box<-PCMBase::PCM(model=modelclass,k=ncol(mData),regimes=names(pcmbase_model_box_params$Sigma_x[1,1,]),params=pcmbase_model_box_params)
     
     bno_error<-FALSE
-    #b_useLikFunc<-FALSE
     tryCatch({
         if (!b_useLikFunc){	
-    	    phylLogLik<-PCMBase::PCMLik(X= t(mData),tree = phyltree, model = pcmbase_model_box,log=b_islog);
+    	    if (isTRUE(phyltree_org$b_usePCMBaseCpp)){
+    		phylLogLik<-PCMBase::PCMLik(X= t(mData),tree = phyltree, model = pcmbase_model_box,log=b_islog, metaI = PCMBaseCpp::PCMInfoCpp);
+    	    }else{
+    		phylLogLik<-PCMBase::PCMLik(X= t(mData),tree = phyltree, model = pcmbase_model_box,log=b_islog);
+    	    }
     	}else{
 	    v_pcmbasemodelparams <- double(PCMBase::PCMParamCount(o=pcmbase_model_box))
 	    PCMBase::PCMParamLoadOrStore(o=pcmbase_model_box, vecParams=v_pcmbasemodelparams, offset=0, load=FALSE)
@@ -313,9 +316,13 @@
 		    phylLogLik<-phyltree_org$likFun_BM_all(v_pcmbasemodelparams)
 		}
 	    }
-	}	
+	}
 	bno_error<-TRUE
-    },error=function(e){.my_message(paste("Error in call to PCMBase::PCMLik : \n",e,"\n",sep=""),FALSE)},warning=function(e){.my_message(paste("Error in call to PCMBase::PCMLik : \n",e,"\n",sep=""),FALSE)})
+    }
+    ,"logic_error"=function(e){.my_message(paste("Error in call to PCMBaseCpp : \n",e,"\n",sep=""),FALSE)}
+    ,"std::logic_error"=function(e){.my_message(paste("Error in call to PCMBaseCpp : \n",e,"\n",sep=""),FALSE)}
+    ,"C++Error"=function(e){.my_message(paste("Error in call to PCMBaseCpp : \n",e,"\n",sep=""),FALSE)}
+    ,error=function(e){.my_message(paste("Error in call to PCMBase::PCMLik : \n",e,"\n",sep=""),FALSE)},warning=function(e){.my_message(paste("Error in call to PCMBase::PCMLik : \n",e,"\n",sep=""),FALSE)})
     if (bno_error){
 	attributes(phylLogLik)<-NULL
     }else{phylLogLik<- minLogLik}

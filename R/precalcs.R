@@ -62,7 +62,7 @@
 	    if((!(is.null(B)))&&(!any(is.na(B)))){ldecompEigenA.precalc$A1B<-ldecompEigenA.precalc$invA%*%B}
 	}else{ldecompEigenA.precalc$invA<-matrix(NA,nrow(A),nrow(A));if((!(is.null(B)))&&(!any(is.na(B)))){ldecompEigenA.precalc$A1B<-matrix(NA,nrow(A),ncol(B))}}
 	if (!isTRUE(all.equal(rcond(eigA$vectors),0))){ldecompEigenA.precalc$invP<-solve(eigA$vectors)}else{.my_stop("ERROR: the matrix A does not have an eigendecomposition.",FALSE)}
-	if (class(ldecompEigenA.precalc$invP)=="matrix"){## the matrix of eigenvectors is invertible	
+	if (any(class(ldecompEigenA.precalc$invP)=="matrix")){## the matrix of eigenvectors is invertible	
 	## if there was an error we should have an object of class try-error
 	    ldecompEigenA.precalc$eigA<-eigA
 	    ldecompEigenA.precalc$decomp<-TRUE    

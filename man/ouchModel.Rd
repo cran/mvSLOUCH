@@ -278,7 +278,8 @@ this is nothing to worry about.
 }
 
 \examples{
-set.seed(12345)
+RNGversion("3.6.1")
+set.seed(12345, kind = "Mersenne-Twister", normal.kind = "Inversion")
 ### We will first simulate a small phylogenetic tree using functions from ape.
 ### For simulating the tree one could also use alternative functions, eg. sim.bd.taxa 
 ### from the TreeSim package
@@ -306,6 +307,7 @@ OUOUdata<-OUOUdata[phyltree$tip.label,,drop=FALSE]
 ### for speed of evaluation, e.g. Atype="DecomposablePositive", Syytype="UpperTri"
 OUOUestim<-ouchModel(phyltree,OUOUdata,regimes,Atype="SingleValueDiagonal",
 Syytype="SingleValueDiagonal",diagA="Positive",maxiter=c(1,1))
+RNGversion(getRversion())
 
 \dontrun{ ##It takes too long to run this
 ### And finally bootstrap with particular interest in the evolutionary regression

@@ -178,6 +178,8 @@ estimate.evolutionary.model<-function(phyltree,mData,regimes=NULL,root.regime=NU
     }   
     tryCatch({BestModel<-.describe.best.model(BestModel)},error=function(e){.my_message("Cannot describe best model, please go into returned object: ",TRUE);.my_message(e,TRUE);.my_message("\n",TRUE)})
     model.setups<-used_model_setups
+    ## remove empty trailing parameter_signs
+    model.setups<-sapply(model.setups, function(x){if((is.element("parameter_signs",names(x)))&&(length(x$parameter_signs)==0)){x$parameter_signs<-NULL};x},simplify=FALSE)
     ##model.setups<-rep(model.setups,repeats)
     res<-NA
     if ((!is.null(pESS))&&(pESS!="only_calculate")){
@@ -644,11 +646,21 @@ generate.model.setups<-function(){
 		    ## https://math.stackexchange.com/questions/2039477/cholesky-decompostion-upper-triangular-or-lower-triangular
 		    k<-nrow(Sigma)
         	    P<-matrix(0,nrow=k,ncol=k);for (i in 1:k){P[k-i+1,i]<-1}## create permutation matrix with 1s on the anti-diagonal
-        	    P%*%t(chol(P%*%Sigma%*%P))%*%P },
-        	LowerTri={t(chol(Sigma))},
+        	    res<-P%*%t(.my_chol(P%*%Sigma%*%P))%*%P 
+        	    attr(res,"pivot")<-NULL
+        	    attr(res,"rank")<-NULL        	            	    
+        	    res
+        	},
+        	LowerTri={
+        	    res<-t(.my_chol(Sigma))
+        	    attr(res,"pivot")<-NULL
+        	    attr(res,"rank")<-NULL        	            	    
+        	    res
+        	},
         	Any={Sigma},
         	.my_stop('Incorrect type for Syy provided! Admissable types are "SingleValueDiagonal", "Diagonal", "UpperTri", "LowerTri", "Symmetric", "Any".',TRUE)
         	)
+    
 	}    
 	if (!is.null(diagSyy)){
     	    diag(Syy)=switch(diagSyy,
@@ -673,12 +685,43 @@ generate.model.setups<-function(){
     Syy
 }
 
+.my_chol<-function(M){
+## function called in estimBM.R evolmodelest.R matrixparametrizations.R
+## M has to be symmetric--semi--positive--definte
+## no check done for this done as the function is only called internally
+## depending on platform two different types of calculations
+## Debian with pivoting
+## others without
+## a different treatment takes place for Debian as the Debian flavor on CRAN
+## raises an error to calls to chol(), noticed since 2019 XI 27
+## other platforms do not do this
+##    mchol<-matrix(NA,nrow=nrow(M),ncol=col(M))
+##    platform<-R.Version()$platform 
+##    if (grepl("deb", platform, ignore.case = TRUE)){## we are on Debian and some error seems to take place, so we pivot
+##    	    org_warn<-options("warn")
+##            options(warn=-1)
+##            mchol<-chol(M,pivot=TRUE)
+##            options(warn=org_warn$warn)
+##    }else{## not Debian
+##	mchol<-chol(M)
+##    }
+    mchol<-matrix(NA,nrow=nrow(M),ncol=col(M))
+    tryCatch({mchol<-chol(M)},error=function(e){.my_message(paste("Caught:",e),FALSE);.my_message("\n",FALSE)},warning=function(e){.my_message(paste("Caught:",e),FALSE);.my_message("\n",FALSE)})
+    if (is.na(mchol[1,1])){
+	org_warn<-options("warn")
+	options(warn=-1)
+	mchol<-chol(M,pivot=TRUE)
+	options(warn=org_warn$warn)    
+    }
+    mchol
+}
+
 .createStartPointsASyyB<-function(mData,tree_height,model_setup,kY,bDoB=FALSE){
 	## Starting point motivated by results from 
 	## K. Bartoszek and S. Sagitov. "Phylogenetic confidence intervals for the optimal trait value". Journal of Applied Probability 52.4 (2015), pp. 1115-1132.
     LambdaStart<-optim(1,function(x,tree_height){abs(1-exp(-2*x*tree_height)-2*x)},method="BFGS",tree_height=tree_height)$value
     diagSyy<-NULL;signsSyy<-NULL
-    if ((is.element("diagA",names(model_setup)))&&(!is.null(model_setup$diagA))){
+    if ((is.element("diagA",names(model_setup)))&&(!is.null(model_setup$diagA))&&(model_setup$Atype!="SymmetricPositiveDefinite")){
 	        LambdaStart=switch(model_setup$diagA,
         	    Positive={exp(LambdaStart)},
         	    Negative={(-1)*exp(LambdaStart)},
@@ -748,8 +791,10 @@ generate.model.setups<-function(){
 	    BStartPoint[which(signsB=="-")]<- sapply(BStartPoint[which(signsB=="-")],function(x){ifelse(x<0,x,0)})
 	    BStartPoint[which(signsB=="+")]<- sapply(BStartPoint[which(signsB=="+")],function(x){ifelse(x>0,x,0)})
 	}
-	
-	lres<-list("A"=matrix(LambdaStart,kY,kY),"Syy"=SyyStartPoint,"B"=BStartPoint)
-    }else{lres<-list("A"=matrix(LambdaStart,kY,kY),"Syy"=SyyStartPoint)}
+	BStartPoint<-(-1)*LambdaStart%*%BStartPoint
+##	lres<-list("A"=matrix(LambdaStart,kY,kY),"Syy"=SyyStartPoint,"B"=BStartPoint)
+	lres<-list("A"=LambdaStart,"Syy"=SyyStartPoint,"B"=BStartPoint)
+##    }else{lres<-list("A"=matrix(LambdaStart,kY,kY),"Syy"=SyyStartPoint)}
+    }else{lres<-list("A"=LambdaStart,"Syy"=SyyStartPoint)}
     lres
 }

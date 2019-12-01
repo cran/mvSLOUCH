@@ -18,6 +18,7 @@
 ## -------------------------------------------------------------------------------
     if ((!is.null(regressCovar))&&((nrow(regressCovar)==0)||(ncol(regressCovar)==0)||is.na(regressCovar[1]))){regressCovar<-NULL}
     if (!is.null(regressCovar)){
+        v_names_regressCovar<-rep(NA,nrow(regressCovar))
         if (is.null(lCI)){lCI<-vector("list",1);names(lCI)<-"regression.summary"}
 	lCI$regression.summary<-list()
 	
@@ -32,6 +33,7 @@
 	    lCI$regression.summary$BX0.regression.confidence.interval[,"Lower.end"]<-trueBX0-vRegCIs[(currVar-length(trueBX0)+1):currVar]
 	    lCI$regression.summary$BX0.regression.confidence.interval[,"Upper.end"]<-trueBX0+vRegCIs[(currVar-length(trueBX0)+1):currVar]
 	    currVar<-currVar-length(trueBX0)
+	    v_names_regressCovar[(currVar-length(trueBX0)+1):currVar]<-paste0("BX0_",1:length(trueBX0))
 	}
 	if (is.element("X0",names(designToEstim)) && designToEstim$X0){
 	    lenGLSvX0<-length(params$vX0)
@@ -50,7 +52,8 @@
 		}else{
 		    lCI$regression.summary$X0.regression.confidence.interval[,"Lower.end"]<-lCI$regression.summary$X0.regression.confidence.interval[,"Lower.end"]-vRegCIs[(currVar-lenGLSvX0+1):currVar]
 		    lCI$regression.summary$X0.regression.confidence.interval[,"Upper.end"]<-lCI$regression.summary$X0.regression.confidence.interval[,"Upper.end"]+vRegCIs[(currVar-lenGLSvX0+1):currVar]
-		}		
+		}
+		v_names_regressCovar[(currVar-lenGLSvX0+1):currVar]<-paste0("X0_",1:lenGLSvX0)
 		currVar<-currVar-lenGLSvX0
 	    }
 	}
@@ -92,7 +95,8 @@
 			lCI$regression.summary$B.regression.confidence.interval$Upper.end<-lCI$regression.summary$B.regression.confidence.interval$Upper.end+matrix(vRegCIs[(currVar-lenGLSB+1):currVar],nrow=nrow(params$B),ncol=ncol(params$B),byrow=TRUE)
 		    }
 		}
-	    	currVar<-currVar-lenGLSB
+	    	v_names_regressCovar[(currVar-lenGLSB+1):currVar]<-paste0("B_",1:lenGLSB)
+	    	currVar<-currVar-lenGLSB	    	
 	    }
 	}
 	if (is.element("psi",names(designToEstim)) && designToEstim$psi){
@@ -131,6 +135,7 @@
 		    }
 		
 		}
+		v_names_regressCovar[(currVar-lenGLSmPsi+1):currVar]<-paste0("mPsi_",1:lenGLSmPsi)
 		currVar<-currVar-lenGLSmPsi
 	    }
 	}
@@ -152,7 +157,8 @@
 		    lCI$regression.summary$mPsi0.regression.confidence.interval[,"Lower.end"]<-lCI$regression.summary$mPsi0.regression.confidence.interval[,"Lower.end"]-vRegCIs[(currVar-lenGLSmPsi0+1):currVar]
 		    lCI$regression.summary$mPsi0.regression.confidence.interval[,"Upper.end"]<-lCI$regression.summary$mPsi0.regression.confidence.interval[,"Upper.end"]+vRegCIs[(currVar-lenGLSmPsi0+1):currVar]
 		}
-		currVar<-currVar-lenGLSmPsi0
+		v_names_regressCovar[(currVar-lenGLSmPsi0+1):currVar]<-paste0("mPsi0_",1:lenGLSmPsi0)
+		currVar<-currVar-lenGLSmPsi0		
 	    }
 	}
 	if (is.element("y0",names(designToEstim)) && designToEstim$y0 && !designToEstim$y0AncState ){
@@ -173,9 +179,14 @@
 		    lCI$regression.summary$Y0.regression.confidence.interval[,"Lower.end"]<-lCI$regression.summary$Y0.regression.confidence.interval[,"Lower.end"]-vRegCIs[(currVar-lenGLSvY0+1):currVar]
 		    lCI$regression.summary$Y0.regression.confidence.interval[,"Upper.end"]<-lCI$regression.summary$Y0.regression.confidence.interval[,"Upper.end"]+vRegCIs[(currVar-lenGLSvY0+1):currVar]
 		}
-		currVar<-currVar-lenGLSvY0
+	    	v_names_regressCovar[(currVar-lenGLSvY0+1):currVar]<-paste0("Y0_",1:lenGLSvY0)
+		currVar<-currVar-lenGLSvY0	    	
 	    }
 	}
+	colnames(regressCovar)<-v_names_regressCovar
+	rownames(regressCovar)<-v_names_regressCovar
+	lCI$regression.summary$regression.covariance.matrix<-regressCovar
+	lCI$regression.summary$regression.confidence.interval.comment<-"These are confidence intervals for parameters estimated by a GLS conditional on the A and diffusion matrix parameters. In the full covariance matrix of the regression estimators the matrix parameters are entered column wise for the deterministic optimum and row wise for the B matrix. Be careful if some of the parameters were set at fixed values in the user's input, i.e. check if the variances correctly correspond to the presented 95% CIs. These are calculated  as estimate =/- (qnorm(0.975), i.e. 0.975 quantile of N(0,1))*(square root of appropriate diagonal element of the covariance matrix), i.e. standard deviation."
     }
     lCI
 }

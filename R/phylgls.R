@@ -55,7 +55,6 @@
 		prevB<-model_params$B
 	    }
 	    model_params<-.extract_GLS_results(evolmodel,lGLSres,model_params,designToEstim)
-	    
 	    if ((is.element("B",names(designToEstim)))&&(is.element("B",names(model_params)))&&(designToEstim$B)){
 		if (!is.na(prevB[1])){diff_ests<-.calc.vec.dist(c(prevB),c(model_params$B))}
 	    }else{diff_ests<-0}
@@ -88,7 +87,9 @@
 #               slouch=.extract_GLS_results_slouch(lGLSres$vGLSest,model_params,designToEstim),
                 mvslouch=.extract_GLS_results_mvslouch(lGLSres$vGLSest,model_params,designToEstim)
             )
-    model_params$regressCovar<-lGLSres$minvDV1D
+    model_params$regressCovar<-lGLSres$minvDV1D    
+    model_params$regressCovar<-model_params$regressCovar[(1:model_params$num_extracted),(1:model_params$num_extracted),drop=FALSE]
+    model_params$num_extracted<-NULL
     model_params
 }
 
@@ -145,6 +146,7 @@
 	model_params$vX0<-mEstGLSvX0;CurrPos<-CurrPos+updateCurrPos;vDoParamsUpdate["X0"]<-TRUE
     }
     model_params$pcmbase_model_box<-.update_pcmbase_box_params_bm(model_params,vDo=vDoParamsUpdate)
+    model_params$num_extracted<-CurrPos-1
     model_params
 }
 
@@ -227,6 +229,7 @@
     }
 	
     model_params$pcmbase_model_box<-.update_pcmbase_box_params_ouch(model_params,vDo=vDoParamsUpdate)
+    model_params$num_extracted<-CurrPos-1
     model_params
 }
 
@@ -356,7 +359,6 @@
 	}
 	model_params$vX0<-mEstGLSvX0;CurrPos<-CurrPos+updateCurrPos;vDoParamsUpdate["X0"]<-TRUE
     }
-
     ## get y0
     if (designToEstim$y0 && designToEstim$y0AncState){
 	model_params$vY0<-matrix(model_params$mPsi[,designToEstim$y0Regime,drop=FALSE],ncol=1,nrow=kY)
@@ -369,6 +371,7 @@
 	vDoParamsUpdate["X0"]<-TRUE
     }    
     model_params$pcmbase_model_box<-.update_pcmbase_box_params_mvslouch(model_params,vDo=vDoParamsUpdate)
+    model_params$num_extracted<-CurrPos-1
     model_params
 }
 

@@ -65,11 +65,13 @@ Wagner parsimony. \emph{Mathematical Biosciences} \bold{87}: 199--229.
 }
 
 \examples{
-set.seed(12345)
+RNGversion("3.6.1")
+set.seed(12345, kind = "Mersenne-Twister", normal.kind = "Inversion")
 phyltree<-ape::rtree(5)
 
 regimes<-c("A","B","B","C","C")
 regimesFitch<-fitch.mvsl(phyltree,regimes,root=1,deltran=TRUE)
+RNGversion(getRversion())
 }
 \keyword{models}
 \keyword{htest}

@@ -175,6 +175,7 @@
 \alias{.my_stop}
 \alias{.my_message}
 \alias{.set_sing_bl_threshold}
+\alias{.my_chol}
 \description{Internal mvSLOUCH objects.}
 \details{These are not to be called by the user.}
 \keyword{internal}

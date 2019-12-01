@@ -27,7 +27,14 @@
 		.my_warning("The observed trait data is not a matrix! Changing it to a single column matrix",TRUE,TRUE)
 	    }else{.my_stop("The observed trait data is not a numeric matrix!",TRUE)}
 	}
-    }    
+    }   
+    ## checking for constant columns found on
+    ## https://stackoverflow.com/questions/15068981/removal-of-constant-columns-in-r
+    ## but changed == to all.equal since we also do not wnat nearly constant 
+    ## due to possible singularities
+    if (any(apply(mData, MARGIN = 2, function(x){isTRUE(all.equal(max(x, na.rm = TRUE), min(x, na.rm = TRUE)))}))){
+	.my_stop("The observed trait data contains at least one constant or nearly constant between the species trait! Please remove the column(s) as this will make estimation impossible due to actual (or numerical) singularities.",TRUE)
+    } 
     if ((!is.null(n))&&(nrow(mData)!=n)){.my_stop(paste("The number of (rows) of the observed trait data does not equal the number of tip species=",n),TRUE)}
     if (is.null(colnames(mData))){
 	.my_warning("WARNING: The columns of that observed trait data matrix do not have names. Creating generic ones.",TRUE,FALSE)
@@ -151,6 +158,7 @@
 }
 
 .correct.names<-function(listobj,vregime.names,vY.names,vX.names,predictors=NULL,EvolModel="mvslouch"){
+    if (is.element("num_extracted",names(listobj))){listobj$num_extracted<-NULL}
     if (is.element("pcmbase_model_box",names(listobj))){listobj$pcmbase_model_box<-NULL}
     if (is.element("M_error",names(listobj))){listobj$M_error<-NULL}
     if ((EvolModel=="ouch")||(EvolModel=="bm")){
@@ -201,6 +209,12 @@
     if (is.element("mPsi0.rotated",names(listobj))){listobj$mPsi0.rotated<-NULL}	
     if (is.element("mPsi0.confidence.interval",names(listobj))){listobj$mPsi0.confidence.interval<-NULL}	
     if (is.element("mPsi0.regression.confidence.interval",names(listobj))){listobj$mPsi0.regression.confidence.interval<-NULL}	
+    if (is.element("regression_covariance_matrix",names(listobj))){
+	v_mPsi0colsrows<-grep("mPsi0+",colnames(listobj$regression_covariance_matrix))
+	if (length(v_mPsi0colsrows)>0){
+	    listobj$regression_covariance_matrix<-listobj$regression_covariance_matrix[-v_mPsi0colsrows,-v_mPsi0colsrows,drop=FALSE]	    
+	}
+    }
     # ============================
     
     if (is.element("A",names(listobj))){if (length(vY.names)==1){listobj$A<-matrix(listobj$A,1,1)};colnames(listobj$A)<-vY.names;rownames(listobj$A)<-vY.names}    
@@ -411,6 +425,9 @@
 	if (is.element("R2_conditional_on_predictors_comment",names(listobj$upper.summary))){listobj$upper.summary$R2_conditional_on_predictors_comment<-NULL}
     }
     if (is.element("regressCovar",names(listobj))){listobj$regressCovar<-NULL}    
+    if (is.element("parameter_signs",names(listobj))){## remove trailing parameter_signs field if it was NULL, i.e. not used
+	if (is.null(listobj$parameter_signs)){listobj$parameter_signs<-NULL}
+    }
     sapply(listobj,function(obj,vregime.names,vY.names,vX.names,predictors,EvolModel){if (is.list(obj)){.correct.names(obj,vregime.names,vY.names,vX.names,predictors,EvolModel)}else{obj}},vregime.names=vregime.names,vY.names=vY.names,vX.names=vX.names,predictors=predictors,EvolModel=EvolModel,simplify=FALSE)
 }
 
