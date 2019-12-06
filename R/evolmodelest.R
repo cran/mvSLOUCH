@@ -646,16 +646,10 @@ generate.model.setups<-function(){
 		    ## https://math.stackexchange.com/questions/2039477/cholesky-decompostion-upper-triangular-or-lower-triangular
 		    k<-nrow(Sigma)
         	    P<-matrix(0,nrow=k,ncol=k);for (i in 1:k){P[k-i+1,i]<-1}## create permutation matrix with 1s on the anti-diagonal
-        	    res<-P%*%t(.my_chol(P%*%Sigma%*%P))%*%P 
-        	    attr(res,"pivot")<-NULL
-        	    attr(res,"rank")<-NULL        	            	    
-        	    res
+        	    P%*%t(.my_chol(P%*%Sigma%*%P))%*%P 
         	},
         	LowerTri={
-        	    res<-t(.my_chol(Sigma))
-        	    attr(res,"pivot")<-NULL
-        	    attr(res,"rank")<-NULL        	            	    
-        	    res
+        	    t(.my_chol(Sigma))        	    
         	},
         	Any={Sigma},
         	.my_stop('Incorrect type for Syy provided! Admissable types are "SingleValueDiagonal", "Diagonal", "UpperTri", "LowerTri", "Symmetric", "Any".',TRUE)
@@ -695,7 +689,7 @@ generate.model.setups<-function(){
 ## a different treatment takes place for Debian as the Debian flavor on CRAN
 ## raises an error to calls to chol(), noticed since 2019 XI 27
 ## other platforms do not do this
-##    mchol<-matrix(NA,nrow=nrow(M),ncol=col(M))
+##    mchol<-matrix(NA,nrow=nrow(M),ncol=ncol(M))
 ##    platform<-R.Version()$platform 
 ##    if (grepl("deb", platform, ignore.case = TRUE)){## we are on Debian and some error seems to take place, so we pivot
 ##    	    org_warn<-options("warn")
@@ -705,13 +699,18 @@ generate.model.setups<-function(){
 ##    }else{## not Debian
 ##	mchol<-chol(M)
 ##    }
-    mchol<-matrix(NA,nrow=nrow(M),ncol=col(M))
-    tryCatch({mchol<-chol(M)},error=function(e){.my_message(paste("Caught:",e),FALSE);.my_message("\n",FALSE)},warning=function(e){.my_message(paste("Caught:",e),FALSE);.my_message("\n",FALSE)})
+    mchol<-matrix(NA,nrow=nrow(M),ncol=ncol(M)) ## M has to be square
+    tryCatch({mchol<-chol(M)},error=function(e){.my_message(paste("Caught:",e),FALSE);.my_message("\n",FALSE)})##,warning=function(e){.my_message(paste("Caught:",e),FALSE);.my_message("\n",FALSE)})
     if (is.na(mchol[1,1])){
+    ## an error took place, most probably due to chol() considering M not to be of full rank
+    ## therefore setting pivot=TRUE, to deal with such a matrix
+    ## chol() throws a warning if M does not have full rank so we suppress it
 	org_warn<-options("warn")
 	options(warn=-1)
-	mchol<-chol(M,pivot=TRUE)
+	tryCatch({mchol<-chol(M,pivot=TRUE)},error=function(e){.my_message(paste("Caught:",e),FALSE);.my_message("\n",FALSE)})##,warning=function(e){.my_message(paste("Caught:",e),FALSE);.my_message("\n",FALSE)})
 	options(warn=org_warn$warn)    
+        if (!is.null(attr(mchol,"pivot"))){attr(mchol,"pivot")<-NULL}
+        if (!is.null(attr(mchol,"rank"))){attr(mchol,"rank")<-NULL}
     }
     mchol
 }

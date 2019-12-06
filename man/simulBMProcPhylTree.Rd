@@ -111,7 +111,7 @@ Pienaar et al (in prep) An overview of comparative methods for
 \code{\link{BrownianMotionModel}}, \code{\link{SummarizeBM}}
 }
 \examples{
-RNGversion("3.6.1")
+RNGversion(min(as.character(getRversion()),"3.6.1"))
 set.seed(12345, kind = "Mersenne-Twister", normal.kind = "Inversion")
 ### We will first simulate a small phylogenetic tree using functions from ape.
 ### For simulating the tree one could also use alternative functions, eg. sim.bd.taxa 
@@ -131,8 +131,8 @@ jumpobj<-list(jumptype="RandomLineage",jumpprob=0.5,jumpdistrib="Normal",
 vMean=rep(0,3),mCov=diag(1,3,3))
 BMdata<-simulBMProcPhylTree(phyltree,X0=BMparameters$vX0,Sigma=BMparameters$Sxx,
 jumpsetup=jumpobj)
-RNGversion(getRversion())
-	
+RNGversion(as.character(getRversion()))
+
 }
 \keyword{models}
 \keyword{multivariate}

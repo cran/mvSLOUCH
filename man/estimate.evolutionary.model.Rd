@@ -314,7 +314,7 @@ and looking at them could be helpful.
 \code{\link[stats]{optim}}
 }
 \examples{
-RNGversion("3.6.1")
+RNGversion(min(as.character(getRversion()),"3.6.1"))
 set.seed(12345, kind = "Mersenne-Twister", normal.kind = "Inversion")
 ### We will first simulate a small phylogenetic tree using functions from ape.
 ### For simulating the tree one could also use alternative functions, eg. sim.bd.taxa 
@@ -350,7 +350,7 @@ kY=2,doPrint=TRUE,pESS=NULL,maxiter=c(1,1,1))
 
 ### After this step you can look at the best estimated model and use the
 ### parametric.bootstrap() function to obtain bootstrap confidence intervals
-RNGversion(getRversion())
+RNGversion(as.character(getRversion()))
 
 \dontrun{ ##It takes too long to run this
 ## take a less trivial setup

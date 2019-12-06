@@ -158,6 +158,7 @@
     
 	if(is.element("tree_height",names(phyltree))){StS<-StS/phyltree$tree_height}else{StS<-StS/(log(n))}
 	Sxx<-t(.my_chol(StS))
+	##Sxx<-t(chol(StS))
 
 	## Brownian motion with drift can also be considered here
 	## model was originally setup as OU now 'dropped' to BM
@@ -204,6 +205,7 @@
 	    }
 
 	    Sxx<-t(.my_chol(StS))
+	    ##Sxx<-t(chol(StS))
 	    StS[which(abs(StS)<1e-15)]<-0
     	    Sxx[which(abs(Sxx)<1e-15)]<-0
 	    

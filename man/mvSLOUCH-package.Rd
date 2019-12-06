@@ -31,8 +31,8 @@ bugs to Krzysztof Bartoszek at krzbar@protonmail.ch .
 \tabular{ll}{
 Package: \tab mvSLOUCH\cr
 Type: \tab Package\cr
-Version: \tab 2.1\cr
-Date: \tab 2019-11-30\cr
+Version: \tab 2.1.1\cr
+Date: \tab 2019-12-03\cr
 License: \tab GPL (>= 2)\cr
 LazyLoad: \tab yes\cr
 }
@@ -128,7 +128,7 @@ Pienaar et al (in prep) An overview of comparative methods for
 \keyword{datagen}
 
 \examples{
-RNGversion("3.6.1")
+RNGversion(min(as.character(getRversion()),"3.6.1"))
 set.seed(12345, kind = "Mersenne-Twister", normal.kind = "Inversion")
 ### We will first simulate a small phylogenetic tree using functions from ape.
 ### For simulating the tree one could also use alternative functions, 
@@ -162,7 +162,7 @@ OUBMdata<-OUBMdata[phyltree$tip.label,,drop=FALSE]
 
 ### Recover the parameters of the SDEs.
 BMestim<-BrownianMotionModel(phyltree,BMdata)
-RNGversion(getRversion())
+RNGversion(as.character(getRversion()))
 \dontrun{ ##It takes too long to run this from this point
 OUOUestim<-ouchModel(phyltree,OUOUdata,regimes,Atype="DecomposablePositive",
 Syytype="UpperTri",diagA="Positive")

@@ -108,7 +108,7 @@ Pienaar et al (in prep) An overview of comparative methods for
 }
 
 \examples{
-RNGversion("3.6.1")
+RNGversion(min(as.character(getRversion()),"3.6.1"))
 set.seed(12345, kind = "Mersenne-Twister", normal.kind = "Inversion")
 ### We will first simulate a small phylogenetic tree using functions from ape.
 ### For simulating the tree one could also use alternative functions, eg. sim.bd.taxa 
@@ -133,7 +133,7 @@ BMestim<-BrownianMotionModel(phyltree,BMdata)
 ### Summarize them.
 BM.summary<-SummarizeBM(phyltree,BMdata,BMestim$ParamsInModel,t=c(1),
 dof=BMestim$ParamSummary$dof)
-RNGversion(getRversion())
+RNGversion(as.character(getRversion()))
 #\dontrun
 { ##It takes too long to run this
 ### Now obtain bootstrap condfidence intervals for some parameters.

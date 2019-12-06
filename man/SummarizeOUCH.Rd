@@ -130,7 +130,7 @@ Pienaar et al (in prep) An overview of comparative methods for
 }
 
 \examples{
-RNGversion("3.6.1")
+RNGversion(min(as.character(getRversion()),"3.6.1"))
 set.seed(12345, kind = "Mersenne-Twister", normal.kind = "Inversion")
 ### We will first simulate a small phylogenetic tree using functions from ape.
 ### For simulating the tree one could also use alternative functions, eg. sim.bd.taxa 
@@ -155,7 +155,7 @@ OUOUdata<-OUOUdata[phyltree$tip.label,,drop=FALSE]
 ## Here we do not do any recovery step
 OUOU.summary<-SummarizeOUCH(phyltree,OUOUdata,OUOUparameters,
 regimes,t=c(1),dof=8)
-RNGversion(getRversion())
+RNGversion(as.character(getRversion()))
 
 \dontrun{ ##It takes too long to run this
 ## Now we take a less trivial simulation setup

@@ -209,7 +209,7 @@ errors during the search procedure, this is nothing to worry about.
 \code{\link[stats]{optim}}
 }
 \examples{
-RNGversion("3.6.1")
+RNGversion(min(as.character(getRversion()),"3.6.1"))
 set.seed(12345, kind = "Mersenne-Twister", normal.kind = "Inversion")
 ### We will first simulate a small phylogenetic tree using functions from ape. 
 ### For simulating the tree one could also use alternative functions, eg. sim.bd.taxa 
@@ -232,7 +232,7 @@ BMestim<-BrownianMotionModel(phyltree,BMdata)
 ### And finally obtain bootstrap condfidence intervals for some parameters
 BMbootstrap<-parametric.bootstrap(estimated.model=BMestim,phyltree=phyltree,
 values.to.bootstrap=c("vX0","StS"),M.error=NULL,numboot=2)
-RNGversion(getRversion())
+RNGversion(as.character(getRversion()))
 
 \dontrun{##It takes too long to run this
 ### Define a vector of regimes.
