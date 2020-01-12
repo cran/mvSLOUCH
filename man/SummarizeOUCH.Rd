@@ -5,7 +5,9 @@ Summarize parameters estimated under a (multivariate) OU motion model
 }
 \description{
 Compiles a summary (appropriate moments, conditional moments, information criteria)
-of parameters of a (multivariate) OU model at a given time point.
+of parameters of a (multivariate) OU model at a given time point. The user is recommended 
+to install the suggested package \pkg{PCMBaseCpp} which significantly speeds up the 
+calculations (see Details).
 }
 \usage{
 SummarizeOUCH(phyltree, mData, modelParams, regimes = NULL, 
@@ -89,6 +91,12 @@ What class does the Syy matrix in the multivariate OUBM model belong to, possibl
 }
 
 \details{
+The likelihood calculations are done by the \pkg{PCMBase} package. However, there is a
+C++ backend, \pkg{PCMBaseCpp}. If it is not available, then the likelihood is calculated
+slower using pure R. However, with the calculations in C++ up to a 100-fold increase in
+speed is possible (more realistically 10-20 times). The \pkg{PCMBaseCpp} package is available
+from \url{https://github.com/venelin/PCMBaseCpp}.
+
 The setting \code{Atype="Any"} means that one assumes the matrix \code{A} is eigendecomposable.
 If \code{A} is defective, then the output will be erroneous.
 

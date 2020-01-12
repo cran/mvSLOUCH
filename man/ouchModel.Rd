@@ -5,7 +5,8 @@ Estimate parameters under a (multivariate) OU model of evolution
 }
 \description{
 The \code{ouchModel} function uses maximum likelihood to fit parameters of a multivariate OU  
-model evolving on the phylogeny.
+model evolving on the phylogeny. The user is recommended to install the suggested package 
+\pkg{PCMBaseCpp} which significantly speeds up the calculations (see Details).
 }
 \usage{
 ouchModel(phyltree, mData, regimes = NULL, regimes.times = NULL, 
@@ -149,6 +150,12 @@ Syy=rbind(c(1,0.5),c(0,2))).}
 }
 
 \details{
+The likelihood calculations are done by the \pkg{PCMBase} package. However, there is a
+C++ backend, \pkg{PCMBaseCpp}. If it is not available, then the likelihood is calculated
+slower using pure R. However, with the calculations in C++ up to a 100-fold increase in
+speed is possible (more realistically 10-20 times). The \pkg{PCMBaseCpp} package is available
+from \url{https://github.com/venelin/PCMBaseCpp}.
+
 This function estimates the parameters of the following multivariate SDE,
 \deqn{dY(t) = -A(Y-\Psi(t))dt + \Sigma dW(t), Y(0)=Y_{0}}{dY(t) = -A(Y-Psi(t))dt + S dW(t), Y(0)=Y0} 
 on a phylogenetic tree. It uses a numerical optimization over \code{A} (parametrized by its eigenvalues and 
@@ -292,9 +299,14 @@ phyltree<-phyltree_paths(phyltree)
 regimes<-c("small","small","large","small","small","large","large","large")
 
 ### Define SDE parameters to be able to simulate data under the OUOU model.
-OUOUparameters<-list(vY0=matrix(c(1,-1,0.5),nrow=3,ncol=1),
-A=rbind(c(9,0,0),c(0,5,0),c(0,0,1)),mPsi=cbind("small"=c(1,-1,0.5),"large"=c(-1,1,0.5)),
-Syy=rbind(c(1,0.25,0.3),c(0,1,0.2),c(0,0,1)))
+## 3D model
+## OUOUparameters<-list(vY0=matrix(c(1,-1,0.5),nrow=3,ncol=1),
+## A=rbind(c(9,0,0),c(0,5,0),c(0,0,1)),mPsi=cbind("small"=c(1,-1,0.5),"large"=c(-1,1,0.5)),
+## Syy=rbind(c(1,0.25,0.3),c(0,1,0.2),c(0,0,1)))
+## 2D model used to reduce running time on CRAN
+OUOUparameters<-list(vY0=matrix(c(1,-1),nrow=2,ncol=1),
+A=rbind(c(9,0),c(0,5)),mPsi=cbind("small"=c(1,-1),"large"=c(-1,1)),
+Syy=rbind(c(1,0.25),c(0,1)))
 
 ### Now simulate the data.
 OUOUdata<-simulOUCHProcPhylTree(phyltree,OUOUparameters,regimes,NULL)

@@ -5,7 +5,8 @@ Estimate parameters under a (multivariate) OUBM model of evolution
 }
 \description{
 The \code{mvslouchModel} function uses maximum likelihood to fit parameters of a multivariate 
-OUBM model evolving on the phylogeny.
+OUBM model evolving on the phylogeny. The user is recommended to install the suggested package 
+\pkg{PCMBaseCpp} which significantly speeds up the calculations (see Details).
 }
 \usage{
 mvslouchModel(phyltree, mData, kY, regimes = NULL, regimes.times = NULL, 
@@ -151,6 +152,12 @@ Syy=rbind(c(1,0.5),c(0,2))).}
 
 }
 \details{
+The likelihood calculations are done by the \pkg{PCMBase} package. However, there is a
+C++ backend, \pkg{PCMBaseCpp}. If it is not available, then the likelihood is calculated
+slower using pure R. However, with the calculations in C++ up to a 100-fold increase in
+speed is possible (more realistically 10-20 times). The \pkg{PCMBaseCpp} package is available
+from \url{https://github.com/venelin/PCMBaseCpp}.
+
 This function estimates the parameters of the following multivariate SDE,
 \deqn{\begin{array}{rclccl}
 dY(t) & = & -A(Y(t)-(\Psi(t)- A^{-1}BX(t)))dt + \Sigma_{yy} dB(t) & Y(0) & = & Y_{0}, 
@@ -334,13 +341,20 @@ phyltree<-ape::rtree(3)
 ## The line below is not necessary but advisable for speed
 phyltree<-phyltree_paths(phyltree)
 
+## 2 regimes
 ### Define a vector of regimes.
-regimes<-c("small","small","large","small")
-
+## regimes<-c("small","small","large","small")
+## OUBMparameters<-list(vY0=matrix(1,ncol=1,nrow=1),A=matrix(0.5,ncol=1,nrow=1),
+## B=matrix(2,ncol=1,nrow=1),mPsi=cbind("small"=1,"large"=-1),
+## Syy=matrix(2,ncol=1,nrow=1),vX0=matrix(0,ncol=1,nrow=1),Sxx=diag(2,1,1),
+## Syx=matrix(0,ncol=1,nrow=1),Sxy=matrix(0,ncol=1,nrow=1))
+## single regime for speed on CRAN
+regimes<-c("small","small","small","small")
 OUBMparameters<-list(vY0=matrix(1,ncol=1,nrow=1),A=matrix(0.5,ncol=1,nrow=1),
-B=matrix(2,ncol=1,nrow=1),mPsi=cbind("small"=1,"large"=-1),
+B=matrix(2,ncol=1,nrow=1),mPsi=cbind("small"=1),
 Syy=matrix(2,ncol=1,nrow=1),vX0=matrix(0,ncol=1,nrow=1),Sxx=diag(2,1,1),
 Syx=matrix(0,ncol=1,nrow=1),Sxy=matrix(0,ncol=1,nrow=1))
+
 
 ### Now simulate the data.
 OUBMdata<-simulMVSLOUCHProcPhylTree(phyltree,OUBMparameters,regimes,NULL)
@@ -366,10 +380,12 @@ phyltree<-phyltree_paths(phyltree)
 regimes<-c("small","small","large","small","small","large","large","large")
 
 ### Define SDE parameters to be able to simulate data under the mvOUBM model.
+
 OUBMparameters<-list(vY0=matrix(c(1,-1),ncol=1,nrow=2),A=rbind(c(9,0),c(0,5)),
 B=matrix(c(2,-2),ncol=1,nrow=2),mPsi=cbind("small"=c(1,-1),"large"=c(-1,1)),
 Syy=rbind(c(1,0.25),c(0,1)),vX0=matrix(0,1,1),Sxx=matrix(1,1,1),
 Syx=matrix(0,ncol=1,nrow=2),Sxy=matrix(0,ncol=2,nrow=1))
+
 
 ### Now simulate the data.
 OUBMdata<-simulMVSLOUCHProcPhylTree(phyltree,OUBMparameters,regimes,NULL)

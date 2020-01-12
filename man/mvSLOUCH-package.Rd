@@ -31,8 +31,8 @@ bugs to Krzysztof Bartoszek at krzbar@protonmail.ch .
 \tabular{ll}{
 Package: \tab mvSLOUCH\cr
 Type: \tab Package\cr
-Version: \tab 2.1.1\cr
-Date: \tab 2019-12-03\cr
+Version: \tab 2.2\cr
+Date: \tab 2020-01-11\cr
 License: \tab GPL (>= 2)\cr
 LazyLoad: \tab yes\cr
 }
@@ -71,10 +71,8 @@ recommended alternative.
 The package uses \pkg{PCMBase}'s \code{PCMLik()} function as the engine to do calculate
 the likelihood and phylogenetic least squares. If the \pkg{PCMBaseCpp} package is 
 installed \pkg{mvSLOUCH} can take advantage of it to significantly decrease
-the running time. However, \pkg{PCMBaseCpp} will not be used on Windows machines,
-due to observed issues with the handling of exceptions at the interface of R and \pkg{Rcpp},
-causing R to crash. The exceptions are due to nearly singular covariance structures
-that result when the search procedure falls into a bad region of the parameter space.
+the running time. The \pkg{PCMBaseCpp} package is available from 
+\url{https://github.com/venelin/PCMBaseCpp}.
 }
 
 \author{

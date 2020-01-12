@@ -77,9 +77,16 @@ phyltree<-phyltree_paths(phyltree)
 regimes<-c("small","small","large","small")
 
 ### Define SDE parameters to be able to simulate data under the OUOU model.
-OUOUparameters<-list(vY0=matrix(c(1,-1,0.5),nrow=3,ncol=1),
-A=rbind(c(9,0,0),c(0,5,0),c(0,0,1)),mPsi=cbind("small"=c(1,-1,0.5),
-"large"=c(-1,1,0.5)),Syy=rbind(c(1,0.25,0.3),c(0,1,0.2),c(0,0,1)))
+## 3D model
+## OUOUparameters<-list(vY0=matrix(c(1,-1,0.5),nrow=3,ncol=1),
+## A=rbind(c(9,0,0),c(0,5,0),c(0,0,1)),mPsi=cbind("small"=c(1,-1,0.5),
+## "large"=c(-1,1,0.5)),Syy=rbind(c(1,0.25,0.3),c(0,1,0.2),c(0,0,1)))
+
+## 2D model for speed on CRAN
+OUOUparameters<-list(vY0=matrix(c(1,-1),nrow=2,ncol=1),
+A=rbind(c(9,0),c(0,5)),mPsi=cbind("small"=c(1,-1),
+"large"=c(-1,1)),Syy=rbind(c(1,0.25),c(0,1)))
+
 
 ### Now simulate the data keeping the whole trajectory
 OUOUdata<-simulOUCHProcPhylTree(phyltree,OUOUparameters,regimes,NULL,fullTrajectory=TRUE)

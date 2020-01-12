@@ -2,7 +2,8 @@
 \alias{SummarizeBM}
 \title{Summarize parameters estimated under a Brownian motion model}
 \description{Compiles a summary (appropriate moments, conditional moments, information criteria)
-of parameters of a Brownian motion model at a given time point.
+of parameters of a Brownian motion model at a given time point. The user is recommended to install 
+suggested package \pkg{PCMBaseCpp} which significantly speeds up the calculations (see Details).
 }
 \usage{
 SummarizeBM(phyltree, mData, modelParams, t = c(1), dof = NULL, M.error = NULL, 
@@ -66,6 +67,12 @@ on in the program output.
 }
 
 \details{
+The likelihood calculations are done by the \pkg{PCMBase} package. However, there is a
+C++ backend, \pkg{PCMBaseCpp}. If it is not available, then the likelihood is calculated
+slower using pure R. However, with the calculations in C++ up to a 100-fold increase in
+speed is possible (more realistically 10-20 times). The \pkg{PCMBaseCpp} package is available
+from \url{https://github.com/venelin/PCMBaseCpp}.
+
 The \code{phyltree_paths()} function enhances the tree for usage by \code{mvSLOUCH}. 
 Hence, to save time, it is advisable to first do \code{phyltree<-mvSLOUCH::phyltree_paths(phyltree)} 
 and only then use it with \code{BrownianMotionModel()}.

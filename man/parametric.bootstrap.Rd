@@ -5,7 +5,9 @@
 The function performs a parametric bootstrap for confidence
 intervals for estimates of the evolutionary model. 
 The user may specify what parameters are to have 
-their confidence intervals returned.
+their confidence intervals returned. The user is recommended to install 
+the suggested package  \pkg{PCMBaseCpp} which significantly speeds up the 
+calculations (see Details).
 }
 \usage{
 parametric.bootstrap(estimated.model, phyltree, 
@@ -164,6 +166,12 @@ This starting point is always jittered in each bootstrap replicate as the employ
 }
 
 \details{
+The likelihood calculations are done by the \pkg{PCMBase} package. However, there is a
+C++ backend, \pkg{PCMBaseCpp}. If it is not available, then the likelihood is calculated
+slower using pure R. However, with the calculations in C++ up to a 100-fold increase in
+speed is possible (more realistically 10-20 times). The \pkg{PCMBaseCpp} package is available
+from \url{https://github.com/venelin/PCMBaseCpp}.
+
 The setting \code{Atype="Any"} means that one assumes the matrix \code{A} is eigendecomposable.
 If the estimation algorithm hits a defective \code{A}, then it sets the log-likelihood at
 the minimum value and will try to get out of this dip.

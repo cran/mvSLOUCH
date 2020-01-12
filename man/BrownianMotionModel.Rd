@@ -3,7 +3,8 @@
 \title{Estimate parameters under a Brownian motion model of evolution}
 \description{
 The \code{BrownianMotionModel} function uses maximum likelihood to fit parameters of a Brownian
-motion model evolving on the phylogeny. 
+motion model evolving on the phylogeny. The user is recommended to install the suggested package 
+\pkg{PCMBaseCpp} which significantly speeds up the calculations (see Details).
 }
 \usage{
 BrownianMotionModel(phyltree, mData, predictors = NULL, M.error = NULL, 
@@ -55,6 +56,12 @@ for all the species and traits.
   }
 }
 \details{
+The likelihood calculations are done by the \pkg{PCMBase} package. However, there is a
+C++ backend, \pkg{PCMBaseCpp}. If it is not available, then the likelihood is calculated
+slower using pure R. However, with the calculations in C++ up to a 100-fold increase in
+speed is possible (more realistically 10-20 times). The \pkg{PCMBaseCpp} package is available
+from \url{https://github.com/venelin/PCMBaseCpp}.
+
 This function estimates the parameters of a multivariate Brownian motion model defined by the SDE,
 \deqn{dX(t) = \Sigma dB(t), X(0)=X_{0}}{dX(t) = S dW(t), X(0)=X0} evolving on a phylogenetic tree. 
 
@@ -148,9 +155,11 @@ BMdata<-BMdata[phyltree$tip.label,,drop=FALSE]
 ### Recover the parameters of the Brownian motion.
 BMestim<-BrownianMotionModel(phyltree,BMdata)
 
+\dontrun{
 ### And finally obtain bootstrap condfidence intervals for some parameters
 BMbootstrap<-parametric.bootstrap(estimated.model=BMestim,phyltree=phyltree,
 values.to.bootstrap=c("vX0","StS"),M.error=NULL,numboot=2)
+}
 RNGversion(as.character(getRversion()))
 }
 \keyword{models}

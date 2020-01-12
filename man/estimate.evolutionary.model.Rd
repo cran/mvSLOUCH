@@ -10,7 +10,8 @@ The \code{estimate.evolutionary.model} function calls the
 \code{BrownianMotionModel},  \code{ouchModel} and \code{mvslouchModel}
 functions with different classes of evolutionary model parameters.
 It then compares the resulting estimates by the AICc (or BIC if AICc fails) and 
-returns the best overall model.
+returns the best overall model. The user is recommended to install the suggested package 
+\pkg{PCMBaseCpp} which significantly speeds up the calculations (see Details).
 }
 \usage{
 estimate.evolutionary.model(phyltree, mData, regimes = NULL, 
@@ -218,6 +219,12 @@ then all possible pESS values are calculated but no model selection is done base
   }
 }
 \details{
+The likelihood calculations are done by the \pkg{PCMBase} package. However, there is a
+C++ backend, \pkg{PCMBaseCpp}. If it is not available, then the likelihood is calculated
+slower using pure R. However, with the calculations in C++ up to a 100-fold increase in
+speed is possible (more realistically 10-20 times). The \pkg{PCMBaseCpp} package is available
+from \url{https://github.com/venelin/PCMBaseCpp}.
+
 The setting \code{Atype="Any"} means that one assumes the matrix \code{A} is eigendecomposable.
 If the estimation algorithm hits a defective \code{A}, then it sets the log-likelihood at
 the minimum value and will try to get out of this dip.
