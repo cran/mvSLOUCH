@@ -26,7 +26,7 @@
     		## Brownian motion with drift can also be considered here
         	EstimationParams$pcmbase_model_box$Sigma_x[vBMvars,vBMvars,which(names(EstimationParams$pcmbase_model_box$Sigma_x[1,1,])==cpcmbase_reg)]<-.changeSigmatoSyy(mVxx,"UpperTri",NULL,NULL,FALSE)
 	    }
-	    EstimationParams$pcmbase_model_box$X0<-bmEstim$vX0[,1]
+	    EstimationParams$pcmbase_model_box<-.set_pcmbase_model_box_X0(EstimationParams$pcmbase_model_box,bmEstim$vX0[,1])
 
 	    EstimationParams$modelParams$pcmbase_model_box<-EstimationParams$pcmbase_model_box
 	    EstimationParams$Fixed$Sxx<-bmEstim$Sxx

@@ -18,7 +18,7 @@ predictors = NULL, Atype = "Invertible", Syytype = "UpperTri", min_bl = 0.0003)
   \item{phyltree}{
 The phylogeny in \code{phylo} format. The tree can be obtained from e.g. a \code{nexus} file 
 by the \code{read.nexus()} function from the \pkg{ape} package. The "standard" \pkg{ape} node
-indexing is assumed: for a tree wih \eqn{n}{n} tips, the tips should have indices \code{1:n} 
+indexing is assumed: for a tree with \eqn{n}{n} tips, the tips should have indices \code{1:n} 
 and the root index \code{n+1}. The \code{root.edge} field is ignored.
 }
   \item{mData}{
@@ -48,13 +48,13 @@ A vector of time points at which the summary is to be calculated. This allows fo
 The function additionally returns the parameter summary at the tree's height.
   }
   \item{dof}{
-  Number of unknown parametees in the model, can be extracted from the output of
+  Number of unknown parameters in the model, can be extracted from the output of
       \code{ouchModel()}. If not provided all parameters are assumed unknown.
 }
   \item{M.error}{
 An optional measurement error covariance structure. The measurement errors between species are assumed 
 independent. The program tries to recognizes the structure of matrix passed and accepts the following 
-possibilities :
+possibilities (see Examples):
 \itemize{
 \item{}{a single number that is a common measurement error for all tips and species,}
 \item{}{a m element vector with each value corresponding to a variable, measurement errors are independent
@@ -62,7 +62,7 @@ between variables and each species is assumed to have the same measurement error
 \item{}{a m x m ((number of variables) x (number of variables)) matrix, all species will
 have the same measurement error,}
 \item{}{a list of length n (number of species), each list element is the covariance structure 
-for the appropriate (numbering according to tree_ species, either a single number 
+for the appropriate (numbering according to tree) species, either a single number 
 (each variable has same variance), vector (of length m for each variable), or m x m matrix,}
 \item{}{NULL no measurement error.}
 }
@@ -82,11 +82,13 @@ What class does the Syy matrix in the multivariate OUBM model belong to, possibl
 \code{"SingleValueDiagonal"}, \code{"Diagonal"}, \code{"UpperTri"}, \code{"LowerTri"},
 \code{"Symmetric"}, \code{"Any"}
 }
-  \item{min_bl}{Value to whick \pkg{PCMBase}'s \code{PCMBase.Threshold.Skip.Singular} should be set.
+  \item{min_bl}{Value to which \pkg{PCMBase}'s \code{PCMBase.Threshold.Skip.Singular} should be set.
   It indicates that branches of length shorter than \code{min_bl} should be skipped in likelihood
   calculations. Short branches can result in singular covariance matrices for the transition
   density along a branch. The user should adjust this value if a lot of warnings are raised by
   \pkg{PCMBase}  about singularities during the likelihood calculations.
+  However, this does not concern tip branches-these cannot be skipped and hence should be long
+  enough so that numerical issues are not raised.
   }
 }
 
@@ -141,9 +143,11 @@ Pienaar et al (in prep) An overview of comparative methods for
 RNGversion(min(as.character(getRversion()),"3.6.1"))
 set.seed(12345, kind = "Mersenne-Twister", normal.kind = "Inversion")
 ### We will first simulate a small phylogenetic tree using functions from ape.
-### For simulating the tree one could also use alternative functions, eg. sim.bd.taxa 
+### For simulating the tree one could also use alternative functions, e.g. sim.bd.taxa 
 ### from the TreeSim package
-phyltree<-ape::rtree(5)
+num_species<-5
+num_traits<-3
+phyltree<-ape::rtree(num_species)
 
 ## The line below is not necessary but advisable for speed
 phyltree<-phyltree_paths(phyltree)
@@ -180,6 +184,41 @@ regimes,t=c(1),dof=OUOUestim$FinalFound$ParamSummary$dof)
 OUOUbootstrap<-parametric.bootstrap(estimated.model=OUOUestim,phyltree=phyltree,
 values.to.bootstrap=c("evolutionary.regression"),regimes=regimes,root.regime="small",
 M.error=NULL,predictors=c(3),kY=NULL,numboot=5,Atype=NULL,Syytype=NULL,diagA=NULL)
+
+## Include measurement error (intraspecies variability) in different possible ways.
+## Same measurement error variance for all species and for all traits.
+## M_error<-1
+## -----------------------
+
+## A diagonal (independent error between traits) 
+## measurement error variance matrix common for all species.
+## M_error<-rexp(num_traits)
+## ----------------------
+
+## A measurement error variance matrix common for all species.
+## mtmp<-matrix(rnorm(num_traits^2),num_traits,num_traits)
+## M_error<-mtmp%*%t(mtmp) ## this is a covariance matrix, i.e. symmetric positive definite
+## ----------------------
+
+## Each species has its own measurement error variance matrix that has common.
+## variance for all traits
+## M_error<-sapply(1:num_species,function(i){rexp(1)},simplify=FALSE)
+## ----------------------
+
+## Each species has its own measurement error variance matrix
+## that is diagonal, i.e. independent errors between traits.
+## M_error<-sapply(1:num_species,function(i,num_traits){rexp(num_traits)},
+##    num_traits=num_traits,simplify=FALSE)
+## ----------------------
+
+## Each species has its own general measurement error variance matrix.
+M_error<-sapply(1:num_species,function(i,num_traits){
+    mtmp<-matrix(i,num_traits,num_traits);diag(mtmp)<-2*i;mtmp},
+    num_traits=num_traits,simplify=FALSE)
+
+OUOUestim<-ouchModel(phyltree,OUOUdata,regimes,Atype="DecomposablePositive",
+Syytype="UpperTri",diagA="Positive",maxiter=c(10,100),M.error=M_error)
+
 }
 }
 \keyword{models}

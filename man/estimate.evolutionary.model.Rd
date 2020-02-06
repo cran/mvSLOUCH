@@ -24,7 +24,7 @@ estimate.root.state=FALSE, min_bl = 0.0003, maxiter=c(10,50,100))
   \item{phyltree}{
 The phylogeny in \code{phylo} format. The tree can be obtained from e.g. a \code{nexus} file 
 by the \code{read.nexus()} function from the \pkg{ape} package. The "standard" \pkg{ape} node
-indexing is assumed: for a tree wih \eqn{n}{n} tips, the tips should have indices \code{1:n} 
+indexing is assumed: for a tree with \eqn{n}{n} tips, the tips should have indices \code{1:n} 
 and the root index \code{n+1}.
 }
   \item{mData}{
@@ -50,7 +50,7 @@ is taken.
   \item{M.error}{
 An optional measurement error covariance structure. The measurement errors between species are assumed 
 independent. The program tries to recognizes the structure of matrix passed and accepts the following 
-possibilities :
+possibilities (see Examples):
 \itemize{
 \item{}{a single number that is a common measurement error for all tips and species,}
 \item{}{a m element vector with each value corresponding to a variable, measurement errors are independent
@@ -58,7 +58,7 @@ between variables and each species is assumed to have the same measurement error
 \item{}{a m x m ((number of variables) x (number of variables)) matrix, all species will
 have the same measurement error,}
 \item{}{a list of length n (number of species), each list element is the covariance structure 
-for the appropriate (numbering according to tree_ species, either a single number 
+for the appropriate (numbering according to tree) species, either a single number 
 (each variable has same variance), vector (of length m for each variable), or m x m matrix,}
 \item{}{NULL no measurement error.}
 }
@@ -179,7 +179,7 @@ Should the function print out information on what it is doing (TRUE) or keep sil
 Should the function also find the best model taking into account the phylogenetic effective sample size
 and it so what method. If \code{NULL}, then do not take this into account. Otherwise one
 of \code{"reg"} ("regression" effective sample size that takes into account all of the 
-correlations between species explicitely),
+correlations between species explicitly),
 \code{"mean"} (mean value effective sample size \eqn{1^{T}R^{-1}1}{\code{t(1)\%*\%solve(R)\%*\%1}}, where \eqn{R} 
 is the interspecies correlation matrix),
 \code{"MI"} (mutual information effective sample size), 
@@ -188,7 +188,7 @@ described by a suite of traits) ,
 \code{"mvMI"} (multivariate mutual information effective sample size when each species is described by 
 a suite of traits) indicating
 the way to calculate the pESS. The default (\code{NULL}) is not to do any pESS calculations as these will be slow. 
-They require the construnction of the between-species-between-traits variance covariance matrix and
+They require the construction of the between-species-between-traits variance covariance matrix and
 hence do not fully take advantage of the speed-up offered by \pkg{PCMBase}. If \code{pESS="only_calculate"},
 then all possible pESS values are calculated but no model selection is done based on them.
 }
@@ -199,11 +199,14 @@ then all possible pESS values are calculated but no model selection is done base
     model will probably be more accurate. If there is only one regime, then 
     estimation of the root state separately is impossible and will not be allowed.
 }
-  \item{min_bl}{Value to whick \pkg{PCMBase}'s \code{PCMBase.Threshold.Skip.Singular} should be set.
+  \item{min_bl}{Value to which \pkg{PCMBase}'s \code{PCMBase.Threshold.Skip.Singular} should be set.
   It indicates that branches of length shorter than \code{min_bl} should be skipped in likelihood
   calculations. Short branches can result in singular covariance matrices for the transition
   density along a branch. The user should adjust this value if a lot of warnings are raised by
   \pkg{PCMBase}  about singularities during the likelihood calculations.
+  Furthermore, \pkg{mvSLOUCH} sets all branches in the tree shorter than \code{min_bl} to \code{min_bl}.
+  However, this does not concern tip branches-these cannot be skipped and hence should be long
+  enough so that numerical issues are not raised.
   }
   \item{maxiter}{The maximum number of iterations for different components of the estimation
   algorithm. A vector of three integers. The first is the number of iterations for phylogenetic
@@ -214,7 +217,7 @@ then all possible pESS values are calculated but no model selection is done base
   the iterated GLS for the OUBM model. In the first step regime optima and \code{B} (and perhaps initial state) 
   are estimated conditional on the other parameters and current estimate of \code{B}, then the estimate of \code{B}
   is update and the same phylogenetic GLS is repeated (second entry of \code{maxiter} number of times).  
-  Finally, the third is the value of \code{maxit}  passed to \code{optim()}, apart from the optimization 
+  Finally, the third is the value of \code{maxiter}  passed to \code{optim()}, apart from the optimization 
   in the Brownian motion and measurement error case.
   }
 }
@@ -237,7 +240,7 @@ prepare their own list.
 If the \code{Syy} matrix is assumed to be upper-triangular and the starting conditions
 based on Bartoszek \eqn{\&}{&} Sagitov (2015)'s results are used then the factorization
 of \eqn{\Sigma=\Sigma_{yy} \Sigma_{yy}^{T}}{\code{S=Syy\%*\%t(Syy)}} into \eqn{\Sigma_{yy}}{Syy} is 
-done usig the procedure described in 
+done using the procedure described in 
 \url{https://math.stackexchange.com/questions/2039477/cholesky-decompostion-upper-triangular-or-lower-triangular}.
 
 From version \code{2.0.0} of \pkg{mvSLOUCH} the data has to be passed as a matrix.
@@ -324,9 +327,11 @@ and looking at them could be helpful.
 RNGversion(min(as.character(getRversion()),"3.6.1"))
 set.seed(12345, kind = "Mersenne-Twister", normal.kind = "Inversion")
 ### We will first simulate a small phylogenetic tree using functions from ape.
-### For simulating the tree one could also use alternative functions, eg. sim.bd.taxa 
+### For simulating the tree one could also use alternative functions, e.g. sim.bd.taxa 
 ### from the TreeSim package
-phyltree<-ape::rtree(4)
+num_species<-4
+num_traits<-3
+phyltree<-ape::rtree(num_species)
 
 ## The line below is not necessary but advisable for speed
 phyltree<-phyltree_paths(phyltree)
@@ -361,7 +366,9 @@ RNGversion(as.character(getRversion()))
 
 \dontrun{ ##It takes too long to run this
 ## take a less trivial setup
-phyltree<-ape::rtree(5)
+num_species<-5
+num_traits<-3
+phyltree<-ape::rtree(num_species)
 
 ## The line below is not necessary but advisable for speed
 phyltree<-phyltree_paths(phyltree)
@@ -386,9 +393,40 @@ OUOUdata<-OUOUdata[phyltree$tip.label,,drop=FALSE]
 model_setups<-list(list(evolmodel="bm"),list(evolmodel="ouch",
 "Atype"="SingleValueDiagonal","Syytype"="SingleValueDiagonal","diagA"="Positive"))
 
+## Include measurement error (intraspecies variability) in different possible ways.
+## Same measurement error variance for all species and for all traits.
+## M_error<-1
+## -----------------------
+
+## A diagonal (independent error between traits) 
+## measurement error variance matrix common for all species.
+## M_error<-rexp(num_traits)
+## ----------------------
+
+## A measurement error variance matrix common for all species.
+## mtmp<-matrix(rnorm(num_traits^2),num_traits,num_traits)
+## M_error<-mtmp%*%t(mtmp) ## this is a covariance matrix, i.e. symmetric positive definite
+## ----------------------
+
+## Each species has its own measurement error variance matrix that has common.
+## variance for all traits
+## M_error<-sapply(1:num_species,function(i){rexp(1)},simplify=FALSE)
+## ----------------------
+
+## Each species has its own measurement error variance matrix
+## that is diagonal, i.e. independent errors between traits.
+## M_error<-sapply(1:num_species,function(i,num_traits){rexp(num_traits)},
+##    num_traits=num_traits,simplify=FALSE)
+## ----------------------
+
+## Each species has its own general measurement error variance matrix.
+M_error<-sapply(1:num_species,function(i,num_traits){
+    mtmp<-matrix(i,num_traits,num_traits);diag(mtmp)<-2*i;mtmp},
+    num_traits=num_traits,simplify=FALSE)
+
 ### Try to recover the parameters of the OUOU model.
 estimResults<-estimate.evolutionary.model(phyltree,OUOUdata,regimes=regimes,
-root.regime="small",M.error=NULL,repeats=3,model.setups=model_setups,predictors=c(3),
+root.regime="small",M.error=M_error,repeats=3,model.setups=model_setups,predictors=c(3),
 kY=2,doPrint=TRUE,pESS=NULL,maxiter=c(10,50,100))
 }
 }

@@ -31,8 +31,8 @@ bugs to Krzysztof Bartoszek at krzbar@protonmail.ch .
 \tabular{ll}{
 Package: \tab mvSLOUCH\cr
 Type: \tab Package\cr
-Version: \tab 2.2\cr
-Date: \tab 2020-01-11\cr
+Version: \tab 2.3\cr
+Date: \tab 2020-02-04\cr
 License: \tab GPL (>= 2)\cr
 LazyLoad: \tab yes\cr
 }
@@ -130,8 +130,10 @@ RNGversion(min(as.character(getRversion()),"3.6.1"))
 set.seed(12345, kind = "Mersenne-Twister", normal.kind = "Inversion")
 ### We will first simulate a small phylogenetic tree using functions from ape.
 ### For simulating the tree one could also use alternative functions, 
-## eg. sim.bd.taxa from the TreeSim package
-phyltree<-ape::rtree(5)
+## e.g. sim.bd.taxa from the TreeSim package
+num_species<-5
+num_traits<-3
+phyltree<-ape::rtree(num_species)
 
 ## The line below is not necessary but advisable for speed
 phyltree<-phyltree_paths(phyltree)
@@ -202,5 +204,38 @@ OUBMbootstrap<-parametric.bootstrap(estimated.model=OUBMestim,phyltree=phyltree,
 values.to.bootstrap=c("evolutionary.regression","optimal.regression"),
 regimes=regimes,root.regime="small",M.error=NULL,predictors=c(3),kY=2,
 numboot=5,Atype="DecomposablePositive",Syytype="UpperTri",diagA="Positive")
+
+## Include measurement error (intraspecies variability) in different possible ways.
+## Same measurement error variance for all species and for all traits.
+## M_error<-1
+## -----------------------
+
+## A diagonal (independent error between traits) 
+## measurement error variance matrix common for all species.
+## M_error<-rexp(num_traits)
+## ----------------------
+
+## A measurement error variance matrix common for all species.
+## mtmp<-matrix(rnorm(num_traits^2),num_traits,num_traits)
+## M_error<-mtmp%*%t(mtmp) ## this is a covariance matrix, i.e. symmetric positive definite
+## ----------------------
+
+## Each species has its own measurement error variance matrix that has common.
+## variance for all traits
+## M_error<-sapply(1:num_species,function(i){rexp(1)},simplify=FALSE)
+## ----------------------
+
+## Each species has its own measurement error variance matrix
+## that is diagonal, i.e. independent errors between traits.
+## M_error<-sapply(1:num_species,function(i,num_traits){rexp(num_traits)},
+##    num_traits=num_traits,simplify=FALSE)
+## ----------------------
+
+## Each species has its own general measurement error variance matrix.
+M_error<-sapply(1:num_species,function(i,num_traits){
+    mtmp<-matrix(i,num_traits,num_traits);diag(mtmp)<-2*i;mtmp},
+    num_traits=num_traits,simplify=FALSE)
+
+BMestim<-BrownianMotionModel(phyltree,BMdata,M.error=M_error)
 }
 }

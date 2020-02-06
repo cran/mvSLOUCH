@@ -14,7 +14,7 @@ fitch.mvsl(phyltree, niche, deltran = FALSE, acctran = FALSE, root = NULL)
 \arguments{
   \item{phyltree}{The phylogenetic tree in \pkg{ape} (\code{phylo}).
   For a phylogeny in \code{phylo} format the "standard" \pkg{ape} node indexing is assumed: 
-  for a tree wih \eqn{n}{n} tips, the tips should have indices \code{1:n} and the 
+  for a tree with \eqn{n}{n} tips, the tips should have indices \code{1:n} and the 
   root index \code{n+1}.
   }
   \item{niche}{The specific niche variable in the \pkg{slouch} data.frame to be 
@@ -38,15 +38,15 @@ argument in the function call. Any remaining ambiguous nodes can then be dealt w
 \value{
 The \code{fitch.mvsl} function returns a list with two or three elements. The first, 
 \code{$branch_regimes} is a vector of reconstructed character states. Each entry of
-the vector corresponds to the repective edge in the \code{$edge} field in the provided tree.
+the vector corresponds to the respective edge in the \code{$edge} field in the provided tree.
 Notice that entries correspond to edges and not to nodes. If you require correspondence
 with nodes, then you can treat the given edge entry as the value for the node ending the edge.
-Actually, this is what the algorithm in the function estimaes. 
+Actually, this is what the algorithm in the function estimates. 
 The second field of the output object, \code{$root_regime}s is the regime at the root of the tree.
 If the provided tree was a raw \code{phylo} object, then the function will also return 
-an enhaced version of it (field \code{$phyltree}). This is the tree that results from calling
+an enhanced version of it (field \code{$phyltree}). This is the tree that results from calling
 \pkg{mvSLOUCH}\code{::phyltree_paths(phyltree)} on the originally provided tree. This
-enhanced version is returnes as calculating it is costly and the user might want to re-use
+enhanced version is returns as calculating it is costly and the user might want to re-use
 it in some downstream analysis with \pkg{mvSLOUCH}. All \pkg{mvSLOUCH} user-level functions
 first enhance the provided phylogeny by \pkg{mvSLOUCH}\code{::phyltree_paths()}, but they
 first check if it is not already enhanced. 

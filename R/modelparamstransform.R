@@ -37,7 +37,7 @@
 	}
     }
     if (vDo["X0"]){
-	model_params$pcmbase_model_box$X0<- model_params$vX0[,1]
+	model_params$pcmbase_model_box<-.set_pcmbase_model_box_X0(model_params$pcmbase_model_box, model_params$vX0[,1])
     }
     class(model_params$pcmbase_model_box)<-"BM"
     model_params$pcmbase_model_box
@@ -84,7 +84,7 @@
     	}
     }
     if (vDo["X0"]){
-	model_params$pcmbase_model_box$X0<- model_params$vY0[,1]
+	model_params$pcmbase_model_box<-.set_pcmbase_model_box_X0(model_params$pcmbase_model_box,model_params$vY0[,1])
     }
     model_params$pcmbase_model_box
 }
@@ -135,7 +135,7 @@
     	}
     }
     if (vDo["X0"]){
-	model_params$pcmbase_model_box$X0<- c(model_params$vY0[,1],model_params$vX0[,1])
+	model_params$pcmbase_model_box<-.set_pcmbase_model_box_X0(model_params$pcmbase_model_box,c(model_params$vY0[,1],model_params$vX0[,1]))
     }
     model_params$pcmbase_model_box
 }

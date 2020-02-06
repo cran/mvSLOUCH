@@ -64,7 +64,7 @@ Bartoszek, K. and Pienaar, J. and Mostad. P. and Andersson, S. and Hansen, T. F.
 RNGversion(min(as.character(getRversion()),"3.6.1"))
 set.seed(12345, kind = "Mersenne-Twister", normal.kind = "Inversion")
 ### We will first simulate a small phylogenetic tree using functions from ape.
-### For simulating the tree one could also use alternative functions, eg. sim.bd.taxa 
+### For simulating the tree one could also use alternative functions, e.g. sim.bd.taxa 
 ### from the TreeSim package
 phyltree<-ape::rtree(3)
 

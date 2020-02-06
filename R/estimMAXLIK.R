@@ -43,7 +43,8 @@
 	names(MaxLikEstim)<-c("BrownResult","ParamsInModel","ParamSummary")
 	MaxLikEstim$BrownResult<-.bm.estim(mData,PhylTree,modelParams$pcmbase_model_box,modelParams$regimes.types.orig,minLogLik=minLogLik)
 	MaxLikEstim$ParamsInModel<-list("Sxx"=MaxLikEstim$BrownResult$Sxx,"vX0"=MaxLikEstim$BrownResult$vX0,regressCovar=MaxLikEstim$BrownResult$regressCovar)
-	MaxLikEstim$ParamSummary<-.Params.summary(PhylTree,MaxLikEstim$ParamsInModel,"bm",NULL,mData,NULL,MaxLikEstim$BrownResult$LogLik,NULL,MaxLikEstim$BrownResult$RSS,KnownParams=EstimationParams$KnownParams,conf.level=EstimationParams$conf.level,vVars=EstimationParams$vVars,conditional=EstimationParams$conditional,minLogLik=minLogLik,bfullCI=EstimationParams$calcCI)
+	MaxLikEstim$ParamSummary<-.Params.summary(PhylTree,MaxLikEstim$ParamsInModel,"bm",list(X0=TRUE),mData,NULL,MaxLikEstim$BrownResult$LogLik,NULL,MaxLikEstim$BrownResult$RSS,KnownParams=EstimationParams$KnownParams,conf.level=EstimationParams$conf.level,vVars=EstimationParams$vVars,conditional=EstimationParams$conditional,minLogLik=minLogLik,bfullCI=EstimationParams$calcCI)
+##	MaxLikEstim$ParamSummary<-.Params.summary(PhylTree,MaxLikEstim$ParamsInModel,"bm",NULL,mData,NULL,MaxLikEstim$BrownResult$LogLik,NULL,MaxLikEstim$BrownResult$RSS,KnownParams=EstimationParams$KnownParams,conf.level=EstimationParams$conf.level,vVars=EstimationParams$vVars,conditional=EstimationParams$conditional,minLogLik=minLogLik,bfullCI=EstimationParams$calcCI)
     }    
     if (method=="glsgc"){
         MaxLikEstim<-.glsgc.estim(mData=mData,EvolModel=EvolModel,PhylTree=PhylTree,EstimationParams=EstimationParams,modelParams=modelParams,lPrecalculates=lPrecalculates,tol=tol,maxIter=maxIter,bShouldPrint=bShouldPrint,maxTries=maxTries,minLogLik=minLogLik)

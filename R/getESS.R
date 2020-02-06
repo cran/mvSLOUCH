@@ -308,9 +308,9 @@
     mCovPhyl.Merror<-NA
     if (evolmodel=="bm"){
 	## AncestorTimes are not saved as estimation under BM will be done at most once
-	mCovPhyl.Merror<-mvSLOUCH::.calc.phyl.cov(evolmodel,modelParams,mAncestorTimes=matrix(phyltree$time.of.nodes[1:phyltree$Ntips],ncol=phyltree$Ntips,nrow=phyltree$Ntips,byrow=FALSE)-phyltree$mTreeDist)
+	mCovPhyl.Merror<-.calc.phyl.cov(evolmodel,modelParams,mAncestorTimes=matrix(phyltree$time.of.nodes[1:phyltree$Ntips],ncol=phyltree$Ntips,nrow=phyltree$Ntips,byrow=FALSE)-phyltree$mTreeDist)
     }else{
-	mCovPhyl.Merror<-mvSLOUCH::.calc.phyl.cov(evolmodel,modelParams,mTreeDist=phyltree$mTreeDist,vSpeciesTime=phyltree$time.of.nodes[1:phyltree$Ntips],vSpeciesPairs=phyltree$vSpeciesPairs)
+	mCovPhyl.Merror<-.calc.phyl.cov(evolmodel,modelParams,mTreeDist=phyltree$mTreeDist,vSpeciesTime=phyltree$time.of.nodes[1:phyltree$Ntips],vSpeciesPairs=phyltree$vSpeciesPairs)
     }
 
     if (!is.null(Merror)){

@@ -12,7 +12,7 @@ phyltree_paths(phyltree)
 
 \arguments{
   \item{phyltree}{The phylogeny - an object of class \code{phylo}, i.e. tree in \pkg{ape} format.
-  The "standard" \pkg{ape} node indexing is assumed: for a tree wih \eqn{n}{n} tips, 
+  The "standard" \pkg{ape} node indexing is assumed: for a tree with \eqn{n}{n} tips, 
   the tips should have indices \code{1:n} and the root index \code{n+1}.
   }
 }

@@ -491,7 +491,9 @@
 }
 
 .design_matrix_bm<-function(kYX,n){
-    mD<-diag(1,kYX,kYX)%x%rep(1,n)
+## we have the  response as species on top of species
+## hence we need copies of the Id matrix on top of each other
+    mD<-rep(1,n)%x%diag(1,kYX,kYX)
     vinterceptcorrect<-rep(0,kYX*n)
     mD<-cbind(vinterceptcorrect,mD)
     mD
@@ -510,7 +512,7 @@
     	}
     	if (bisX0){
     	    k<-length(pcmbase_model_box_mean0$X0)
-    	    pcmbase_model_box_mean0$X0<-rep(0,k)
+    	    pcmbase_model_box_mean0<-.set_pcmbase_model_box_X0(pcmbase_model_box_mean0,rep(0,k))
 	}
     }
 ## this is for mvslouch if we will need to do the conditional model
@@ -525,12 +527,15 @@
 ## we cannot have a completely unobserved trait
 
 ## y = mD%*% beta + eps; 
-## y = mX with rows stacked
+## y = mY with rows stacked
 ## y = c(t(mY))
 ## beta=(solve(t(mD)%*%solve(V)%*%mD))%*%t(mD)%*%solve(V)%*%y
     kX<-ncol(mD) ## number of predictor variables
     kY<-ncol(mY) ## number of response variables
     vY<-c(t(mY)) ## the response vectorized
+    ## mY is our data matrix, the rows are species, columns are traits
+    ## c() stacks columns
+    ## t(mY) makes each species be a column, then c(t(mY)) makes the rows stacked onto each other
 
     mD_org<-mD
     vNAys<-which(is.na(vY))
@@ -648,7 +653,9 @@
     
     ## setup Y0 column ---------------------------------------------------------------------------
     if (designToEstim$y0 && !designToEstim$y0AncState){ 
-	mD[,1:kY]<-sapply(lexpmtA,function(x){x},simplify=TRUE) 
+	for (i in 1:n){## for each species
+	    mD[((i-1)*kY+1):(i*kY),1:kY]<-lexpmtA[[i]]##sapply(lexpmtA,function(x){x},simplify=TRUE) 
+	}
 	updateXcol<-kY
 	if (is.element("signsvY0",names(designToEstim))){
 	    vY0notGLS<-which(!is.na(designToEstim$signsvY0))
@@ -697,7 +704,11 @@
     #---------------------------------------------------------------------------------------------    
     ## setup Psi0 column ---------------------------------------------------------------------------
     if (designToEstim$psi0){ 
-	mD[,currXcol:(currXcol+kY-1)]<-sapply(lexpmtA,function(x){diag(1,ncol(x),nrow(x))-x},simplify=TRUE)
+	## mD[,currXcol:(currXcol+kY-1)]<-sapply(lexpmtA,function(x){diag(1,ncol(x),nrow(x))-x},simplify=TRUE)
+	for (i in 1:n){## for each species
+	    x<-lexpmtA[[i]]
+	    mD[((i-1)*kY+1):(i*kY),currXcol:(currXcol+kY-1)]<-diag(1,ncol(x),nrow(x))-x
+	}
 	updateXcol<-kY
 	if (is.element("signsmPsi0",names(designToEstim))){
 	    mPsi0notGLS<-which(!is.na(designToEstim$signsmPsi0))

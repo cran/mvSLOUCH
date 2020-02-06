@@ -19,7 +19,7 @@ min_bl = 0.0003, maxiter = c(10,100))
   \item{phyltree}{
 The phylogeny in \code{phylo} format. The tree can be obtained from e.g. a \code{nexus} file 
 by the \code{read.nexus()} function from the \pkg{ape} package. The "standard" \pkg{ape} node
-indexing is assumed: for a tree wih \eqn{n}{n} tips, the tips should have indices \code{1:n} 
+indexing is assumed: for a tree with \eqn{n}{n} tips, the tips should have indices \code{1:n} 
 and the root index \code{n+1}. The \code{root.edge} field is ignored.
 }
   \item{mData}{
@@ -55,7 +55,7 @@ A vector giving the numbers of the columns from
   \item{M.error}{
 An optional measurement error covariance structure. The measurement errors between species are assumed 
 independent. The program tries to recognizes the structure of matrix passed and accepts the following 
-possibilities :
+possibilities (see Examples):
 \itemize{
 \item{}{a single number that is a common measurement error for all tips and species,}
 \item{}{a m element vector with each value corresponding to a variable, measurement errors are independent
@@ -63,7 +63,7 @@ between variables and each species is assumed to have the same measurement error
 \item{}{a m x m ((number of variables) x (number of variables)) matrix, all species will
 have the same measurement error,}
 \item{}{a list of length n (number of species), each list element is the covariance structure 
-for the appropriate (numbering according to tree_ species, either a single number 
+for the appropriate (numbering according to tree) species, either a single number 
 (each variable has same variance), vector (of length m for each variable), or m x m matrix,}
 \item{}{NULL no measurement error.}
 }
@@ -99,7 +99,7 @@ What class does the Syy matrix in the multivariate OUBM model belong to, possibl
  is still in an experimental stage so some setups might not work (please report).
  A list allowing the user to control whether specific entries for each model parameter
  should be positive, negative, zero or set to a specific (other) value.  The entries
- of the list have to be named, the admissable names are \code{"signsA"} (for \code{A}
+ of the list have to be named, the admissible names are \code{"signsA"} (for \code{A}
  matrix), \code{"signsSyy"} (for \code{Syy} matrix) and \code{"signsmPsi"} 
  (for \code{mPsi} matrix) and \code{"signsvY0"} (for \code{vY0} matrix). Any other entry 
  in this list will be ignored. Each entry of the list has to  be a matrix of appropriate size, 
@@ -133,18 +133,20 @@ Syy=rbind(c(1,0.5),c(0,2))).}
  \code{parscale}. It is advised that the user experiments with a couple of different values and 
  reads \code{\link[stats]{optim}}'s  man page. 
  }
-  \item{min_bl}{Value to whick \pkg{PCMBase}'s \code{PCMBase.Threshold.Skip.Singular} should be set.
+  \item{min_bl}{Value to which \pkg{PCMBase}'s \code{PCMBase.Threshold.Skip.Singular} should be set.
   It indicates that branches of length shorter than \code{min_bl} should be skipped in likelihood
   calculations. Short branches can result in singular covariance matrices for the transition
   density along a branch. The user should adjust this value if a lot of warnings are raised by
   \pkg{PCMBase}  about singularities during the likelihood calculations.
+  However, this does not concern tip branches-these cannot be skipped and hence should be long
+  enough so that numerical issues are not raised.
   }
  \item{maxiter}{The maximum number of iterations for different components of the estimation
   algorithm. A vector of two integers. The first is the number of iterations for phylogenetic
   GLS evaluations, i.e. conditional on the other parameters, the regime optima and perhaps
   initial state are estimated by a phylogenetic GLS procedure. After this the other parameters are optimized over 
   by \code{optim()}. This first   entry controls the number of iterations of this procedure.   
-  Finally, the second is the value of \code{maxit}  passed to \code{optim()}.
+  Finally, the second is the value of \code{maxiter}  passed to \code{optim()}.
   }
 
 }
@@ -170,7 +172,7 @@ the minimum value and will try to get out of this dip.
 
 The function parameter \code{parameter_signs} is special in the sense that it can give 
 the user great control over the estimation procedure but can also make the output
-very inconsitent with what the user provides. If we have two traits, 
+very inconsistent with what the user provides. If we have two traits, 
 then an EXAMPLE setting of this can be:
 \cr 
 \code{parameter_signs=list(signsA=rbind(c("+","-"),c(0,"+")),}\cr \code{signsSyy=rbind(c(NA,0),c(0,NA))}. 
@@ -182,7 +184,7 @@ and \code{A} is also diagonal. It is advisable to set now \code{Atype="Any"} and
 If the given model parameter is to be estimated
 by a generalized least squares (currently \code{mPsi} and \code{vY0}), then the 
 sign specifications are ignored. However, it is possible to set specific values. 
-Furtheremore, the package does not check (for \code{A}
+Furthermore, the package does not check (for \code{A}
 and \code{Syy}) if the specifications here agree with the \code{Atype}, \code{Syytype}
 and \code{diagA}. The settings in \code{signsA} and \code{signsSyy} will override
 the other settings. Hence, it is up to the user to make sure that the settings of 
@@ -192,7 +194,7 @@ on the diagonal and have \code{diagA=NULL}. The diagonal of \code{Syy} is forced
 be positive (unless \code{"-"} is used on the diagonal of \code{signsSyy}
 but this is strongly discouraged) so it is advisable to keep \code{NA} 
 on the diagonal of \code{signsSyy} and not put there \code{"+"} there.
-Hence, in particular using the signs mechanism result in a wrong classs of the matrix
+Hence, in particular using the signs mechanism result in a wrong class of the matrix
 \cr
 (e.g. \code{Atype="SymmetricPositiveDefinite"}, but after corrections for the provided entries in
 \code{signsA} one obtains a non-symmetric \code{A} with complex, negative-real-part eigenvalues). 
@@ -207,7 +209,7 @@ The ONLY fail-safe way to use this is to set \code{Atype="Any"} (if \code{signsA
 the it is strongly advisable to set the entries either below or above the diagonal of\code{Syy} to \code{0}.
 The reason is that \eqn{\Sigma_{yy}\Sigma_{yy}^{T}}{\code{Syy\%*\% t(Syy)}} enters the likelihood and not the 
 given value of \eqn{\Sigma_{yy}}{Syy}. Hence, having values below (or respectively above) the diagonal
-results in an overparamtrized model. The package has to option of mixing different matrix types
+results in an overparameterized model. The package has to option of mixing different matrix types
 with specifying values in it but this is only for advanced users who need to dig into the code
 to see what the \code{dof} should be and  if it is possible to find a correspondence between the 
 parametrization and settings. If entries of \code{mPsi} and \code{vY0} are pre-specified,
@@ -215,20 +217,20 @@ then the \code{dof} are correctly adjusted for this.
 
 The found point is described by a list containing four fields. 
 The first field \cr \code{HeuristicSearchPointFinalFind} is the parametrization of the model parameters 
-at the considered point with the value of the log-likelihood. The field ParamsInModel is the point 
+at the considered point with the value of the log-likelihood. The field \code{ParamsInModel} is the point 
 estimate of the parameters of the SDE. 
-The field \code{ParamSummary} are different composite (evaluated at the tree's height) and summary statitics,
-The field phylhalflife are the eigenvalues, eigenvectors and phylogenetic half lives
+The field \code{ParamSummary} are different composite (evaluated at the tree's height) and summary statistics,
+The field \code{phylhalflife} are the eigenvalues, eigenvectors and phylogenetic half lives
 associated with the A matrix, \code{expmtA} is \eqn{\exp(-A*(tree height))}{exp(-A*(tree height))}, 
 \code{mPsi.rotated} is each of the 
 regime effects multiplied by \eqn{(1-\exp(-A*(tree height)))}{(1-exp(-A*(tree height)))},
 \code{cov.matrix} is the trait vector covariance matrix at the tree's height, 
 \code{corr.matrix} is the trait vector correlation matrix at the tree's height,
-\code{trait.regression} is a list consisting of regression coefficents when taking each trait in turn and
-calculating its coniditional expectation on all of the other trait, \code{stationary.cov.matrix} 
+\code{trait.regression} is a list consisting of regression coefficients when taking each trait in turn and
+calculating its conditional expectation on all of the other trait, \code{stationary.cov.matrix} 
 is the stationary covariance matrix of process if it exists (i.e. the eigenvalues have positive real part), 
 \code{stationary.corr.matrix} is the stationary correlation matrix of process if it exists
-(i.e. the eigenvalues have positive real part), \code{StS} the infinitesmal covariance matrix 
+(i.e. the eigenvalues have positive real part), \code{StS} the infinitesimal covariance matrix 
 \eqn{\Sigma_{yy}\Sigma_{yy}^{T}}{\code{Syy\%*\%t(Syy)}},
 \code{LogLik} the log-likelihood, dof the degrees of freedom, \code{m2loglik} is \eqn{-2}{-2}log--likelihood,
 \code{aic} is the Akaike information criterion, \code{aic.c} is the Akaike information criterion corrected for small
@@ -269,7 +271,7 @@ Pienaar et al (in prep) An overview of comparative methods for
 }
 \author{Krzysztof Bartoszek}
 \note{
-The ouch package consideres a similar model and looking at it could be helpful.
+The \pkg{ouch} package considers a similar model and looking at it could be helpful.
 }
 
 \section{Warning}{The estimation can take a long time and should be repeated 
@@ -288,9 +290,11 @@ this is nothing to worry about.
 RNGversion(min(as.character(getRversion()),"3.6.1"))
 set.seed(12345, kind = "Mersenne-Twister", normal.kind = "Inversion")
 ### We will first simulate a small phylogenetic tree using functions from ape.
-### For simulating the tree one could also use alternative functions, eg. sim.bd.taxa 
+### For simulating the tree one could also use alternative functions, e.g. sim.bd.taxa 
 ### from the TreeSim package
-phyltree<-ape::rtree(5)
+num_species<-5
+num_traits<-2
+phyltree<-ape::rtree(num_species)
 
 ## The line below is not necessary but advisable for speed
 phyltree<-phyltree_paths(phyltree)
@@ -326,6 +330,40 @@ RNGversion(as.character(getRversion()))
 OUOUbootstrap<-parametric.bootstrap(estimated.model=OUOUestim,phyltree=phyltree,
 values.to.bootstrap=c("evolutionary.regression"),regimes=regimes,root.regime="small",
 M.error=NULL,predictors=c(3),kY=NULL,numboot=5,Atype=NULL,Syytype=NULL,diagA=NULL)
+
+## Include measurement error (intraspecies variability) in different possible ways.
+## Same measurement error variance for all species and for all traits.
+## M_error<-1
+## -----------------------
+
+## A diagonal (independent error between traits) 
+## measurement error variance matrix common for all species.
+## M_error<-rexp(num_traits)
+## ----------------------
+
+## A measurement error variance matrix common for all species.
+## mtmp<-matrix(rnorm(num_traits^2),num_traits,num_traits)
+## M_error<-mtmp%*%t(mtmp) ## this is a covariance matrix, i.e. symmetric positive definite
+## ----------------------
+
+## Each species has its own measurement error variance matrix that has common.
+## variance for all traits
+## M_error<-sapply(1:num_species,function(i){rexp(1)},simplify=FALSE)
+## ----------------------
+
+## Each species has its own measurement error variance matrix
+## that is diagonal, i.e. independent errors between traits.
+## M_error<-sapply(1:num_species,function(i,num_traits){rexp(num_traits)},
+##    num_traits=num_traits,simplify=FALSE)
+## ----------------------
+
+## Each species has its own general measurement error variance matrix.
+M_error<-sapply(1:num_species,function(i,num_traits){
+    mtmp<-matrix(i,num_traits,num_traits);diag(mtmp)<-2*i;mtmp},
+    num_traits=num_traits,simplify=FALSE)
+
+OUOUestim<-ouchModel(phyltree,OUOUdata,regimes,Atype="SingleValueDiagonal",
+Syytype="SingleValueDiagonal",diagA="Positive",maxiter=c(10,100),M.error=M_error)
 }
 }
 \keyword{models}

@@ -20,6 +20,7 @@ BrownianMotionModel<-function(phyltree,mData,predictors=NULL,M.error=NULL,min_bl
     setres<-.set_sing_bl_threshold(min_bl)
     pcmbase_min_bl<-setres$pcmbase_min_bl
     pcmbase_skip<-setres$pcmbase_skip
+##    phyltree$edge.length[which(phyltree$edge.length<min_bl)]<-min_bl
 
     res<-.PhyloSDEestim(phyltree,mData,kY=NULL,regimes=NULL,regimes.times=NULL,root.regime=NULL,params=list(EvolModel=EvolModel,EstimParams=list(calcCI=FALSE)),predictors=predictors,M.error=M.error)
     options(PCMBase.Threshold.Skip.Singular=pcmbase_min_bl)
@@ -37,6 +38,7 @@ BrownianMotionModel<-function(phyltree,mData,predictors=NULL,M.error=NULL,min_bl
     setres<-.set_sing_bl_threshold(min_bl)
     pcmbase_min_bl<-setres$pcmbase_min_bl
     pcmbase_skip<-setres$pcmbase_skip
+##    phyltree$edge.length[which(phyltree$edge.length<min_bl)]<-min_bl
 
     res<-.PhyloSDEestim(phyltree,mData,kY=NULL,regimes=regimes,regimes.times=regimes.times,root.regime=root.regime,params= list(EvolModel="ouch",EstimParams=c(list(Atype=Atype,Syytype=Syytype,diagA=diagA,diagSyy="Positive",calcCI=FALSE,lStartPoint=lStartPoint,optim_parscale=parscale),parameter_signs)),predictors=predictors,M.error=M.error,estimate.root.state=estimate.root.state,maxiter=c(maxiter[1],1,maxiter[2]))
     options(PCMBase.Threshold.Skip.Singular=pcmbase_min_bl)
@@ -66,6 +68,7 @@ mvslouchModel<-function(phyltree,mData,kY,regimes=NULL,regimes.times=NULL,root.r
     setres<-.set_sing_bl_threshold(min_bl)
     pcmbase_min_bl<-setres$pcmbase_min_bl
     pcmbase_skip<-setres$pcmbase_skip
+#    phyltree$edge.length[which(phyltree$edge.length<min_bl)]<-min_bl
 
     res<-.PhyloSDEestim(phyltree,mData,kY=kY,regimes=regimes,regimes.times=regimes.times,root.regime=root.regime,params=list(EvolModel=EvolModel,EstimParams=c(list(Atype=Atype,Syytype=Syytype,diagA=diagA,diagSyy="Positive",calcCI=FALSE,lStartPoint=lStartPoint,optim_parscale=parscale),parameter_signs)),predictors=predictors,M.error=M.error,estimate.root.state=estimate.root.state,maxiter=maxiter)
     options(PCMBase.Threshold.Skip.Singular=pcmbase_min_bl)
@@ -81,6 +84,7 @@ SummarizeBM<-function(phyltree,mData, modelParams,t=c(1),dof=NULL,M.error=NULL,p
     setres<-.set_sing_bl_threshold(min_bl)
     pcmbase_min_bl<-setres$pcmbase_min_bl
     pcmbase_skip<-setres$pcmbase_skip
+##    phyltree$edge.length[which(phyltree$edge.length<min_bl)]<-min_bl
 
     res<-.SummarizeFullPoint(NULL,mData=mData,PhylTree=phyltree,EvolModel=EvolModel,EstimationParams=list(calcCI=FALSE),regimes.times=NULL,regimes=NULL,modelParams=modelParams,t=t,dof=dof,bShouldPrint=bShouldPrint,LogLik=NULL,maxIter=NULL,tol=NULL,Merror=M.error,predictors=predictors)
     options(PCMBase.Threshold.Skip.Singular=pcmbase_min_bl)
@@ -96,6 +100,7 @@ SummarizeOUCH<-function(phyltree,mData,modelParams,regimes=NULL,regimes.times=NU
     setres<-.set_sing_bl_threshold(min_bl)
     pcmbase_min_bl<-setres$pcmbase_min_bl
     pcmbase_skip<-setres$pcmbase_skip
+##    phyltree$edge.length[which(phyltree$edge.length<min_bl)]<-min_bl
 
     res<-.SummarizeFullPoint(NULL,mData=mData,PhylTree=phyltree,EvolModel="ouch",EstimationParams=list(calcCI=FALSE,Atype=Atype,Syytype=Syytype),regimes.times=regimes.times,regimes=regimes,modelParams=modelParams,t=t,dof=dof,bShouldPrint=bShouldPrint,LogLik=NULL,maxIter=c(10,1,100),tol=c(0.01,0.01),Merror=M.error,predictors=predictors)
     options(PCMBase.Threshold.Skip.Singular=pcmbase_min_bl)
@@ -111,6 +116,7 @@ SummarizeMVSLOUCH<-function(phyltree,mData,modelParams,regimes=NULL,regimes.time
     setres<-.set_sing_bl_threshold(min_bl)
     pcmbase_min_bl<-setres$pcmbase_min_bl
     pcmbase_skip<-setres$pcmbase_skip
+##    phyltree$edge.length[which(phyltree$edge.length<min_bl)]<-min_bl
 
     res<-.SummarizeFullPoint(NULL,mData=mData,PhylTree=phyltree,EvolModel=EvolModel,EstimationParams=list(calcCI=FALSE,Atype=Atype,Syytype=Syytype),regimes.times=regimes.times,regimes=regimes,modelParams=modelParams,t=t,dof=dof,bShouldPrint=bShouldPrint,LogLik=NULL,maxIter=c(10,maxiter,100),tol=c(0.01,0.01),Merror=M.error,predictors=predictors)
     options(PCMBase.Threshold.Skip.Singular=pcmbase_min_bl)

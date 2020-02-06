@@ -15,7 +15,7 @@ b_change_joining_branches = FALSE, ...)
 \arguments{
     \item{v_sizeclusts}{A vector with the sizes of the clades/clusters.}
     \item{joining_branchlengths}{Default \code{NULL}, if \code{joiningphyl} is \code{NULL}, 
-    then has to be provided. A vector of two numbers. The first element are the lenghts of the 
+    then has to be provided. A vector of two numbers. The first element are the lengths of the 
     branches of the cluster joining phylogeny leading to the clusters. The second element will be the 
     lengths of the "internal" branches of the cluster joining phylogeny. If only a single number is provided, 
     then all the branches of the joining phylogeny will have their lengths equal to this value.}
@@ -59,8 +59,6 @@ Apart from the standard \code{phylo} fields it has two additional ones:
 \author{Krzysztof Bartoszek}
 
 \examples{
-## i takze ultrametryzacje
-
 RNGversion(min(as.character(getRversion()),"3.6.1"))
 set.seed(12345, kind = "Mersenne-Twister", normal.kind = "Inversion")
 ## We need a wrapper function as TreeSim::sim.bd.taxa returns a list of phylo objects and not 

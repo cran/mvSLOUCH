@@ -158,7 +158,7 @@
 		if (EvolModel=="slouch"){}## Empty at the moment
 		if (EvolModel=="bm"){
 		    vMean<-Xprev[1:kX]
-		    mCov<-timeDiff*t(modelParams$Sxx)%*%modelParams$Sxx
+		    mCov<-timeDiff*modelParams$Sxx%*%t(modelParams$Sxx)
 		    Xdrawn<-mvtnorm::rmvnorm(n=1,mean=vMean,sigma=mCov) 
 		    Xdrawn<-Xdrawn[nrow(Xdrawn),]
 		}

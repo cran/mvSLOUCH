@@ -9,7 +9,6 @@
 
 .Params.summary<-function(phyltree,modelParams,EvolModel,designToEstim,mData=NULL,t=1,LogLik=-Inf,npar0=0,RSS=NA,KnownParams=NULL,conf.level=0.95,vVars=NULL,conditional=FALSE,minLogLik=-Inf,bfullCI=FALSE){
        npar0<-.correct_npar0(npar0,EvolModel,designToEstim)
-
        tryCatch({
 	modelParams$designToEstim<-designToEstim
 
