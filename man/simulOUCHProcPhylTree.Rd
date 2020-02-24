@@ -36,7 +36,7 @@ considered to be a regime.
 \item{M.error}{
 An optional measurement error covariance structure. The measurement errors between species are assumed 
 independent. The program tries to recognizes the structure of matrix passed and accepts the following 
-possibilities (see Examples):
+possibilities :
 \itemize{
 \item{}{a single number that is a common measurement error for all tips and species,}
 \item{}{a m element vector with each value corresponding to a variable, measurement errors are independent
@@ -145,44 +145,9 @@ A=rbind(c(9,0,0),c(0,5,0),c(0,0,1)),mPsi=cbind("small"=c(1,-1,0.5),
 ### Now simulate the data.
 jumpobj<-list(jumptype="RandomLineage",jumpprob=0.5,jumpdistrib="Normal",
 vMean=rep(0,3),mCov=diag(1,3,3))
-
+OUOUdata<-simulOUCHProcPhylTree(phyltree,OUOUparameters,regimes,NULL,jumpsetup=jumpobj)
 RNGversion(as.character(getRversion()))
 
-\dontrun{
-## Include measurement error (intraspecies variability) in different possible ways.
-## Same measurement error variance for all species and for all traits.
-## M_error<-1
-## -----------------------
-
-## A diagonal (independent error between traits) 
-## measurement error variance matrix common for all species.
-## M_error<-rexp(num_traits)
-## ----------------------
-
-## A measurement error variance matrix common for all species.
-## mtmp<-matrix(rnorm(num_traits^2),num_traits,num_traits)
-## M_error<-mtmp%*%t(mtmp) ## this is a covariance matrix, i.e. symmetric positive definite
-## ----------------------
-
-## Each species has its own measurement error variance matrix that has common.
-## variance for all traits
-## M_error<-sapply(1:num_species,function(i){rexp(1)},simplify=FALSE)
-## ----------------------
-
-## Each species has its own measurement error variance matrix
-## that is diagonal, i.e. independent errors between traits.
-## M_error<-sapply(1:num_species,function(i,num_traits){rexp(num_traits)},
-##    num_traits=num_traits,simplify=FALSE)
-## ----------------------
-
-## Each species has its own general measurement error variance matrix.
-M_error<-sapply(1:num_species,function(i,num_traits){
-    mtmp<-matrix(i,num_traits,num_traits);diag(mtmp)<-2*i;mtmp},
-    num_traits=num_traits,simplify=FALSE)
-
-OUOUdata<-simulOUCHProcPhylTree(phyltree,OUOUparameters,regimes,NULL,
-jumpsetup=jumpobj,M.error=M_error)
-}
 }
 \keyword{models}
 \keyword{multivariate}

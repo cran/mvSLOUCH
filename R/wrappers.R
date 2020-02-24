@@ -58,6 +58,14 @@ mvslouchModel<-function(phyltree,mData,kY,regimes=NULL,regimes.times=NULL,root.r
 
 
 .internal_mvslouchModel<-function(phyltree,mData,kY,regimes=NULL,regimes.times=NULL,root.regime=NULL,predictors=NULL,M.error=NULL,Atype="Invertible",Syytype="UpperTri",diagA="Positive",estimate.root.state=FALSE,parameter_signs=NULL,lStartPoint=NULL,parscale=NULL,min_bl=0.0003,maxiter=c(10,50,100)){
+    if (is.matrix(mData)){
+	if (kY>=ncol(mData)){
+	    .my_stop('Cannot have all variables as OU responses, i.e. kY>=ncol(mData). Set kY to a smaller (than number of columns in mData) number of OU responses.',TRUE)
+	}
+    }else{
+	.my_stop('mData has to be a matrix!',TRUE)
+    }
+
     if ((!is.vector(maxiter))|| (!is.numeric(maxiter)) || (length(maxiter)!=3)){
         maxiter<-c(10,50,100);
         .my_warning("WARNING: maxiter passed in a wrong way, setting it to default of c(10,50,100)",TRUE,FALSE)

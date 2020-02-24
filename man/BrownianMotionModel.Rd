@@ -33,7 +33,7 @@ on in the program output.
   \item{M.error}{
 An optional measurement error covariance structure. The measurement errors between species are assumed 
 independent. The program tries to recognizes the structure of matrix passed and accepts the following 
-possibilities (see Examples):
+possibilities :
 \itemize{
 \item{}{a single number that is a common measurement error for all tips and species,}
 \item{}{a m element vector with each value corresponding to a variable, measurement errors are independent
@@ -140,9 +140,7 @@ set.seed(12345, kind = "Mersenne-Twister", normal.kind = "Inversion")
 ### We will first simulate a small phylogenetic tree  using functions from ape. 
 ### For simulating the tree one could also use alternative functions, e.g. sim.bd.taxa 
 ### from the TreeSim package
-num_species<-5
-num_traits<-3
-phyltree<-ape::rtree(num_species)
+phyltree<-ape::rtree(5)
 
 ## The line below is not necessary but advisable for speed
 phyltree<-phyltree_paths(phyltree)
@@ -157,46 +155,12 @@ BMdata<-simulBMProcPhylTree(phyltree,X0=BMparameters$vX0,Sigma=BMparameters$Sxx)
 BMdata<-BMdata[phyltree$tip.label,,drop=FALSE]
 
 ### Recover the parameters of the Brownian motion.
-
 BMestim<-BrownianMotionModel(phyltree,BMdata)
 
 \dontrun{
 ### And finally obtain bootstrap confidence intervals for some parameters
 BMbootstrap<-parametric.bootstrap(estimated.model=BMestim,phyltree=phyltree,
 values.to.bootstrap=c("vX0","StS"),M.error=NULL,numboot=2)
-
-## Include measurement error (intraspecies variability) in different possible ways.
-## Same measurement error variance for all species and for all traits.
-M_error<-1
-## -----------------------
-
-## A diagonal (independent error between traits) 
-## measurement error variance matrix common for all species.
-M_error<-rexp(num_traits)
-## ----------------------
-
-## A measurement error variance matrix common for all species.
-## mtmp<-matrix(rnorm(num_traits*num_traits),num_traits,num_traits)
-M_error<-mtmp%*%t(mtmp) ## this is a covariance matrix, i.e. symmetric positive definite
-## ----------------------
-
-## Each species has its own measurement error variance matrix that has common.
-## variance for all traits
-M_error<-sapply(1:num_species,function(i){rexp(1)},simplify=FALSE)
-## ----------------------
-
-## Each species has its own measurement error variance matrix
-## that is diagonal, i.e. independent errors between traits.
-M_error<-sapply(1:num_species,function(i,num_traits){rexp(num_traits)},
-    num_traits=num_traits,simplify=FALSE)
-## ----------------------
-
-##Each species has its own general measurement error variance matrix.
-M_error<-sapply(1:num_species,function(i,num_traits){
-    mtmp<-matrix(i,num_traits,num_traits);diag(mtmp)<-2*i;mtmp},
-    num_traits=num_traits,simplify=FALSE)
-
-BMestim<-BrownianMotionModel(phyltree,BMdata,M.error=M_error)
 }
 RNGversion(as.character(getRversion()))
 }

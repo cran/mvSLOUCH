@@ -37,10 +37,16 @@ estimate.evolutionary.model<-function(phyltree,mData,regimes=NULL,root.regime=NU
     M.error<-.createMeasurementError(M.error,nrow(mData),ncol(mData))
     kYX<-ncol(mData)
     kX<-kYX
-    if (!is.null(kY)){tmpkX<-kYX-kY}
+    if (!is.null(kY)){
+	tmpkX<-kYX-kY
+    }
     else{
-	if (!is.null(predictors)){tmpkX<-kYX-length(predictors)}
+	##if (!is.null(predictors)){tmpkX<-kYX-length(predictors)}
+	if (!is.null(predictors)){tmpkX<-length(predictors)}
 	else{tmpkX<-kYX-1}
+    }
+    if (tmpkX<=0){
+	.my_stop('Cannot have all variables as responses (i.e. kY>=ncol(mData)). Either set kY to NULL or choose a smaller (than number of columns in mData) number of responses ("OU traits" in OUBM model).',TRUE)
     }
     phyltree<-.InitialRegimeSetup(phyltree,regimes,regimes.times=NULL,mData=mData,kX=tmpkX,kYX=kYX,root.regime=root.regime,M.error=M.error,bSave_in_phyltree=TRUE)
     mData<-.check_input_trait_data(mData,n=phyltree$Ntips,vSpeciesLabels=phyltree$tip.label)
@@ -106,7 +112,6 @@ estimate.evolutionary.model<-function(phyltree,mData,regimes=NULL,root.regime=NU
 		if ((bdoanalytical_start)&&(i==1)){
 		    lStartPoint<-.createStartPointsASyyB(mData,phyltree$tree_height,model.setups[[k]],ncol(mData),FALSE)		    
 		}
-		
 		tryCatch({
 		    OUres<-.internal_ouchModel(phyltree=phyltree,mData=mData,regimes=regimes,regimes.times=NULL,root.regime=root.regime,predictors=predictors,M.error=M.error,Atype=model.setups[[k]]$Atype,Syytype=model.setups[[k]]$Syytype,diagA=model.setups[[k]]$diagA,estimate.root.state=estimate.root.state,parameter_signs=model.setups[[k]]$parameter_signs,lStartPoint=lStartPoint,parscale=model.setups[[k]]$parscale,min_bl=min_bl,maxiter=c(maxiter[1],maxiter[3]))
 		},error=function(e){.my_message(e,TRUE);.my_message("\n",TRUE)})
@@ -718,7 +723,9 @@ generate.model.setups<-function(){
 .createStartPointsASyyB<-function(mData,tree_height,model_setup,kY,bDoB=FALSE){
 	## Starting point motivated by results from 
 	## K. Bartoszek and S. Sagitov. "Phylogenetic confidence intervals for the optimal trait value". Journal of Applied Probability 52.4 (2015), pp. 1115-1132.
-    LambdaStart<-optim(1,function(x,tree_height){abs(1-exp(-2*x*tree_height)-2*x)},method="BFGS",tree_height=tree_height)$value
+    RatioForLambdas<-0.5
+#    LambdaStart<-optim(1,function(x,tree_height){abs((1-exp(-2*x*tree_height))/(2*x)-1)},method="BFGS",tree_height=tree_height)$value
+    LambdaStart<-optim(1,function(x,tree_height,RatioForLambdas){abs((1-exp(-2*x*tree_height)/(2*x))-RatioForLambdas)},method="BFGS",tree_height=tree_height,RatioForLambdas=RatioForLambdas)$value
     diagSyy<-NULL;signsSyy<-NULL
     if ((is.element("diagA",names(model_setup)))&&(!is.null(model_setup$diagA))&&(model_setup$Atype!="SymmetricPositiveDefinite")){
 	        LambdaStart=switch(model_setup$diagA,
@@ -728,10 +735,9 @@ generate.model.setups<-function(){
     		)
     }
     
-
     if (is.element("diagSyy",names(model_setup))){diagSyy<-model_setup$diagSyy}
     if (is.element("signsSyy",names(model_setup$parameter_signs))){signsSyy<-model_setup$parameter_signs$signsSyy}		    
-    Sigma<-cov(mData,use="pairwise.complete.obs")[1:kY,1:kY]
+    Sigma<-(cov(mData,use="pairwise.complete.obs")[1:kY,1:kY])/RatioForLambdas
     vNASigma<-which(is.na(Sigma))
     if (length(vNASigma)>0){
         Sigma[vNASigma]<-runif(length(vNASigma))/10

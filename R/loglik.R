@@ -338,8 +338,8 @@
 
 .my_stop<-function(m,bdoPrint=TRUE){
     class(m)<-"character" 
-    if (bdoPrint){stop(m)}
-    else{stop()}
+    if (bdoPrint){stop(m,call. = FALSE)}
+    else{stop(call. = FALSE)}
     NA
 }
 
@@ -352,8 +352,8 @@
 .my_warning<-function(m,bdoPrint=TRUE,baswarning=TRUE){
     class(m)<-"character" 
     if (baswarning){
-	if (bdoPrint){warning(m)}
-	else{warning()}
+	if (bdoPrint){warning(m, call. = FALSE)}
+	else{warning(call. = FALSE)}
     }else{
 	if (bdoPrint){message(m)}
     }
