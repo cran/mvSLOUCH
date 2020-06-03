@@ -1,6 +1,6 @@
-1c7eaec7077277daef7c8041a025bfab *DESCRIPTION
+766200853769f14acd123a79a1c4ae09 *DESCRIPTION
 0632cc7589c46bbf4981f0a778f1ef2a *LICENCE
-738fc933c8cf7e3bf386706da4f3d534 *NAMESPACE
+6a15b9091ecea40ea757112c2931a13c *NAMESPACE
 a6f9a58a44af031285767421c41c075e *R/PhyloSDEestim.R
 b71fe70d16c387bb35e8031012ea7459 *R/bootstrap.R
 f2ddf36bebd5ca1036b1cec301e383c2 *R/ci.R
@@ -40,7 +40,7 @@ c0a91f15a43d7705fa26597bca628843 *man/drawPhylProcess.Rd
 9300c78877a2acec7de22e749c18cae8 *man/fitch.mvsl.Rd
 43998b575ed42f821a4fc92f11767a3b *man/generate.model.setups.Rd
 4b9cc389716a32fbd32b1e1648304d0d *man/mvSLOUCH-internal.Rd
-9180de895009693587f7f983e81539c0 *man/mvSLOUCH-package.Rd
+371f2908dc938acbe13b471e97229d52 *man/mvSLOUCH-package.Rd
 5a5047614d81388e219c6e2e0710cf3b *man/mvslouchModel.Rd
 924f762d2ea9802c2716be91ab8ba2b8 *man/ouchModel.Rd
 8aa472e5f7c78387e40eb58ff95fe9b0 *man/parametric.bootstrap.Rd

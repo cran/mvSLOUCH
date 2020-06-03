@@ -7,9 +7,6 @@ S3method(plot, clustered_phylo)
 # exported functions
 export(BrownianMotionModel,drawPhylProcess,estimate.evolutionary.model,fitch.mvsl,generate.model.setups,mvslouchModel,ouchModel,parametric.bootstrap,phyltree_paths,plot.clustered_phylo,simulate_clustered_phylogeny,simulBMProcPhylTree,simulMVSLOUCHProcPhylTree,simulOUCHProcPhylTree,SummarizeBM,SummarizeMVSLOUCH,SummarizeOUCH)
 
-# exported classes
-exportClasses("clustered_phylo")
-
 # Import all packages listed as Imports or Depends
 importFrom(mvtnorm, rmvnorm)
 importFrom(ape, rtree, node.depth.edgelength, drop.tip, plot.phylo)
