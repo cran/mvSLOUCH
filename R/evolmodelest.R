@@ -152,12 +152,16 @@ estimate.evolutionary.model<-function(phyltree,mData,regimes=NULL,root.regime=NU
 		if (is.element("start_point_for_optim",names(model.setups[[k]]))){
 		    if ((i==2)||(repeats==1)){lStartPoint<-model.setups[[k]]$start_point_for_optim;bdoanalytical_start<-FALSE}
 		}
+		if (!is.element("estimateBmethod",names(model.setups[[k]]))){
+		    estimateBmethod<-"ML"		    
+		}else{estimateBmethod<-model.setups[[k]]$estimateBmethod}
+
 		if ((bdoanalytical_start)&&(i==1)){
 		    lStartPoint<-.createStartPointsASyyB(mData.mvsl,phyltree$tree_height,model.setups[[k]],kY,TRUE)		    
 		}
 		
 	    	tryCatch({
-	    	    mvslres<-.internal_mvslouchModel(phyltree=phyltree,mData=mData.mvsl,kY,regimes=regimes,regimes.times=NULL,root.regime=root.regime,predictors=predictors,M.error=M.error,Atype=model.setups[[k]]$Atype,Syytype=model.setups[[k]]$Syytype,diagA=model.setups[[k]]$diagA,estimate.root.state=estimate.root.state,parameter_signs=model.setups[[k]]$parameter_signs,lStartPoint=lStartPoint,parscale=model.setups[[k]]$parscale,min_bl=min_bl,maxiter=maxiter)
+	    	    mvslres<-.internal_mvslouchModel(phyltree=phyltree,mData=mData.mvsl,kY,regimes=regimes,regimes.times=NULL,root.regime=root.regime,predictors=predictors,M.error=M.error,Atype=model.setups[[k]]$Atype,Syytype=model.setups[[k]]$Syytype,diagA=model.setups[[k]]$diagA,estimate.root.state=estimate.root.state,parameter_signs=model.setups[[k]]$parameter_signs,lStartPoint=lStartPoint,parscale=model.setups[[k]]$parscale,min_bl=min_bl,maxiter=maxiter,estimateBmethod=estimateBmethod)
 		},error=function(e){.my_message(e,TRUE);.my_message("\n",TRUE)})
 				
 		testedModels[[j]]<-list()

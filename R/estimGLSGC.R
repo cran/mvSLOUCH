@@ -63,6 +63,7 @@
 	    }
 	    doneOK<- TRUE
 	},error=function(e){.my_message(paste("Restarting from new point, caught error:",e),FALSE)})
+#	},error=function(e){.my_message(paste("Restarting from new point, caught error:",e),TRUE)})
 	attempt2<-attempt2+1
     }
     if (attempt2 > maxTries){MaxLogLik<- NA}

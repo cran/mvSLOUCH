@@ -204,16 +204,16 @@
 			lReturn[[6]][[2]]<-invSXX
 			intercept<-intercept+SYX%*%invSXX%*%vXmX0 
 		    }else{
-			test_t<-sum(abs(vSpecies_times-vSpecies_times[-1]))
+			test_t<-sum(abs(vSpecies_times-vSpecies_times[1]))
 			phyl_ultra<-FALSE
 			if (isTRUE(all.equal(test_t,0))){phyl_ultra<-TRUE}
 			if(phyl_ultra){vtmpSpecies_times<-vSpecies_times[1]}else{vtmpSpecies_times<-vSpecies_times}
 			lScovs<-sapply(vtmpSpecies_times,function(spec_time,modelParams){
     				mS<-.calc.cov.slouch.mv(spec_time,modelParams$precalcMatrices[[1]],modelParams$precalcMatrices[[2]])    	    
-				syt<-mS[1:kY,(kY+kX+1):(kY+kX)]
-				invsxx<-solve(mS[(kY+kX+1):(kY+kX),(kY+kX+1):(kY+kX)])
+				syt<-mS[1:kY,(kY+1):(kY+kX)]
+				invsxx<-solve(mS[(kY+1):(kY+kX),(kY+1):(kY+kX)])
 				list(syt=syt,invsxx=invsxx,mS=mS)
-    			    },modelParams=modelParams,simplify=TRUE)
+    			    },modelParams=modelParams,simplify=FALSE)
     			lReturn[[6]][[1]]<-lScovs
 			if (phyl_ultra){syt<-lScovs[[1]]$syt;invsxx<-lScovs[[1]]$invsxx}
 			for (i in 1:n){
@@ -241,7 +241,6 @@
     }
 
     lReturn[[5]]<-list(intercept=intercept,mKappaIntercept=mKappaIntercept)
-    
     lReturn
 }
 

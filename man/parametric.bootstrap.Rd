@@ -15,7 +15,7 @@ values.to.bootstrap = NULL, regimes = NULL,
 root.regime = NULL, M.error = NULL, predictors = NULL, 
 kY = NULL, numboot = 100, Atype = NULL, Syytype = NULL, 
 diagA = NULL, parameter_signs = NULL, start_point_for_optim = NULL,
-parscale = NULL, min_bl = 0.0003, maxiter = c(10,50,100))
+parscale = NULL, min_bl = 0.0003, maxiter = c(10,50,100), estimateBmethod="ML")
 }
 \arguments{
     \item{estimated.model}{
@@ -59,7 +59,8 @@ between variables and each species is assumed to have the same measurement error
 have the same measurement error,}
 \item{}{a list of length n (number of species), each list element is the covariance structure 
 for the appropriate (numbering according to tree) species, either a single number 
-(each variable has same variance), vector (of length m for each variable), or m x m matrix,}
+(each variable has same variance), vector (of length m for each variable), or m x m matrix,
+the order of the list has to correspond to the order of the nodes in the \code{phyltree} object,}
 \item{}{NULL no measurement error.}
 }
 From version 2.0.0 of mvSLOUCH it is impossible to pass a single joint measurement error matrix 
@@ -165,6 +166,9 @@ This starting point is always jittered in each bootstrap replicate as the employ
   Finally, the third is the value of \code{maxiter}  passed to \code{optim()}, apart from the optimization 
   in the Brownian motion and measurement error case. If the bootstrapped model is a Brownian motion one,
   then this parameter is ignored, if OUOU, then the second entry is ignored.
+  }
+  \item{estimateBmethod}{Only relevant for OUBM models, should \code{B} be estimated by maximum likelihood (default 
+  value \code{"ML"}) or generalized least squares (value \code{"GLS"}).
   }
 }
 

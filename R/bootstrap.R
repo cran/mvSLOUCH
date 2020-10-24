@@ -7,7 +7,7 @@
 ## that may befall you or others as a result of its use. Please send comments and report 
 ## bugs to Krzysztof Bartoszek at krzbar@protonmail.ch .
 
-parametric.bootstrap<-function(estimated.model,phyltree,values.to.bootstrap=NULL,regimes=NULL,root.regime=NULL,M.error=NULL,predictors=NULL,kY=NULL,numboot=100,Atype=NULL,Syytype=NULL,diagA=NULL,parameter_signs=NULL,start_point_for_optim=NULL,parscale=NULL,min_bl=0.0003,maxiter=c(10,50,100)){
+parametric.bootstrap<-function(estimated.model,phyltree,values.to.bootstrap=NULL,regimes=NULL,root.regime=NULL,M.error=NULL,predictors=NULL,kY=NULL,numboot=100,Atype=NULL,Syytype=NULL,diagA=NULL,parameter_signs=NULL,start_point_for_optim=NULL,parscale=NULL,min_bl=0.0003,maxiter=c(10,50,100),estimateBmethod="ML"){
     model.components<-.boot.extract.model.components(estimated.model,Atype,Syytype,diagA,parameter_signs=parameter_signs,start_point_for_optim=start_point_for_optim)
     evolmodel<-model.components$evolmodel
     Atype<-model.components$Atype
@@ -35,8 +35,8 @@ parametric.bootstrap<-function(estimated.model,phyltree,values.to.bootstrap=NULL
 	estres<-switch(evolmodel,
 	    bm=.bm.sim.est(phyltree,modelParams,M.error,predictors,min_bl),
 	    ouch=.ouou.sim.est(phyltree,modelParams,regimes,regimes.times,root.regime,Atype,Syytype,diagA,M.error,predictors,parameter_signs,start_point_for_optim,parscale,min_bl,maxiter[c(1,3)]),
-	    slouch=.oubm.sim.est(phyltree,modelParams,regimes,regimes.times,root.regime,Atype,Syytype,diagA,M.error,predictors,kY,parameter_signs,start_point_for_optim,min_bl,maxiter),
-	    mvslouch=.oubm.sim.est(phyltree,modelParams,regimes,regimes.times,root.regime,Atype,Syytype,diagA,M.error,predictors,kY,parameter_signs,start_point_for_optim,parscale,min_bl,maxiter)
+	    slouch=.oubm.sim.est(phyltree,modelParams,regimes,regimes.times,root.regime,Atype,Syytype,diagA,M.error,predictors,kY,parameter_signs,start_point_for_optim,min_bl,maxiter,estimateBmethod=estimateBmethod),
+	    mvslouch=.oubm.sim.est(phyltree,modelParams,regimes,regimes.times,root.regime,Atype,Syytype,diagA,M.error,predictors,kY,parameter_signs,start_point_for_optim,parscale,min_bl,maxiter,estimateBmethod=estimateBmethod)
 	)
 	.boot.extract(estres,values.to.bootstrap)
     },evolmodel=evolmodel,phyltree=phyltree,modelParams=modelParams,M.error=M.error,predictors=predictors,regimes=regimes,regimes.times=NULL,root.regime=root.regime,kY=kY,Atype=Atype,Syytype=Syytype,diagA=diagA,values.to.bootstrap=values.to.bootstrap,parameter_signs=parameter_signs,start_point_for_optim=start_point_for_optim,parscale=parscale,simplify=FALSE)
@@ -64,9 +64,9 @@ parametric.bootstrap<-function(estimated.model,phyltree,values.to.bootstrap=NULL
 
 }
 
-.oubm.sim.est<-function(phyltree,modelParams,regimes,regimes.times,root.regime,Atype,Syytype,diagA,M.error,predictors,kY,parameter_signs,start_point_for_optim,parscale,min_bl=0.0003,maxiter=c(10,50,100)){    
+.oubm.sim.est<-function(phyltree,modelParams,regimes,regimes.times,root.regime,Atype,Syytype,diagA,M.error,predictors,kY,parameter_signs,start_point_for_optim,parscale,min_bl=0.0003,maxiter=c(10,50,100),estimateBmethod="ML"){    
     simres<-simulMVSLOUCHProcPhylTree(phyltree,modelParams=modelParams,regimes=regimes,regimes.times=regimes.times,dropInternal=TRUE, M.error=M.error)
-    estres<-mvslouchModel(phyltree,mData=simres,kY=kY,regimes=regimes,regimes.times=regimes.times,root.regime=root.regime,predictors=predictors,M.error=M.error,Atype=Atype,Syytype=Syytype,diagA=diagA,parameter_signs=parameter_signs,start_point_for_optim=start_point_for_optim,parscale=parscale,min_bl=min_bl,maxiter=maxiter)
+    estres<-mvslouchModel(phyltree,mData=simres,kY=kY,regimes=regimes,regimes.times=regimes.times,root.regime=root.regime,predictors=predictors,M.error=M.error,Atype=Atype,Syytype=Syytype,diagA=diagA,parameter_signs=parameter_signs,start_point_for_optim=start_point_for_optim,parscale=parscale,min_bl=min_bl,maxiter=maxiter,estimateBmethod=estimateBmethod)
     if (!is.element("data",names(estres))){estres$data<-simres}
     estres
 

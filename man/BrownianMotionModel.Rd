@@ -42,7 +42,8 @@ between variables and each species is assumed to have the same measurement error
 have the same measurement error,}
 \item{}{a list of length n (number of species), each list element is the covariance structure 
 for the appropriate (numbering according to tree) species, either a single number 
-(each variable has same variance), vector (of length m for each variable), or m x m matrix,}
+(each variable has same variance), vector (of length m for each variable), or m x m matrix,
+the order of the list has to correspond to the order of the nodes in the \code{phyltree} object,}
 \item{}{NULL no measurement error.}
 }
 From version \code{2.0.0} of \pkg{mvSLOUCH} it is impossible to pass a single joint measurement error matrix 

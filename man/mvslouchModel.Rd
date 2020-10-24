@@ -13,7 +13,7 @@ mvslouchModel(phyltree, mData, kY, regimes = NULL, regimes.times = NULL,
 root.regime = NULL, predictors = NULL, M.error = NULL, Atype = "Invertible", 
 Syytype = "UpperTri", diagA = "Positive", estimate.root.state=FALSE, 
 parameter_signs=NULL, start_point_for_optim = NULL, parscale = NULL, 
-min_bl = 0.0003, maxiter = c(10,50,100))
+min_bl = 0.0003, maxiter = c(10,50,100), estimateBmethod="ML")
 }
 \arguments{
   \item{phyltree}{
@@ -64,7 +64,8 @@ between variables and each species is assumed to have the same measurement error
 have the same measurement error,}
 \item{}{a list of length n (number of species), each list element is the covariance structure 
 for the appropriate (numbering according to tree) species, either a single number 
-(each variable has same variance), vector (of length m for each variable), or m x m matrix,}
+(each variable has same variance), vector (of length m for each variable), or m x m matrix, 
+the order of the list has to correspond to the order of the nodes in the \code{phyltree} object,}
 \item{}{NULL no measurement error.}
 }
 From version \code{2.0.0} of \pkg{mvSLOUCH} it is impossible to pass a single joint measurement error matrix 
@@ -151,7 +152,9 @@ Syy=rbind(c(1,0.5),c(0,2))).}
   (second entry of \code{maxiter} number of times). Finally, the third is the value of \code{maxiter}  
   passed to \code{optim()}, apart from the optimization in the Brownian motion and measurement error case.
   }
-
+  \item{estimateBmethod}{Should \code{B} be estimated by maximum likelihood (default 
+  value \code{"ML"}) or generalized least squares (value \code{"GLS"}).
+  }
 }
 \details{
 The likelihood calculations are done by the \pkg{PCMBase} package. However, there is a

@@ -257,7 +257,7 @@
 		}
 	    )
 	}
-	if (!is.null(EstimationParams$signsB)){ ## The user is allowed to specify signs in A but NO check is done whether now A will remain in the desired matrix class
+	if (!is.null(EstimationParams$signsB)){ ## The user is allowed to specify signs in B but NO check is done whether now B will remain in the desired matrix class
 	    ModelParams$B[which(EstimationParams$signsB=="0")]<-0
 	    EstimationParams$signsB[which(EstimationParams$signsB=="0")]<-NA
 	    ModelParams$B[which(EstimationParams$signsB==0)]<-0

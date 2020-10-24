@@ -22,10 +22,10 @@
 	if (ncol(mD)>1){
 	    ## if the user set all parameters to be estimated by regression as known, then there is nothing to do here
 	    vIntercept<-NA
-	    if ((length(model_params$precalcMatrices)>=5)&&(is.element("intercept",names(model_params$precalcMatrices[[5]])))){vIntercept<-model_params$precalcMatrices[[5]]$intercept}
-	    else{vIntercept<-rep(0,ncol(mY)*nrow(mY))} ## dummy operation for the moment if intercept unknown
-	    if (!designToEstim$YnonCondX){vDintercept<-mD[,1]}
-	    else{vDintercept<-mD[,1]}
+	    if ((length(model_params$precalcMatrices)>=5)&&(is.element("intercept",names(model_params$precalcMatrices[[5]])))){
+		vIntercept<-model_params$precalcMatrices[[5]]$intercept
+	    }else{vIntercept<-rep(0,ncol(mY)*nrow(mY))} ## dummy operation for the moment if intercept unknown
+	    ##if (!designToEstim$YnonCondX){vDintercept<-mD[,1]}else{vDintercept<-mD[,1]}
 	    vfullintercept<-.get_fullGLSintercept(evolmodel,vIntercept,mD[,1],designToEstim$YnonCondX,model_params)
 	    mY<-.correct_phylGLS_response_by_intercept(mY,vfullintercept)
 	    mD<-mD[,-1,drop=FALSE]
@@ -105,14 +105,21 @@
 
 .get_fullGLSintercept_mvslouch<-function(vIntercept,mDintercept,YnonCondX,model_params){
     vInterfrommD<-rep(0,length(vIntercept))
-    if (YnonCondX){vInterfrommD<-mDintercept}
-    else{
-	kY<-ncol(model_params$A)
-	kX<-ncol(model_params$Sxx)
-	n<-length(model_params$regimes)
-	for (i in 1:n){ ## we also estimate X0-X0 - corrected in intercept so the estimate here should be of the vector 0
-	    vInterfrommD[((i-1)*(kY)+1):((i-1)*(kY)+kY)]<- mDintercept[((i-1)*(kY+kX)+1):((i-1)*(kY+kX)+kY)]
-	}
+# design matrix has the dummy estimate of X0-X0 regardless of YnonCondX or not
+#    if (YnonCondX){vInterfrommD<-mDintercept}
+#    else{
+#	kY<-ncol(model_params$A)
+#	kX<-ncol(model_params$Sxx)
+#	n<-length(model_params$regimes)
+#	for (i in 1:n){ ## we also estimate X0-X0 - corrected in intercept so the estimate here should be of the vector 0
+#	    vInterfrommD[((i-1)*(kY)+1):((i-1)*(kY)+kY)]<- mDintercept[((i-1)*(kY+kX)+1):((i-1)*(kY+kX)+kY)]
+#	}
+#    }
+    kY<-ncol(model_params$A)
+    kX<-ncol(model_params$Sxx)
+    n<-length(model_params$regimes)
+    for (i in 1:n){ ## we also estimate X0-X0 - corrected in intercept so the estimate here should be of the vector 0
+        vInterfrommD[((i-1)*(kY)+1):((i-1)*(kY)+kY)]<- mDintercept[((i-1)*(kY+kX)+1):((i-1)*(kY+kX)+kY)]
     }
     if (length(vInterfrommD)!=length(vIntercept)){.my_stop("Error in calculating intercept from known GLS parameters!")}
     vIntercept+vInterfrommD
@@ -742,6 +749,7 @@
 .design_matrix_mvslouch<-function(modelParams,designToEstim,lexpmtA,lexptjA,mX){
     mD<-NA
     mDtmp<-.design_matrix_ouch(modelParams,designToEstim,lexpmtA,lexptjA)
+
     kY<-nrow(modelParams$A)
     kX<-ncol(modelParams$Sxx)
     n<-length(modelParams$regimes) ## number of species
@@ -794,9 +802,7 @@
 	}
 	#---------------------------------------------------------------------------------------------              
     }
-
     mD<-matrix(0,nrow=(kY+kX)*n,ncol=ncol(mDtmp)+kX)
-    
     for (i in 1:n){ ## we also estimate X0-X0 - corrected in intercept so the estimate here should be of the vector 0
 	if (ncol(mDtmp)>0){mD[((i-1)*(kY+kX)+1):((i-1)*(kY+kX)+kY),1:ncol(mDtmp)]<-mDtmp[((i-1)*kY+1):(i*kY),]}
 	mD[((i-1)*(kY+kX)+kY+1):(i*(kY+kX)),(ncol(mDtmp)+1):(ncol(mDtmp)+kX)]<-diag(1,kX,kX)

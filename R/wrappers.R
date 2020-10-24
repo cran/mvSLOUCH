@@ -52,12 +52,12 @@ ouchModel<-function(phyltree,mData,regimes=NULL,regimes.times=NULL,root.regime=N
 }
 
 
-mvslouchModel<-function(phyltree,mData,kY,regimes=NULL,regimes.times=NULL,root.regime=NULL,predictors=NULL,M.error=NULL,Atype="Invertible",Syytype="UpperTri",diagA="Positive",estimate.root.state=FALSE,parameter_signs=NULL,start_point_for_optim=NULL,parscale=NULL,min_bl=0.0003,maxiter=c(10,50,100)){
-    .internal_mvslouchModel(phyltree,mData,kY,regimes,regimes.times,root.regime,predictors,M.error,Atype,Syytype,diagA,estimate.root.state,parameter_signs,start_point_for_optim,parscale,min_bl,maxiter=maxiter)
+mvslouchModel<-function(phyltree,mData,kY,regimes=NULL,regimes.times=NULL,root.regime=NULL,predictors=NULL,M.error=NULL,Atype="Invertible",Syytype="UpperTri",diagA="Positive",estimate.root.state=FALSE,parameter_signs=NULL,start_point_for_optim=NULL,parscale=NULL,min_bl=0.0003,maxiter=c(10,50,100),estimateBmethod="ML"){
+    .internal_mvslouchModel(phyltree,mData,kY,regimes,regimes.times,root.regime,predictors,M.error,Atype,Syytype,diagA,estimate.root.state,parameter_signs,start_point_for_optim,parscale,min_bl,maxiter=maxiter,estimateBmethod=estimateBmethod)
 }
 
 
-.internal_mvslouchModel<-function(phyltree,mData,kY,regimes=NULL,regimes.times=NULL,root.regime=NULL,predictors=NULL,M.error=NULL,Atype="Invertible",Syytype="UpperTri",diagA="Positive",estimate.root.state=FALSE,parameter_signs=NULL,lStartPoint=NULL,parscale=NULL,min_bl=0.0003,maxiter=c(10,50,100)){
+.internal_mvslouchModel<-function(phyltree,mData,kY,regimes=NULL,regimes.times=NULL,root.regime=NULL,predictors=NULL,M.error=NULL,Atype="Invertible",Syytype="UpperTri",diagA="Positive",estimate.root.state=FALSE,parameter_signs=NULL,lStartPoint=NULL,parscale=NULL,min_bl=0.0003,maxiter=c(10,50,100),estimateBmethod="ML"){
     if (is.matrix(mData)){
 	if (kY>=ncol(mData)){
 	    .my_stop('Cannot have all variables as OU responses, i.e. kY>=ncol(mData). Set kY to a smaller (than number of columns in mData) number of OU responses.',TRUE)
@@ -78,7 +78,7 @@ mvslouchModel<-function(phyltree,mData,kY,regimes=NULL,regimes.times=NULL,root.r
     pcmbase_skip<-setres$pcmbase_skip
 #    phyltree$edge.length[which(phyltree$edge.length<min_bl)]<-min_bl
 
-    res<-.PhyloSDEestim(phyltree,mData,kY=kY,regimes=regimes,regimes.times=regimes.times,root.regime=root.regime,params=list(EvolModel=EvolModel,EstimParams=c(list(Atype=Atype,Syytype=Syytype,diagA=diagA,diagSyy="Positive",calcCI=FALSE,lStartPoint=lStartPoint,optim_parscale=parscale),parameter_signs)),predictors=predictors,M.error=M.error,estimate.root.state=estimate.root.state,maxiter=maxiter)
+    res<-.PhyloSDEestim(phyltree,mData,kY=kY,regimes=regimes,regimes.times=regimes.times,root.regime=root.regime,params=list(EvolModel=EvolModel,EstimParams=c(list(Atype=Atype,Syytype=Syytype,diagA=diagA,diagSyy="Positive",calcCI=FALSE,lStartPoint=lStartPoint,optim_parscale=parscale),parameter_signs)),predictors=predictors,M.error=M.error,estimate.root.state=estimate.root.state,maxiter=maxiter,cBestim_method=estimateBmethod)
     options(PCMBase.Threshold.Skip.Singular=pcmbase_min_bl)
     options(PCMBase.Skip.Singular=pcmbase_skip)
     res

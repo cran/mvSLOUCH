@@ -62,9 +62,12 @@
     mData
 }
 
-.PhyloSDEestim<-function(phyltree,mData,kY,regimes=NULL,regimes.times=NULL,root.regime=NULL,predictors=NULL,params=NULL,M.error=NULL,estimate.root.state=FALSE,maxiter=c(10,50,100)){
+.PhyloSDEestim<-function(phyltree,mData,kY,regimes=NULL,regimes.times=NULL,root.regime=NULL,predictors=NULL,params=NULL,M.error=NULL,estimate.root.state=FALSE,maxiter=c(10,50,100),cBestim_method="ML"){
 ## predictors have to be given as column numbers
-
+    
+##    cBestim_method<-"ML" ## can be GLS
+##    cBestim_method<-"GLS" ## can be GLS
+    
     lEstimResults<-NA
     b_printmessage<-FALSE
 
@@ -123,7 +126,7 @@
     if (!is.element("minLogLik",names(params))){params$minLogLik<- -Inf}
     if (!is.element("pcmbase_model_box",names(params))){params$pcmbase_model_box<-pcmbase_model_box}    
 
-    params$EstimParams<-.set.estimparams(params,kY,kX,length(regimes.types),estimate.root.state,phyltree$tree_height)
+    params$EstimParams<-.set.estimparams(params,kY,kX,length(regimes.types),estimate.root.state,phyltree$tree_height,cBestim_method)
 	
 ## ============= post-hoc corrections to EstimaParams =======================================    
     if (params$EstimParams$designToEstim$y0AncState){
@@ -140,10 +143,10 @@
         predictors<-colnames(mData)[predictors]
     }	
     if (!is.element("TerminalLabels",names(params$EstimParams))){params$EstimParams$TerminalLabels<-phyltree$tip.label}
-    if (params$EvolModel!="mvslouch"){
+    
     ## this is so for non mvslouch models B is not attempted to be optimized over
-	params$EstimParams$Fixed$B<-NA
-    }
+    if (params$EvolModel!="mvslouch"){params$EstimParams$Fixed$B<-NA}
+    
     if (!is.null(M.error)){
         params$EstimParams$M_error<-M.error
     }
@@ -452,7 +455,7 @@
     maxiter
 }
 
-.set.estimparams<-function(params,kY,kX,numregs,estimate.root.state=FALSE,tree_height=NULL){
+.set.estimparams<-function(params,kY,kX,numregs,estimate.root.state=FALSE,tree_height=NULL,cBestim_method="ML"){
     if (!is.element("EstimParams",names(params))){EstimParams<-list()}
     else{EstimParams<-params$EstimParams}
     EstimParams$vVars<-NULL
@@ -475,8 +478,10 @@
     if (!is.element("kY",names(EstimParams))){EstimParams$kY<-kY}
     if (!is.element("kX",names(EstimParams))){EstimParams$kX<-kX}
     if (!is.element("Atype",names(EstimParams))){EstimParams$Atype<-"Invertible"}
-    ## B is done by GLS ONLY
+    ## when B is done by GLS, line below is commented out 
     #if (!is.element("Btype",names(EstimParams))){EstimParams$Btype<-"Any"}
+    ## when B is done by ML line below is needed
+    if (cBestim_method=="ML"){if (!is.element("Btype",names(EstimParams))){EstimParams$Btype<-"Any"}}
     ## =====================================
     if (!is.element("diagA",names(EstimParams))){EstimParams$diagA<-NULL}
     if (!is.element("Syytype",names(EstimParams))){EstimParams$Syytype<-"UpperTri"}
@@ -487,8 +492,10 @@
 
 
     if (!is.element("signsA",names(EstimParams))){EstimParams$signsA<-NULL}
-    ## B is done by GLS ONLY
-    if (!is.element("signsB",names(EstimParams))){EstimParams$signsB<-NULL}
+    ## B is done by ML ONLY (but same line for GLS)
+    if ((cBestim_method=="GLS") || (cBestim_method=="ML")){
+        if (!is.element("signsB",names(EstimParams))){EstimParams$signsB<-NULL}
+    }
     ## =====================================
     if (!is.element("signsmPsi",names(EstimParams))){EstimParams$signsmPsi<-NULL}
     if (!is.element("signsmPsi0",names(EstimParams))){EstimParams$signsmPsi0<-NULL}
@@ -506,8 +513,14 @@
     if (!is.element("psi",names(EstimParams$designToEstim))){EstimParams$designToEstim$psi<-TRUE}
     if (!is.element("psi0",names(EstimParams$designToEstim))){EstimParams$designToEstim$psi0<-FALSE}
     if ((!is.element("X0",names(EstimParams$designToEstim)))&&(params$EvolModel=="mvslouch")){EstimParams$designToEstim$X0<-FALSE}
-    ## B is done by GLS ONLY
-    if ((!is.element("B",names(EstimParams$designToEstim)))&&(params$EvolModel=="mvslouch")){EstimParams$designToEstim$B<-TRUE}
+    if (cBestim_method=="GLS"){
+	## B is done by GLS 
+	if ((!is.element("B",names(EstimParams$designToEstim)))&&(params$EvolModel=="mvslouch")){EstimParams$designToEstim$B<-TRUE}
+    }
+    if (cBestim_method=="ML"){
+	## B is done by ML 
+        if ((!is.element("B",names(EstimParams$designToEstim)))&&(params$EvolModel=="mvslouch")){EstimParams$designToEstim$B<-FALSE}    
+    }
     ## ==============================================
     
     if ((!is.element("BX0",names(EstimParams$designToEstim)))&&(params$EvolModel=="mvslouch")){EstimParams$designToEstim$BX0<-FALSE}
@@ -515,8 +528,17 @@
     if ((!is.element("y0AncState",names(EstimParams$designToEstim))&&(!EstimParams$estimate.root.state))||(numregs==1)){EstimParams$designToEstim$y0AncState<-TRUE}
     if (!is.element("y0AncState",names(EstimParams$designToEstim))&&(numregs>1)&&(EstimParams$estimate.root.state)){EstimParams$designToEstim$y0AncState<-FALSE}
     if ((!is.element("y0OnlyFixed",names(EstimParams$designToEstim)))&&(params$EvolModel=="mvslouch")){EstimParams$designToEstim$y0OnlyFixed<-FALSE}
-    ## B is one by GLS ONLY
-    if (!is.element("SimpReg",names(EstimParams$designToEstim))){EstimParams$designToEstim$SimpReg<-TRUE}    	
+    if ((cBestim_method=="GLS") || (cBestim_method=="ML")){
+	## should phylogenetic correlations be taken into account when setting up the regression design matrix (conditional expectation E[Y|X]) (FALSE)
+	## or not, i.e. do a simple regression (TRUE)
+	## FALSE means that one caculates from E[Y|X] Cov(Y,X)%*%Var(X)%*%(X-EX), where Y, X are the response and predictor traits of 
+	## all the sepcies stacked on each other and the phylogeny sits instide Cov(Y,X) and Var(X)
+	## However, this means that the estimation procedure looses the O(n) fast likelihood evaluation property, as it is impossible to 
+	## get the Cov(Y,X)%*%Var(X) part of the design matrix without first calculating Var((Y,X)) in O(n^2) time
+	## TRUE means that we assume that Var((Y,X)) is diagonal, hence we can do all operations in O(n) as we just calculate
+	## the variance blocks on the diagonal. Tip heights are taken into account, so some phylogenetic information on the species is retained.
+	if (!is.element("SimpReg",names(EstimParams$designToEstim))){EstimParams$designToEstim$SimpReg<-TRUE}    	
+    }
     ## ================================================================
     if ((!is.element("iRegLin",names(EstimParams$designToEstim)))&&(params$EvolModel=="mvslouch")){EstimParams$designToEstim$iRegLin<-TRUE}
     if ((!is.element("optimMethod",names(EstimParams$designToEstim)))&&(params$EvolModel=="mvslouch")){EstimParams$designToEstim$optimMethod<-"optim"}
@@ -524,8 +546,15 @@
     if ((!is.element("FullNAYX",names(EstimParams$designToEstim)))&&(params$EvolModel=="mvslouch")){EstimParams$designToEstim$FullNAYX<-TRUE}	
     if (!is.element("FullNAY",names(EstimParams$designToEstim))){EstimParams$designToEstim$FullNAY<-TRUE}	
     if (!is.element("sigmaRule",names(EstimParams$designToEstim))){EstimParams$designToEstim$sigmaRule<-3}	
-    ## B is one by GLS ONLY
-    if (!is.element("YnonCondX",names(EstimParams$designToEstim))){EstimParams$designToEstim$YnonCondX<-FALSE}	
+    if (cBestim_method=="GLS"){
+	## B is done by GLS 
+	if (!is.element("YnonCondX",names(EstimParams$designToEstim))){EstimParams$designToEstim$YnonCondX<-FALSE}	
+    }
+    if (cBestim_method=="ML"){
+	## B is done by ML
+	if (!is.element("YnonCondX",names(EstimParams$designToEstim))){EstimParams$designToEstim$YnonCondX<-TRUE}	
+	##if (!is.element("YnonCondX",names(EstimParams$designToEstim))){EstimParams$designToEstim$YnonCondX<-FALSE}	
+    }
     ## ================================================================
     EstimParams$designToEstim$Atype<-EstimParams$Atype
     EstimParams$designToEstim$Btype<-EstimParams$Btype
@@ -604,7 +633,7 @@
     if (!is.element("vX0",names(EstimParams$Fixed))){EstimParams$Fixed$vX0<-NA}
     if (!is.element("Sxx",names(EstimParams$Fixed))){EstimParams$Fixed$Sxx<-NA}
     ## B GLS without, it should be commented out as: This is changed now in fast mvSLOUCH, B is optimized over at the moment
-    if (!is.element("B",names(EstimParams$Fixed))){EstimParams$Fixed$B<-NA}
+    ## if (!is.element("B",names(EstimParams$Fixed))){EstimParams$Fixed$B<-NA}
     ## ================================================
     if (!is.element("Sxy",names(EstimParams$Fixed))){if((kX>0)&&(kY>0)){EstimParams$Fixed$Sxy<-matrix(0,nrow=kX,ncol=kY)}else{EstimParams$Fixed$Sxy<-NA}}    
     if (!is.element("Syx",names(EstimParams$Fixed))){if((kX>0)&&(kY>0)){EstimParams$Fixed$Syx<-matrix(0,nrow=kY,ncol=kX)}else{EstimParams$Fixed$Syx<-NA}}        

@@ -502,21 +502,23 @@
 	    vtoNA<-c(which(designToEstim$signAnonGLS=="+"),which(designToEstim$signsAnonGLS=="-"))
 	    if (length(vtoNA)){designToEstim$signsAnonGLS[vtoNA]<-NA}
 	    numfixed<-length(which(!is.na(designToEstim$signsAnonGLS)))	    
-	    npar0<-npar0-numfixed
+	    ##npar0<-npar0-numfixed
+	    res<-npar0-numfixed
 	}
 	if ((is.element("signsBnonGLS",names(designToEstim)))&&(!designToEstim$B)&&(designToEstim$Btype!="Any")){
 	    vtoNA<-c(which(designToEstim$signsBnonGLS=="+"),which(designToEstim$signsBnonGLS=="-"))
 	    if (length(vtoNA)){designToEstim$signsBnonGLS[vtoNA]<-NA}
 	    numfixed<-length(which(!is.na(designToEstim$signsBnonGLS)))	    
-	    npar0<-npar0-numfixed
+	    ##npar0<-npar0-numfixed
+	    res<-npar0-numfixed
 	}
 	if ((is.element("signsSyynonGLS",names(designToEstim)))&&(designToEstim$Syytype!="Any")){
 	    vtoNA<-c(which(designToEstim$signSyynonGLS=="+"),which(designToEstim$signsSyynonGLS=="-"))
 	    if (length(vtoNA)){designToEstim$signsSyynonGLS[vtoNA]<-NA}
 	    numfixed<-length(which(!is.na(designToEstim$signsSyynonGLS)))	    
-	    npar0<-npar0-numfixed
+	    ##npar0<-npar0-numfixed
+	    res<-npar0-numfixed
 	}	
-    }
-    
+    }    
     res
 }
