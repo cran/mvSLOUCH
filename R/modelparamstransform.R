@@ -564,6 +564,7 @@
 }
 
 .par.inv.transform<-function(ModelParams,EstimationParams){
+## called in PhyloSDEestim.R
 ## same parametrization for all models, since all are nested in the mvslouch
 ## if some parameters are not needed then one uses NA (NOT NULL)
     params<-c() ## empty vector with which to start paramtrizing

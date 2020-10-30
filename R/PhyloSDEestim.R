@@ -632,8 +632,10 @@
     if (!is.element("vY0",names(EstimParams$Fixed))){EstimParams$Fixed$vY0<-NA}
     if (!is.element("vX0",names(EstimParams$Fixed))){EstimParams$Fixed$vX0<-NA}
     if (!is.element("Sxx",names(EstimParams$Fixed))){EstimParams$Fixed$Sxx<-NA}
-    ## B GLS without, it should be commented out as: This is changed now in fast mvSLOUCH, B is optimized over at the moment
-    ## if (!is.element("B",names(EstimParams$Fixed))){EstimParams$Fixed$B<-NA}
+    ## B GLS needs this so that there is no attempts to optize over B
+    if (cBestim_method=="GLS"){
+	if (!is.element("B",names(EstimParams$Fixed))){EstimParams$Fixed$B<-NA}
+    }
     ## ================================================
     if (!is.element("Sxy",names(EstimParams$Fixed))){if((kX>0)&&(kY>0)){EstimParams$Fixed$Sxy<-matrix(0,nrow=kX,ncol=kY)}else{EstimParams$Fixed$Sxy<-NA}}    
     if (!is.element("Syx",names(EstimParams$Fixed))){if((kX>0)&&(kY>0)){EstimParams$Fixed$Syx<-matrix(0,nrow=kY,ncol=kX)}else{EstimParams$Fixed$Syx<-NA}}        

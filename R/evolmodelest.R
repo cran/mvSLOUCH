@@ -157,7 +157,9 @@ estimate.evolutionary.model<-function(phyltree,mData,regimes=NULL,root.regime=NU
 		}else{estimateBmethod<-model.setups[[k]]$estimateBmethod}
 
 		if ((bdoanalytical_start)&&(i==1)){
-		    lStartPoint<-.createStartPointsASyyB(mData.mvsl,phyltree$tree_height,model.setups[[k]],kY,TRUE)		    
+		    bdoB<-TRUE
+		    if (is.element("estimateBmethod",names(model.setups[[k]])) && (model.setups[[k]]$estimateBmethod=="GLS")){bdoB<-FALSE}
+		    lStartPoint<-.createStartPointsASyyB(mData.mvsl,phyltree$tree_height,model.setups[[k]],kY,bdoB)		    
 		}
 		
 	    	tryCatch({

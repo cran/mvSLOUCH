@@ -1,13 +1,13 @@
-87259dbeefff90f703d2e86236a14a18 *DESCRIPTION
+ef5db8895e362364157c0e1a3fd54532 *DESCRIPTION
 0632cc7589c46bbf4981f0a778f1ef2a *LICENCE
 6a15b9091ecea40ea757112c2931a13c *NAMESPACE
-72c9249a7cb90d97fc00df77d2ff49c3 *R/PhyloSDEestim.R
+e0d266cf349136b3ce620a778dbd023f *R/PhyloSDEestim.R
 370ce561d0e45f648d81c875aa96b1e3 *R/bootstrap.R
 f2ddf36bebd5ca1036b1cec301e383c2 *R/ci.R
 9cf8f785cd1de0354b8bd76d657ac2bd *R/estimBM.R
 48eb61b818e277179ebc122c5a045e05 *R/estimGLSGC.R
 95ce266d49e594a8f271d03be89632e0 *R/estimMAXLIK.R
-415479229b19a963b720e45498d8d5ab *R/evolmodelest.R
+4341dcba088ed280249c99d3f8e60cf2 *R/evolmodelest.R
 c8d50da2fc5e60f83864d3aea239edd5 *R/fitch.mvsl.R
 7ebb10e5dd6c0ac0283fb6bb2a422795 *R/getESS.R
 f7680ba3f0add46f4a88ba0bd5134c3f *R/loglik.R
@@ -16,7 +16,7 @@ f7680ba3f0add46f4a88ba0bd5134c3f *R/loglik.R
 f5b6d7d46957e4b398f5e26d2465446f *R/matrixparametrizations.R
 496727005450e5af49a873e8196fd876 *R/modelparams.R
 1062387a5a092a6094118115064ab8b2 *R/modelparamssummary.R
-67232819cfa0afc54652276dfeb53992 *R/modelparamstransform.R
+b8f54ba57b68b52c1c68cb6dbd647290 *R/modelparamstransform.R
 dcc23a51ec0cea4edddbdf78135ef1b3 *R/phylgls.R
 2614eb2cd4c9a03dd7e2546754521942 *R/phyltree_paths.R
 89e2fe6de45d95da3fc79bd9d65d130a *R/precalcs.R
@@ -40,7 +40,7 @@ c0a91f15a43d7705fa26597bca628843 *man/drawPhylProcess.Rd
 9300c78877a2acec7de22e749c18cae8 *man/fitch.mvsl.Rd
 43998b575ed42f821a4fc92f11767a3b *man/generate.model.setups.Rd
 4b9cc389716a32fbd32b1e1648304d0d *man/mvSLOUCH-internal.Rd
-86472aa094ad4cd2721a3576dcd75ee8 *man/mvSLOUCH-package.Rd
+c41c36bb592884e4f2ae14b17b831c8a *man/mvSLOUCH-package.Rd
 5f624395708edd7d76f243be8d70e4b8 *man/mvslouchModel.Rd
 d81d0ed13d57cfd18ccde080fcd676c8 *man/ouchModel.Rd
 96d6d02b61dd1fb7e091c0bbd86b69e0 *man/parametric.bootstrap.Rd
