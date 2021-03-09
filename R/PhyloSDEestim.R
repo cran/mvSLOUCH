@@ -1002,30 +1002,30 @@
 .createMeasurementError<-function(M_error,n,kYX){
     bM_errorOK<-FALSE
     if (is.null(M_error)){M_error<-NULL;bM_errorOK<-TRUE}
-    if (class(M_error)=="numeric"){
+    if (is.vector(M_error,mode="numeric")){
 	if (((length(M_error)==1)|| (length(M_error)==kYX)) && all(M_error>=0)){
 	    M_error<-diag(M_error,nrow=kYX,ncol=kYX)
 	    M_error<-sapply(1:n,function(i,x){x},x=M_error,simplify=FALSE)
 	    bM_errorOK<-TRUE
 	}
     }
-    if (class(M_error)=="matrix"){
+    if (is.matrix(M_error)){
 	if ((all(dim(M_error)==kYX))&&(matrixcalc::is.symmetric.matrix(M_error))&&(matrixcalc::is.positive.semi.definite(M_error))){
 	    M_error<-sapply(1:n,function(i,x){x},x=M_error,simplify=FALSE)    
 	    bM_errorOK<-TRUE
 	}    
     }
-    if ((class(M_error)=="list")&&(length(M_error)==n)){
+    if ((is.list(M_error))&&(length(M_error)==n)){
 	bM_errorOK<-TRUE
 	i<-1
 	while(bM_errorOK && (i<=n)){
-	    if (class(M_error[[i]])=="numeric"){
+	    if (is.vector(M_error[[i]],mode="numeric")){
 		if (((length(M_error[[i]])==1)|| (length(M_error[[i]])==kYX)) && all(M_error[[i]]>=0)){
 		    M_error[[i]]<-diag(M_error[[i]],nrow=kYX,ncol=kYX)
 		}
 		else{bM_errorOK<-FALSE}
 	    }
-    	    if (class(M_error[[i]])=="matrix"){
+    	    if (is.matrix(M_error[[i]])){
 		if (!((all(dim(M_error[[i]])==kYX))&&(matrixcalc::is.symmetric.matrix(M_error[[i]]))&&(matrixcalc::is.positive.semi.definite(M_error[[i]])))){bM_errorOK<-FALSE}    
 	    }    
 	    i<-i+1

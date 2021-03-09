@@ -218,8 +218,14 @@ estimate.evolutionary.model<-function(phyltree,mData,regimes=NULL,root.regime=NU
 	    else{estres<-estres$FinalFound}
 	}
 	tryCatch({BestModel<-.return_best_model(BestModel,estres,evolmodel,model_call,model_setup,i,is_ESS=FALSE,calcESS=NULL)},error=function(e){.my_message("Cannot compare models",FALSE);.my_message(e,FALSE);.my_message("\n",FALSE)})
-	aic.c_value<-estres$ParamSummary$aic.c ## if some error and not present, then these are NULL
-	bic_value<-estres$ParamSummary$bic
+	aic.c_value<- Inf
+	bic_value<- Inf
+	if (is.element("ParamSummary",names(estres))){
+	    if ((is.element("aic.c",names(estres$ParamSummary)))&&(is.element("bic",names(estres$ParamSummary)))){
+		aic.c_value<-estres$ParamSummary$aic.c ## if some error and not present, then these are NULL
+		bic_value<-estres$ParamSummary$bic
+	    }
+	}
 	calcESS<-NULL
 	if ((!is.null(pESS))&&(!is.null(phyltreeESS))){
 	    tryCatch({
@@ -234,6 +240,7 @@ estimate.evolutionary.model<-function(phyltree,mData,regimes=NULL,root.regime=NU
 	    },error=function(e){.my_message("Error: cannot calculate ESS!",TRUE);.my_message(e,TRUE);.my_message("\n",TRUE)})
 	}
 	loutput<-list(BestModel=BestModel,aic.c=aic.c_value,bic=bic_value,calcESS=calcESS,phyltreeESS=phyltreeESS,BestModelESS=BestModelESS)
+
     }    
     loutput
 }

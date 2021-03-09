@@ -2,12 +2,14 @@ Package: mvSLOUCH
 Type: Package
 Title: Multivariate Stochastic Linear Ornstein-Uhlenbeck Models for
         Phylogenetic Comparative Hypotheses
-Version: 2.6.1
-Date: 2020-10-29
-Author: Krzysztof Bartoszek <krzbar@protonmail.ch>
+Version: 2.6.2
+Date: 2021-03-09
+Authors@R: c(person(family="Bartoszek",given="Krzysztof",role=c("cre","aut"),email="krzbar@protonmail.ch"),
+	    person(family="Fuentes-Gonzalez", given="Jesualdo", email="jafuentesgonzalez@ua.edu",role=c("ctb")),
+	    person(family="Pienaar", given="Jason", email="jason.pienaar@ua.edu",role=c("ctb")))
 Maintainer: Krzysztof Bartoszek <krzbar@protonmail.ch>
 Description: Fits multivariate Ornstein-Uhlenbeck types of models to continues trait data from species related by a common evolutionary history. See K. Bartoszek, J, Pienaar, P. Mostad, S. Andersson, T. F.Hansen (2012) <doi:10.1016/j.jtbi.2012.08.005>. The suggested PCMBaseCpp package (which significantly speeds up the likelihood calculations) can be obtained from <https://github.com/venelin/PCMBaseCpp/>.
-Depends: R(>= 3.1.2), abind
+Depends: R(>= 3.5.0), abind
 License: GPL (>= 2) | file LICENCE
 LazyLoad: yes
 Collate: bootstrap.R evolmodelest.R matrixexps.R phylgls.R
@@ -20,8 +22,13 @@ Collate: bootstrap.R evolmodelest.R matrixexps.R phylgls.R
         simulclustphyl.R
 Imports: ape (>= 5.3), graphics, methods, mvtnorm, Matrix, matrixcalc,
         ouch, PCMBase (>= 1.2.10), stats, TreeSim
-Suggests: PCMBaseCpp(>= 0.1.9)
+Suggests: PCMBaseCpp (>= 0.1.9), geiger, ggplot2, knitr, rdryad (>=
+        1.0.0), rmarkdown
+VignetteBuilder: knitr, rmarkdown
 NeedsCompilation: no
+Packaged: 2021-03-09 08:33:56 UTC; kbart
+Author: Krzysztof Bartoszek [cre, aut],
+  Jesualdo Fuentes-Gonzalez [ctb],
+  Jason Pienaar [ctb]
 Repository: CRAN
-Packaged: 2020-10-29 13:11:27 UTC; kbart
-Date/Publication: 2020-10-30 09:50:03 UTC
+Date/Publication: 2021-03-09 09:20:02 UTC
