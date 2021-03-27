@@ -112,7 +112,7 @@ reg.col[reg.col=="semiaquatic"]<-"blue"
 reg.col[reg.col=="semifossorial"]<-"brown"
 
 ## ----eval=FALSE, echo=TRUE----------------------------------------------------
-#  plot(ScaledTree, cex = 1,  edge.color = reg.col, edge.width=3.5, type="fan", font=2)
+#  plot(ScaledTree, cex = 1,  edge.color = reg.col, edge.width=3.5, type="fan", font=4)
 
 ## ----eval=TRUE, echo=FALSE, out.width = "100%", fig.pos="h"-------------------
 knitr::include_graphics("./ScaledTree_fan.png", auto_pdf=TRUE)
@@ -299,7 +299,7 @@ climb.col[climb.col=="semiaquatic"] <- "blue"
 climb.col[climb.col=="semifossorial"] <- "brown"
 
 ## ----eval=FALSE, echo=TRUE----------------------------------------------------
-#  plot(ScaledTree, cex = 1,  edge.color = reg.col, edge.width=3.5, type="fan", font=2)
+#  plot(ScaledTree, cex = 1,  edge.color = climb.col, edge.width=3.5, type="fan", font=4)
 
 ## ----eval=TRUE, echo=FALSE, out.width = "100%", fig.pos="h"-------------------
 knitr::include_graphics("./ScaledTree2_fan.png", auto_pdf=TRUE)
@@ -327,7 +327,7 @@ strok.col[strok.col=="arboreal"]<-"green"
 strok.col[strok.col=="scansorial"]<-"orange"
 
 ## ----eval=FALSE, echo=TRUE----------------------------------------------------
-#  plot(ScaledTree, cex = 1,  edge.color = reg.col, edge.width=3.5, type="fan", font=2)
+#  plot(ScaledTree, cex = 1,  edge.color = strok.col, edge.width=3.5, type="fan", font=4)
 
 ## ----eval=TRUE, echo=FALSE, out.width = "100%", fig.pos="h"-------------------
 knitr::include_graphics("./ScaledTree3_fan.png", auto_pdf=TRUE)
@@ -360,7 +360,7 @@ red.col[red.col=="cursorial"]<-"red"
 red.col[red.col=="stroker"]<-"blue"
 
 ## ----eval=FALSE, echo=TRUE----------------------------------------------------
-#  plot(ScaledTree, cex = 1,  edge.color = reg.col, edge.width=3.5, type="fan", font=2)
+#  plot(ScaledTree, cex = 1,  edge.color = red.col, edge.width=3.5, type="fan", font=4)
 
 ## ----eval=TRUE, echo=FALSE, out.width = "100%", fig.pos="h"-------------------
 knitr::include_graphics("./ScaledTree4_fan.png", auto_pdf=TRUE)
