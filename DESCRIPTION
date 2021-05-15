@@ -2,8 +2,8 @@ Package: mvSLOUCH
 Type: Package
 Title: Multivariate Stochastic Linear Ornstein-Uhlenbeck Models for
         Phylogenetic Comparative Hypotheses
-Version: 2.6.3
-Date: 2021-03-25
+Version: 2.6.4
+Date: 2021-05-14
 Authors@R: c(person(family="Bartoszek",given="Krzysztof",role=c("cre","aut"),email="krzbar@protonmail.ch"),
 	    person(family="Fuentes-Gonzalez", given="Jesualdo", email="jafuentesgonzalez@ua.edu",role=c("ctb")),
 	    person(family="Pienaar", given="Jason", email="jason.pienaar@ua.edu",role=c("ctb")))
@@ -26,9 +26,9 @@ Suggests: PCMBaseCpp (>= 0.1.9), geiger, ggplot2, knitr, rdryad (>=
         1.0.0), rmarkdown
 VignetteBuilder: knitr, rmarkdown
 NeedsCompilation: no
-Packaged: 2021-03-25 11:26:40 UTC; kbart
+Packaged: 2021-05-15 20:21:38 UTC; kbart
 Author: Krzysztof Bartoszek [cre, aut],
   Jesualdo Fuentes-Gonzalez [ctb],
   Jason Pienaar [ctb]
 Repository: CRAN
-Date/Publication: 2021-03-27 08:40:27 UTC
+Date/Publication: 2021-05-15 21:00:02 UTC

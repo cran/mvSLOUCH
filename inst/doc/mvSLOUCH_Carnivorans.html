@@ -12,7 +12,7 @@
 
 <meta name="author" content="Jesualdo Fuentes Gonzalez, Jason Pienaar and Krzysztof Bartoszek" />
 
-<meta name="date" content="2021-03-25" />
+<meta name="date" content="2021-05-15" />
 
 <title>Analysis of locomotion and forelimb morphology in carnivorans using the mvSLOUCH R-package</title>
 
@@ -56,7 +56,14 @@ document.addEventListener('DOMContentLoaded', function() {
     </style>
 
 
-<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
 <style type="text/css" data-origin="pandoc">
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
@@ -341,7 +348,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 <h1 class="title toc-ignore">Analysis of locomotion and forelimb morphology in carnivorans using the mvSLOUCH R-package</h1>
 <h4 class="author">Jesualdo Fuentes Gonzalez, Jason Pienaar and Krzysztof Bartoszek</h4>
-<h4 class="date">2021-03-25</h4>
+<h4 class="date">2021-05-15</h4>
 
 
 <div id="TOC">
@@ -431,7 +438,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <span id="cb8-11"><a href="#cb8-11"></a>dfcarnivores_postcranial[,<span class="dv">2</span>]&lt;-<span class="kw">gsub</span>(<span class="st">&quot; &quot;</span>, <span class="st">&quot;_&quot;</span>, dfcarnivores_postcranial[,<span class="dv">2</span>])</span>
 <span id="cb8-12"><a href="#cb8-12"></a><span class="kw">row.names</span>(dfcarnivores_postcranial)&lt;-dfcarnivores_postcranial[,<span class="dv">2</span>]</span>
 <span id="cb8-13"><a href="#cb8-13"></a>dat&lt;-dfcarnivores_postcranial[,<span class="kw">c</span>(<span class="st">&quot;Ecology&quot;</span>,<span class="st">&quot;HuL&quot;</span>,<span class="st">&quot;HuPCL&quot;</span>,<span class="st">&quot;RaL&quot;</span>)]</span></code></pre></div>
-<p>The subset consists of a categorization of locomotor habits (Ecology) and three variables associated with forelimb morphology, measured in mm (HuL = humerus length; HuPCL = deltopectoral crest length; RaL = radius length):</p>
+<p>The subset consists of a categorization of locomotor habits (Ecology) and three variables associated with forelimb morphology, measured in mm (<code>HuL</code> = humerus length; <code>HuPCL</code> = deltopectoral crest length; <code>RaL</code> = radius length):</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a><span class="kw">head</span>(dat)</span></code></pre></div>
 <pre><code>##                        Ecology    HuL HuPCL    RaL
 ## Ailurus_fulgens       arboreal 112.82 50.35  87.84
@@ -545,7 +552,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 ## eigenvalues   0.1428691+0.6993581i   0.1428691-0.6993581i
 ## halflife      4.8516250+0.0000000i   4.8516250+0.0000000i
 ## %treeheight 485.1625000+0.0000000i 485.1625000+0.0000000i</code></pre>
-<p>Under this model, it takes close to five times the tree height for the response variables to lose half of their ancestral influence. So, if we assume that humerus length evolves randomly, it takes a very long time for the response variables to track it. This can be confirmed by another set of key parameters in this model, the optimal and evolutionary regressions:</p>
+<p>#Under this model, it takes close to five times the tree height for the response variables to lose half of their ancestral influence. #So, if we assume that humerus length evolves randomly, it takes a very long time for the response variables to track it. #This can be confirmed by another set of key parameters in this model, the optimal and evolutionary regressions: Under this model, it takes close to five times the tree height for the response variables to lose half of their ancestral influence. Note that, unlike the <span class="math inline">\(\mathbf{A}\)</span> matrix, the half-life entries are numbered (<code>[,1]</code> and <code>[,2]</code>) rather than tied to specific variables (<code>HuPCL</code> and <code>RaL</code>). This is because half-lives are reported in the eigenvector directions rather than in trait space. So, if we assume that humerus length evolves randomly, it takes a very long time for the response variables to track it. This can be confirmed by another set of key parameters in this model, the optimal and evolutionary regressions:</p>
 <div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1"></a>OU1BM<span class="op">$</span>FinalFound<span class="op">$</span>ParamSummary<span class="op">$</span>optimal.regression</span></code></pre></div>
 <pre><code>##             HuL
 ## HuPCL 2.6686996
@@ -554,7 +561,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <pre><code>##              HuL
 ## HuPCL 0.03673609
 ## RaL   0.40216998</code></pre>
-<p>The optimal regression describes the predicted association if the responses (HuPCL and RaL) could adapt instantaneously to changes in the explanatory variable free of ancestral trait influences (HuL). The evolutionary regression shows the observed relationship, after accounting for general phylogenetic effects. The two sets of coefficients are very different, indicating that the observed association is far shallower than the theoretical expectation of instantaneous adaptation. Consistent with the half-lives, this suggests that changes in the response variables towards a randomly evolving humerus length are very slow. However, note that this model also assumes that the carnivorans under consideration evolve in the same type of environment. This can be easily recognized by checking the deterministic part of the primary optimum of the response variables:</p>
+<p>The optimal regression describes the predicted association if the responses (<code>HuPCL</code> and <code>RaL</code>) could adapt instantaneously to changes in the explanatory variable free of ancestral trait influences (<code>HuL</code>). The evolutionary regression shows the observed relationship, after accounting for general phylogenetic effects. The two sets of coefficients are very different, indicating that the observed association is far shallower than the theoretical expectation of instantaneous adaptation. Consistent with the half-lives, this suggests that changes in the response variables towards a randomly evolving humerus length are very slow. However, note that this model also assumes that the carnivorans under consideration evolve in the same type of environment. This can be easily recognized by checking the deterministic part of the primary optimum of the response variables:</p>
 <div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1"></a>OU1BM<span class="op">$</span>FinalFound<span class="op">$</span>ParamsInModel<span class="op">$</span>mPsi</span></code></pre></div>
 <pre><code>##           reg.1
 ## HuPCL -8.461001
@@ -590,7 +597,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <h2>Ornstein-Uhlenbeck Ornstein-Uhlenbeck (OUOU)</h2>
 <p>Instead of assuming that humerus length evolves as BM, we can model all variables as an OU process:</p>
 <div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1"></a>OU1OU &lt;-<span class="st"> </span>mvSLOUCH<span class="op">::</span><span class="kw">ouchModel</span>(mvStree, mvData, <span class="dt">predictors =</span> <span class="kw">c</span>(<span class="dv">3</span>))</span></code></pre></div>
-<p>We can easily verify that humerus length is now following an OU process by checking the rate of adaptation matrix (note that, unlike the OUBM models, HuL is now part of the matrix):</p>
+<p>We can easily verify that humerus length is now following an OU process by checking the rate of adaptation matrix (note that, unlike the OUBM models, <code>HuL</code> is now part of the matrix):</p>
 <div class="sourceCode" id="cb59"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1"></a>OU1OU<span class="op">$</span>FinalFound<span class="op">$</span>ParamsInModel<span class="op">$</span>A</span></code></pre></div>
 <pre><code>##           HuPCL        RaL        HuL
 ## HuPCL 0.4036434  0.8025262 -1.8698215
@@ -1085,7 +1092,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 ## HuPCL 4.303191  6.312140   4.241160   4.735882 4.611702
 ## RaL   4.667876  7.414074   4.807759   5.184474 4.890464
 ## HuL   4.996477  7.191171   4.929834   5.258859 5.058317</code></pre>
-<p>This object lists the values of the primary optima (field <code>Estimated.Point</code>) as well as the lower (field <code>Lower.end</code>) and upper (field <code>Upper.end</code>) bounds of the <span class="math inline">\(95\%\)</span> confidence interval. Nothing conclusive can be said about dectopectoral crest (HuPCL) and humerus lengths (HuL), as the confidence intervals for the primary optima of the different niches overlap to some extent. The same does not happen with radius length (RaL) though, where the confidence intervals reveal more distinguishable differences among niches. To see this more clearly, let’s plot these estimates. First we will use the above object (listing the primary optimum estimates with confidence intervals) to create a data frame (DFs) indicating the locomotor habits (Ecology) as a factor, and the radius length primary optimum (RaL) with the lower (lower) and upper (upper) bounds of the confidence intervals:</p>
+<p>This object lists the values of the primary optima (field <code>Estimated.Point</code>) as well as the lower (field <code>Lower.end</code>) and upper (field <code>Upper.end</code>) bounds of the <span class="math inline">\(95\%\)</span> confidence interval. Nothing conclusive can be said about dectopectoral crest (<code>HuPCL</code>) and humerus lengths (<code>HuL</code>), as the confidence intervals for the primary optima of the different niches overlap to some extent. The same does not happen with radius length (<code>RaL</code>) though, where the confidence intervals reveal more distinguishable differences among niches. To see this more clearly, let’s plot these estimates. First we will use the above object (listing the primary optimum estimates with confidence intervals) to create a data frame (DFs) indicating the locomotor habits (Ecology) as a factor, and the radius length primary optimum (<code>RaL</code>) with the lower (lower) and upper (upper) bounds of the confidence intervals:</p>
 <div class="sourceCode" id="cb207"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb207-1"><a href="#cb207-1"></a>DFs&lt;-<span class="kw">data.frame</span>(</span>
 <span id="cb207-2"><a href="#cb207-2"></a> <span class="dt">Ecology=</span><span class="kw">factor</span>(<span class="kw">colnames</span>(FinalOUs2<span class="op">$</span>FinalFound<span class="op">$</span>ParamSummary<span class="op">$</span>confidence.interval<span class="op">$</span>regression.summary<span class="op">$</span>mPsi.regression.confidence.interval<span class="op">$</span>Estimated.Point)),</span>
 <span id="cb207-3"><a href="#cb207-3"></a>  <span class="dt">RaL=</span>FinalOUs2<span class="op">$</span>FinalFound<span class="op">$</span>ParamSummary<span class="op">$</span>confidence.interval<span class="op">$</span>regression.summary<span class="op">$</span>mPsi.regression.confidence.interval<span class="op">$</span>Estimated.Point[<span class="st">&quot;RaL&quot;</span>,],</span>
@@ -1123,7 +1130,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <pre><code>##            HuPCL        RaL
 ## HuPCL  1.0000000 -0.2750355
 ## RaL   -0.2750355  1.0000000</code></pre>
-<p>Note that the association with the scaling factor (HuL) remains positive, but now the association of the responses (HuPCL and RaL) is negative. This is, relative dectopectoral crest and humerus lengths are inversely associated, consistent with the trade-off hypothesis. We can assess the strength of this pattern with confidence intervals, but these are trickier to obtain for the above parameters than it was for the primary optimum. mvSLOUCH offers an alternative way of estimating confidence intervals for these and many other parameters, as presented in the next section.</p>
+<p>Note that the association with the scaling factor (<code>HuL</code>) remains positive, but now the association of the responses (<code>HuPCL</code> and <code>RaL</code>) is negative. This is, relative dectopectoral crest and humerus lengths are inversely associated, consistent with the trade-off hypothesis. We can assess the strength of this pattern with confidence intervals, but these are trickier to obtain for the above parameters than it was for the primary optimum. mvSLOUCH offers an alternative way of estimating confidence intervals for these and many other parameters, as presented in the next section.</p>
 <div id="parametric-bootstrap" class="section level2">
 <h2>Parametric bootstrap</h2>
 <p>The optimized speed of the new mvSLOUCH version allows obtaining confidence intervals for a variety of parameters under parametric bootstrapping. Here we will focus on the estimates linked to the trade-off pattern explored at the end of the previous section (<code>evolutionary.regression</code>, <code>corr.matrix</code>, <code>trait.regression</code>, <code>conditional.corr.matrix</code>):</p>
@@ -1208,7 +1215,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 ## [[2]]
 ##         HuPCL     HuL
 ## RaL 0.8413354 1.67723</code></pre>
-<p>The negative association of the responses (HuPCL and RaL) cannot be considered significant as the confidence intervals include a large range of positive values. Let us see if the conditional correlation matrix confirms this result:</p>
+<p>The negative association of the responses (<code>HuPCL</code> and <code>RaL</code>) cannot be considered significant as the confidence intervals include a large range of positive values. Let us see if the conditional correlation matrix confirms this result:</p>
 <div class="sourceCode" id="cb233"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb233-1"><a href="#cb233-1"></a>BTU.CondCorr &lt;-</span>
 <span id="cb233-2"><a href="#cb233-2"></a><span class="st">  </span><span class="kw">rep</span>(<span class="ot">NA</span>,<span class="kw">length</span>(<span class="kw">as.vector</span>(FinalOUs2<span class="op">$</span>FinalFound<span class="op">$</span>ParamSummary<span class="op">$</span>conditional.corr.matrix)))</span>
 <span id="cb233-3"><a href="#cb233-3"></a>BTL.CondCorr&lt;-BTU.CondCorr </span>

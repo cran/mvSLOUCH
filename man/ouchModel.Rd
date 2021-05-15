@@ -328,7 +328,7 @@ RNGversion(as.character(getRversion()))
 ### And finally bootstrap with particular interest in the evolutionary regression
 OUOUbootstrap<-parametric.bootstrap(estimated.model=OUOUestim,phyltree=phyltree,
 values.to.bootstrap=c("evolutionary.regression"),regimes=regimes,root.regime="small",
-M.error=NULL,predictors=c(3),kY=NULL,numboot=5,Atype=NULL,Syytype=NULL,diagA=NULL)
+M.error=NULL,predictors=c(2),kY=NULL,numboot=5,Atype=NULL,Syytype=NULL,diagA=NULL)
 }
 }
 \keyword{models}

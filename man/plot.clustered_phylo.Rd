@@ -44,7 +44,7 @@ set.seed(12345, kind = "Mersenne-Twister", normal.kind = "Inversion")
 phyltree<-simulate_clustered_phylogeny(v_sizeclusts=c(5,5,5),f_simclustphyl="sim.bd.taxa_Yule1",
 b_change_joining_branches=TRUE, joining_branchlengths=c(20,NA),joining="sim.bd.taxa_Yule1")
 
-plot(phyltree,clust_cols=c("red","green","blue"),clust_edge.width=3,cluste_edge.lty=c(1,2,3),
+plot(phyltree,clust_cols=c("red","green","blue"),clust_edge.width=3,clust_edge.lty=c(1,2,3),
 clust_tip.color=c("red","blue","green"),joiningphylo_col="black",joiningphylo_edge.width=3,
 joiningphylo_edge.lty=1)
 

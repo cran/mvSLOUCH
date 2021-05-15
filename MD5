@@ -1,4 +1,4 @@
-4ec9ee9e545aee5936e2e0bf8a97549f *DESCRIPTION
+dc9761dda95c1bb80fce631fe5491a26 *DESCRIPTION
 0632cc7589c46bbf4981f0a778f1ef2a *LICENCE
 6a15b9091ecea40ea757112c2931a13c *NAMESPACE
 930219ce2c9136246357d30d8849f89d *R/PhyloSDEestim.R
@@ -19,7 +19,7 @@ f5b6d7d46957e4b398f5e26d2465446f *R/matrixparametrizations.R
 b8f54ba57b68b52c1c68cb6dbd647290 *R/modelparamstransform.R
 dcc23a51ec0cea4edddbdf78135ef1b3 *R/phylgls.R
 2614eb2cd4c9a03dd7e2546754521942 *R/phyltree_paths.R
-89e2fe6de45d95da3fc79bd9d65d130a *R/precalcs.R
+abfa86fe0777c4faadd5c6cbb1829d83 *R/precalcs.R
 f104ba636d9ae9f24ddb48ddf9f1ab0d *R/regimes.R
 fe65f2a983d4bd861c1d56a7898d8891 *R/sdecovariancephyl.R
 276eec3a6aaadb9cf8efdc0aa04d207b *R/sdemoments.R
@@ -28,13 +28,13 @@ b492eea3caaf64334857ecf9f4a75507 *R/simulVasicekproc.R
 3f10235448e0c1d7200d299f5646b17c *R/simulclustphyl.R
 b5b6fe217842d0da2d0cd521be45d34c *R/trees2slouch.mvsl.R
 87a8ad2c2efb88b7172d6f418533d990 *R/wrappers.R
-2a84eff7d381d2ec8b9d895810903c9f *build/vignette.rds
+663b42bec22e64d009e51e2e4889bc4f *build/vignette.rds
 ecf040c24e58cebdeb3c3456aca17000 *inst/CITATION
 eb723b61539feef013de476e68b5c50a *inst/GPL-2
 d32239bcb673463ab874e80d47fae504 *inst/GPL-3
 8755f5e37a5a85310e6ec64caa493f63 *inst/doc/mvSLOUCH_Carnivorans.R
-1ba2bdb9288db9b016ba38f488bf7de7 *inst/doc/mvSLOUCH_Carnivorans.Rmd
-ce7e35bd94e6265b5bc3eee5f32efd91 *inst/doc/mvSLOUCH_Carnivorans.html
+4d3dab41f83fcf8b550cd391def7b315 *inst/doc/mvSLOUCH_Carnivorans.Rmd
+beb8c7cb5c847adf2081eade18737038 *inst/doc/mvSLOUCH_Carnivorans.html
 4a13a69dff74e37c8d8b55a1f5ac2c1a *man/BrownianMotionModel.Rd
 f027d1aa78dfb13368aa39d3af53e5d0 *man/SummarizeBM.Rd
 7f8ea90d097aaf48840579ca1f8ccadf *man/SummarizeMVSLOUCH.Rd
@@ -44,12 +44,12 @@ c0a91f15a43d7705fa26597bca628843 *man/drawPhylProcess.Rd
 9300c78877a2acec7de22e749c18cae8 *man/fitch.mvsl.Rd
 43998b575ed42f821a4fc92f11767a3b *man/generate.model.setups.Rd
 4b9cc389716a32fbd32b1e1648304d0d *man/mvSLOUCH-internal.Rd
-65c285a009a5c58cc45ada0f00157cbf *man/mvSLOUCH-package.Rd
+3eda1f383cf46c9c2e58bff929090c2d *man/mvSLOUCH-package.Rd
 5f624395708edd7d76f243be8d70e4b8 *man/mvslouchModel.Rd
-d81d0ed13d57cfd18ccde080fcd676c8 *man/ouchModel.Rd
+5e5c17aee9550f9df09aca9c2525ad79 *man/ouchModel.Rd
 96d6d02b61dd1fb7e091c0bbd86b69e0 *man/parametric.bootstrap.Rd
 6d62e6605ecbe5f898c8a3ed18b764dd *man/phyltree_paths.Rd
-9fd4fef1adbd434f5f945c12bee96b88 *man/plot.clustered_phylo.Rd
+a7bc6a037be50d44025df0d7f6eed038 *man/plot.clustered_phylo.Rd
 41f37ed31cf260cdce0ad311e5ed8d9a *man/simulBMProcPhylTree.Rd
 e77358a67ab4e4ca4bf19e0f0c750e08 *man/simulMVSLOUCHProcPhylTree.Rd
 c53363b763b388ac819478322985c2c7 *man/simulOUCHProcPhylTree.Rd
@@ -59,5 +59,5 @@ c53363b763b388ac819478322985c2c7 *man/simulOUCHProcPhylTree.Rd
 1971a9fd3acf44429b8b3e317ed91798 *vignettes/ScaledTree3_fan.png
 262a50830726aa0a1591bdd840c5c8f1 *vignettes/ScaledTree4_fan.png
 6fbb093f794e698a92270cda178a91d2 *vignettes/ScaledTree_fan.png
-1ba2bdb9288db9b016ba38f488bf7de7 *vignettes/mvSLOUCH_Carnivorans.Rmd
+4d3dab41f83fcf8b550cd391def7b315 *vignettes/mvSLOUCH_Carnivorans.Rmd
 14a185ebf686ad1e6ff870bb1fc84fda *vignettes/refs_mvSLOUCH.bib

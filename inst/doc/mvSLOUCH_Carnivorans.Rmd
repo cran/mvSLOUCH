@@ -164,7 +164,7 @@ dat<-dfcarnivores_postcranial[,c("Ecology","HuL","HuPCL","RaL")]
 ```
 
 The subset consists of a categorization of locomotor habits (Ecology) and three variables associated with forelimb morphology, 
-measured in mm (HuL = humerus length; HuPCL = deltopectoral crest length; RaL = radius length):
+measured in mm (`HuL` = humerus length; `HuPCL` = deltopectoral crest length; `RaL` = radius length):
 
 ```{r}
 head(dat)
@@ -364,8 +364,13 @@ This matrix contains information about phylogenetic inertia, which is easier to 
 OU1BM$FinalFound$ParamSummary$phyl.halflife$halflives
 ```
 
-Under this model, it takes close to five times the tree height for the response variables to lose half of their ancestral influence.
-So, if we assume that humerus length evolves randomly, it takes a very long time for the response variables to track it. 
+#Under this model, it takes close to five times the tree height for the response variables to lose half of their ancestral influence.
+#So, if we assume that humerus length evolves randomly, it takes a very long time for the response variables to track it. 
+#This can be confirmed by another set of key parameters in this model, the optimal and evolutionary regressions:
+Under this model, it takes close to five times the tree height for the response variables to lose half of their ancestral influence. 
+Note that, unlike the $\mathbf{A}$ matrix, the half-life entries are numbered (`[,1]` and `[,2]`) rather than tied to specific 
+variables (`HuPCL` and `RaL`). This is because half-lives are reported in the eigenvector directions rather than in 
+trait space. So, if we assume that humerus length evolves randomly, it takes a very long time for the response variables to track it. 
 This can be confirmed by another set of key parameters in this model, the optimal and evolutionary regressions:
 
 ```{r}
@@ -373,8 +378,8 @@ OU1BM$FinalFound$ParamSummary$optimal.regression
 OU1BM$FinalFound$ParamSummary$evolutionary.regression
 ```
 
-The optimal regression describes the predicted association if the responses (HuPCL and RaL) could adapt instantaneously to 
-changes in the explanatory variable free of ancestral trait influences (HuL). The evolutionary regression shows the 
+The optimal regression describes the predicted association if the responses (`HuPCL` and `RaL`) could adapt instantaneously to 
+changes in the explanatory variable free of ancestral trait influences (`HuL`). The evolutionary regression shows the 
 observed relationship, after accounting for general phylogenetic effects. The two sets of coefficients are very different, 
 indicating that the observed association is far shallower than the theoretical expectation of instantaneous adaptation. 
 Consistent with the half-lives, this suggests that changes in the response variables towards a randomly evolving 
@@ -450,7 +455,7 @@ OU1OU <- mvSLOUCH::ouchModel(mvStree, mvData, predictors = c(3))
 ```
 
 We can easily verify that humerus length is now following an OU process by checking the rate of adaptation matrix 
-(note that, unlike the OUBM models, HuL is now part of the matrix):
+(note that, unlike the OUBM models, `HuL` is now part of the matrix):
 
 ```{r}
 OU1OU$FinalFound$ParamsInModel$A
@@ -1110,11 +1115,11 @@ FinalOUs2$FinalFound$ParamSummary$confidence.interval$regression.summary$mPsi.re
 
 This object lists the values of the primary optima (field `Estimated.Point`) as well as the lower (field `Lower.end`) and upper 
 (field `Upper.end`) bounds of the $95\%$ confidence interval. Nothing conclusive can be said about dectopectoral crest 
-(HuPCL) and humerus lengths (HuL), as the confidence intervals for the primary optima of the different niches overlap to some extent. 
-The same does not happen with radius length (RaL) though, where the confidence intervals reveal more distinguishable 
+(`HuPCL`) and humerus lengths (`HuL`), as the confidence intervals for the primary optima of the different niches overlap to some extent. 
+The same does not happen with radius length (`RaL`) though, where the confidence intervals reveal more distinguishable 
 differences among niches. To see this more clearly, let’s plot these estimates. First we will use the above object 
 (listing the primary optimum estimates with confidence intervals) to create a data frame (DFs) indicating the locomotor habits 
-(Ecology) as a factor, and the radius length primary optimum (RaL) with the lower (lower) and upper (upper) bounds of the confidence intervals:
+(Ecology) as a factor, and the radius length primary optimum (`RaL`) with the lower (lower) and upper (upper) bounds of the confidence intervals:
 
 ```{r}
 DFs<-data.frame(
@@ -1170,8 +1175,8 @@ FinalOUs2$FinalFound$ParamSummary$trait.regression
 FinalOUs2$FinalFound$ParamSummary$conditional.corr.matrix
 ```
 
-Note that the association with the scaling factor (HuL) remains positive, but now the association of the responses 
-(HuPCL and RaL) is negative. This is, relative dectopectoral crest and humerus lengths are inversely associated, 
+Note that the association with the scaling factor (`HuL`) remains positive, but now the association of the responses 
+(`HuPCL` and `RaL`) is negative. This is, relative dectopectoral crest and humerus lengths are inversely associated, 
 consistent with the trade-off hypothesis. We can assess the strength of this pattern with confidence intervals, 
 but these are trickier to obtain for the above parameters than it was for the primary optimum. mvSLOUCH offers an alternative way 
 of estimating confidence intervals for these and many other parameters, as presented in the next section.
@@ -1277,7 +1282,7 @@ BTL.TrtReg
 BTU.TrtReg
 ```
 
-The negative association of the responses (HuPCL and RaL) cannot be considered significant as the confidence intervals include a 
+The negative association of the responses (`HuPCL` and `RaL`) cannot be considered significant as the confidence intervals include a 
 large range of positive values. Let us see if the conditional correlation matrix confirms this result:
 
 ```{r}

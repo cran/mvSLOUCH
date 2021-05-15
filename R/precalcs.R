@@ -146,7 +146,7 @@
     if (interceptcalc){
     ## intercept is calculated as a vector, i.e. the response is row stacked
 	kY<-nrow(lSs$S11)      
-	if (!is.null(mPsi) && (!is.na(mPsi[1]))){vAncPsi<-matrix(mPsi[,designToEstim$y0AncState],ncol=1,nrow=kY)} ## done here so no needless passing of designToEstim
+	if (!is.null(mPsi) && (!is.na(mPsi[1]))){vAncPsi<-matrix(mPsi[,designToEstim$y0Regime],ncol=1,nrow=kY)} ## done here so no needless passing of designToEstim
 	else {vAncPsi<-matrix(NA,ncol=1,nrow=kY)}
 	if (!is.null(mPsi0) &&(!is.na(mPsi0[1]))){vAncPsi<-vAncPsi+mPsi0}
         bSimpReg<-designToEstim$SimpReg
