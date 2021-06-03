@@ -154,7 +154,7 @@
 					    mCovi<-mCovi+modelParams$M_error[[i]]
 					}
 					if ((length(mCovi)>0) &&(!is.na(mCovi[1]))){
-					    if ((!matrixcalc::is.symmetric.matrix(mCovi)) || (!matrixcalc::is.positive.definite(mCovi))){
+					    if ((!.matrixcalc_is.symmetric.matrix(mCovi)) || (!.matrixcalc_is.positive.definite(mCovi))){
         					s_warn<- -1 
         					bis_non_degen<-FALSE
     						tryCatch({mCovi<-as.matrix(Matrix::nearPD(mCovi)$mat);bis_non_degen<-TRUE},error=function(e){.my_message(e,FALSE)},warning=function(e){.my_message(e,FALSE)})
@@ -164,7 +164,7 @@
 						if (length(vVars_pred)>0){
 						    vMeaniCond<-vMeani[vVars_resp]
 						    mCoviCond<-mCovi[vVars_resp,vVars_resp,drop=FALSE]
-						    if ((!matrixcalc::is.symmetric.matrix(mCoviCond)) || (!matrixcalc::is.positive.definite(mCoviCond))){
+						    if ((!.matrixcalc_is.symmetric.matrix(mCoviCond)) || (!.matrixcalc_is.positive.definite(mCoviCond))){
         				    		s_warn<- -1 
         				    		bis_non_degen<-FALSE
     							tryCatch({mCoviCond<-as.matrix(Matrix::nearPD(mCoviCond)$mat);bis_non_degen<-TRUE},error=function(e){.my_message(e,FALSE)})
@@ -188,7 +188,7 @@
 						},error=function(e){.my_message(e,FALSE)})
 					    
 						b_no_error2<-FALSE				    
-						if ((!matrixcalc::is.symmetric.matrix(mCoviCond)) || (!matrixcalc::is.positive.definite(mCoviCond))){
+						if ((!.matrixcalc_is.symmetric.matrix(mCoviCond)) || (!.matrixcalc_is.positive.definite(mCoviCond))){
         					    s_warn<- -1 
     						    tryCatch({mCoviCond<-as.matrix(Matrix::nearPD(mCoviCond)$mat);b_no_error2<-TRUE},error=function(e){.my_message(e,FALSE)})						
 						}else{b_no_error2<-TRUE}

@@ -634,7 +634,7 @@ generate.model.setups<-function(){
 
 .changeSigmatoSyy<-function(Sigma,Syytype,diagSyy,signsSyy,bcorrect0var=FALSE){
 ## function called in: estimBM.R, evolmodelest.R, modelparams.R, modelparamstransform.R, regimes.R
-    if ((bcorrect0var) && (!matrixcalc::is.diagonal.matrix(Sigma))){
+    if ((bcorrect0var) && (!.matrixcalc_is.diagonal.matrix(Sigma))){
     ## the rational is that if the variance is 0 the data is a constant, hence all covariances also should be 0
         v0var<-which(sapply(diag(Sigma),function(x){isTRUE(all.equal(x,0))},simplify=TRUE))
         bcorrect0var<-FALSE
@@ -650,7 +650,7 @@ generate.model.setups<-function(){
     if (isTRUE(all.equal(sum(abs(Sigma)),0))){Syy<-matrix(0,nrow=nrow(Sigma),ncol=ncol(Sigma))}
     else{
         Syy<-Sigma
-	if (matrixcalc::is.diagonal.matrix(Sigma)){Syy<-diag(sqrt(diag(Sigma)),nrow=nrow(Sigma),ncol=nrow(Sigma))}
+	if (.matrixcalc_is.diagonal.matrix(Sigma)){Syy<-diag(sqrt(diag(Sigma)),nrow=nrow(Sigma),ncol=nrow(Sigma))}
 	else{   
     	    Syy=switch(Syytype,
         	SingleValueDiagonal={diag(sqrt(mean(diag(Sigma))),nrow=nrow(Sigma),ncol=ncol(Sigma))},
@@ -782,7 +782,7 @@ generate.model.setups<-function(){
     ## resulting Sigma might not be sym-pos-def due to either "pairwise.complete.obs" if there are NA values, see ?cov
     ## or as a result of the performed transformation, but in this case is according to the formula for the covariance
     ## so should be fine, unless A taken as defective
-    if ((!matrixcalc::is.symmetric.matrix(Sigma)) || (!matrixcalc::is.positive.definite(Sigma))){
+    if ((!.matrixcalc_is.symmetric.matrix(Sigma)) || (!.matrixcalc_is.positive.definite(Sigma))){
 	Sigma<-as.matrix(Matrix::nearPD(Sigma)$mat)
     }
     SyyStartPoint<-.changeSigmatoSyy(Sigma[1:kY,1:kY,drop=FALSE],model_setup$Syytype,diagSyy,signsSyy,FALSE)		    

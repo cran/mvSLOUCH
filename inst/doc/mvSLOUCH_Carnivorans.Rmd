@@ -94,7 +94,8 @@ library(mvSLOUCH)
 As a phylogenetic comparative analysis with mvSLOUCH can run a long time, we first load required fragments of the
 precalculated objects. The unreduced objects are the results of the estimation procedures run here with the set random seed.
 We preload them so that building the vignette does not take over a day and we store within mvSLOUCH only the necessary
-parts as the full objects would take up too much space. 
+parts as the full objects would take up too much space. The complete objects can be found in the 
+[KJVJMRKK_mvSLOUCH GitHub repository](https://github.com/krzbar/KJVJMRKK_mvSLOUCH).
 However, the readers are encouraged to run the presented code by themselves.
 ```{r}
 load("./Carnivora_mvSLOUCH_objects.RData")

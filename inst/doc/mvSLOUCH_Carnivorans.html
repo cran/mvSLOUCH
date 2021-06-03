@@ -12,7 +12,7 @@
 
 <meta name="author" content="Jesualdo Fuentes Gonzalez, Jason Pienaar and Krzysztof Bartoszek" />
 
-<meta name="date" content="2021-05-15" />
+<meta name="date" content="2021-06-02" />
 
 <title>Analysis of locomotion and forelimb morphology in carnivorans using the mvSLOUCH R-package</title>
 
@@ -348,7 +348,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 <h1 class="title toc-ignore">Analysis of locomotion and forelimb morphology in carnivorans using the mvSLOUCH R-package</h1>
 <h4 class="author">Jesualdo Fuentes Gonzalez, Jason Pienaar and Krzysztof Bartoszek</h4>
-<h4 class="date">2021-05-15</h4>
+<h4 class="date">2021-06-02</h4>
 
 
 <div id="TOC">
@@ -409,7 +409,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <span id="cb3-3"><a href="#cb3-3"></a><span class="kw">library</span>(rdryad)</span>
 <span id="cb3-4"><a href="#cb3-4"></a><span class="kw">library</span>(mvSLOUCH)</span></code></pre></div>
 <pre><code>## Loading required package: abind</code></pre>
-<p>As a phylogenetic comparative analysis with mvSLOUCH can run a long time, we first load required fragments of the precalculated objects. The unreduced objects are the results of the estimation procedures run here with the set random seed. We preload them so that building the vignette does not take over a day and we store within mvSLOUCH only the necessary parts as the full objects would take up too much space. However, the readers are encouraged to run the presented code by themselves.</p>
+<p>As a phylogenetic comparative analysis with mvSLOUCH can run a long time, we first load required fragments of the precalculated objects. The unreduced objects are the results of the estimation procedures run here with the set random seed. We preload them so that building the vignette does not take over a day and we store within mvSLOUCH only the necessary parts as the full objects would take up too much space. The complete objects can be found in the <a href="https://github.com/krzbar/KJVJMRKK_mvSLOUCH">KJVJMRKK_mvSLOUCH GitHub repository</a>. However, the readers are encouraged to run the presented code by themselves.</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="kw">load</span>(<span class="st">&quot;./Carnivora_mvSLOUCH_objects.RData&quot;</span>)</span></code></pre></div>
 <p>Using an example on carnivoran locomotion and forelimb morphology, we will explore and compare the basic models of mvSLOUCH, going through some key tasks associated with its inputs (e.g. setting up the data and the phylogeny, specifying selective regimes for adaptive hypotheses) and outputs (e.g. identifying key statistics, optimizing parameter estimates of a preferred model, computing confidence intervals under parametric bootstrap).</p>
 <p>The function <code>set.seed()</code> allows specifying a starting point in a sequence of randomly generated numbers so that a user can obtain the same outputs under a given process. For the purposes of the current vignette, if you want to replicate the outputs below (for mvSLOUCH 2.6.2), set up the following seed:</p>

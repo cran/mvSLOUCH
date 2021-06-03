@@ -143,7 +143,7 @@
 	if (bOKregimes) {
 	    regimes.types.orig<-c()
     	    for (i in 1: length(regimes)){regimes.types.orig<-c(regimes.types.orig,unique(regimes[[i]]))}
-    	    regimes.types.orig<-sort(unique(regimes.types.orig))
+    	    regimes.types.orig<-sort(unique(regimes.types.orig)) ## regime names are in alphabetical order
     	    regimes.types<-1:length(regimes.types.orig)
     	    regimes<-sapply(regimes,function(vregs,regimes.types.orig){
         	sapply(vregs,function(orgreg,regimes.types.orig){which(regimes.types.orig==orgreg)},regimes.types.orig=regimes.types.orig)

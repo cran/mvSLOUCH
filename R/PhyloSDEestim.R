@@ -100,7 +100,7 @@
     regimes.times<-regimesList$regimes.times
     regimes.types<-regimesList$regimes.types
     root.regime<-regimesList$root.regime
-    regimes.types.orig<-regimesList$regimes.types.orig
+    regimes.types.orig<-regimesList$regimes.types.orig ## regimes names are in alphabetical order
     phyltree<-regimesList$phyltree
     pcmbase_model_box<-regimesList$pcmbase_model_box ## this is the model object in which parameters for all regimes sit in for PCMBase
     mData<-.check_input_trait_data(mData,n=phyltree$Ntips,vSpeciesLabels=phyltree$tip.label)
@@ -150,6 +150,8 @@
     if (!is.null(M.error)){
         params$EstimParams$M_error<-M.error
     }
+
+    params$EstimParams$RegimeTypes<-regimes.types ## required in modelparamtransform if mPsi would be optimized over in ML
 ## ==============================================================================================	
 	
     if (params$bShouldPrint){.my_message("Run time, start: \n",TRUE);.my_message(paste(Sys.time(),collapse=" "),TRUE);}
@@ -1010,7 +1012,8 @@
 	}
     }
     if (is.matrix(M_error)){
-	if ((all(dim(M_error)==kYX))&&(matrixcalc::is.symmetric.matrix(M_error))&&(matrixcalc::is.positive.semi.definite(M_error))){
+##	if ((all(dim(M_error)==kYX))&&(matrixcalc::is.symmetric.matrix(M_error))&&(matrixcalc::is.positive.semi.definite(M_error))){
+	if ((all(dim(M_error)==kYX))&&(.matrixcalc_is.symmetric.matrix(M_error))&&(.matrixcalc_is.positive.semi.definite(M_error))){
 	    M_error<-sapply(1:n,function(i,x){x},x=M_error,simplify=FALSE)    
 	    bM_errorOK<-TRUE
 	}    
@@ -1026,7 +1029,7 @@
 		else{bM_errorOK<-FALSE}
 	    }
     	    if (is.matrix(M_error[[i]])){
-		if (!((all(dim(M_error[[i]])==kYX))&&(matrixcalc::is.symmetric.matrix(M_error[[i]]))&&(matrixcalc::is.positive.semi.definite(M_error[[i]])))){bM_errorOK<-FALSE}    
+		if (!((all(dim(M_error[[i]])==kYX))&&(.matrixcalc_is.symmetric.matrix(M_error[[i]]))&&(.matrixcalc_is.positive.semi.definite(M_error[[i]])))){bM_errorOK<-FALSE}    
 	    }    
 	    i<-i+1
 	}

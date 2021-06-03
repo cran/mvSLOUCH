@@ -24,7 +24,7 @@
 #	slouch=(),
 	mvslouch=.calc.cov.slouch.mv(species_time,lAcalcs,lScalcs,tol=tol,method=method,b_correct_forPD=b_correct_forPD)
     )
-    if (b_correct_forPD&&((!matrixcalc::is.symmetric.matrix(mCov)) || (!matrixcalc::is.positive.definite(mCov)))){
+    if (b_correct_forPD&&((!.matrixcalc_is.symmetric.matrix(mCov)) || (!.matrixcalc_is.positive.definite(mCov)))){
 	tryCatch({mCov<-as.matrix(Matrix::nearPD(mCov)$mat)},error=function(e){.my_message(e,FALSE)})    
     }
     mCov
@@ -33,7 +33,7 @@
 .calc.mean.bm.mv<-function(vX0){vX0}
 .calc.cov.bm.mv<-function(species_time,StS,b_correct_forPD=TRUE){
     mCov<-species_time*StS
-    if (b_correct_forPD && ((!matrixcalc::is.symmetric.matrix(mCov)) || (!matrixcalc::is.positive.definite(mCov)))){
+    if (b_correct_forPD && ((!.matrixcalc_is.symmetric.matrix(mCov)) || (!.matrixcalc_is.positive.definite(mCov)))){
         tryCatch({mCov<-as.matrix(Matrix::nearPD(mCov)$mat)},error=function(e){.my_message(e,FALSE)})
     }
     mCov
@@ -76,7 +76,7 @@
     mCov[which(abs(mCov)<1e-15)]<-0
     colnames(mCov)<-NULL
     rownames(mCov)<-NULL
-    if (b_correct_forPD && ((!matrixcalc::is.symmetric.matrix(mCov)) || (!matrixcalc::is.positive.definite(mCov)))){
+    if (b_correct_forPD && ((!.matrixcalc_is.symmetric.matrix(mCov)) || (!.matrixcalc_is.positive.definite(mCov)))){
         tryCatch({mCov<-as.matrix(Matrix::nearPD(mCov)$mat)},error=function(e){.my_message(e,FALSE)})
     }
     mCov
@@ -142,7 +142,7 @@
     mCov<-(mCov+t(mCov))/2            
     colnames(mCov)<-NULL
     rownames(mCov)<-NULL
-    if (b_correct_forPD&&((!matrixcalc::is.symmetric.matrix(mCov)) || (!matrixcalc::is.positive.definite(mCov)))){
+    if (b_correct_forPD&&((!.matrixcalc_is.symmetric.matrix(mCov)) || (!.matrixcalc_is.positive.definite(mCov)))){
         tryCatch({mCov<-as.matrix(Matrix::nearPD(mCov)$mat)},error=function(e){.my_message(e,FALSE)})
     }
 

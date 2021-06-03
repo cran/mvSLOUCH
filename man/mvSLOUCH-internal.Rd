@@ -188,6 +188,12 @@
 \alias{.set_sing_bl_threshold}
 \alias{.my_chol}
 \alias{.set_pcmbase_model_box_X0}
+\alias{.matrixcalc_is.diagonal.matrix} 
+\alias{.matrixcalc_is.positive.definite}
+\alias{.matrixcalc_is.positive.semi.definite}
+\alias{.matrixcalc_is.singular.matrix}
+\alias{.matrixcalc_is.square.matrix}
+\alias{.matrixcalc_is.symmetric.matrix}
 \description{Internal mvSLOUCH objects.}
 \details{These are not to be called by the user. They are located in the code files as follows
 .ape2slouch.mvsl: trees2slouch.mvsl.R
@@ -378,5 +384,11 @@
 .set_sing_bl_threshold: wrappers.R
 .my_chol: evolmodelest.R
 .set_pcmbase_model_box_X0: estimBM.R
+.matrixcalc_is.diagonal.matrix: from_matrixcalc_1_0_3_matrixcalculations.R
+.matrixcalc_is.positive.definite: from_matrixcalc_1_0_3_matrixcalculations.R
+.matrixcalc_is.positive.semi.definite: from_matrixcalc_1_0_3_matrixcalculations.R
+.matrixcalc_is.singular.matrix: from_matrixcalc_1_0_3_matrixcalculations.R
+.matrixcalc_is.square.matrix: from_matrixcalc_1_0_3_matrixcalculations.R
+.matrixcalc_is.symmetric.matrix: from_matrixcalc_1_0_3_matrixcalculations.R
 }
 \keyword{internal}

@@ -174,7 +174,7 @@
 	if (length(vNAStS)>0){
 	    StS[vNAStS]<-runif(length(vNAStS))/10
 	}
-	if ((!matrixcalc::is.symmetric.matrix(StS)) || (!matrixcalc::is.positive.definite(StS))){
+	if ((!.matrixcalc_is.symmetric.matrix(StS)) || (!.matrixcalc_is.positive.definite(StS))){
 	    StS<-as.matrix(Matrix::nearPD(StS)$mat)
 	}
 	##mRegressCovar<-StS/n
@@ -293,7 +293,7 @@
     if(is.na(optPar[1])){
 	StS<-StS_cov
     }
-    if ((!matrixcalc::is.symmetric.matrix(StS)) || (!matrixcalc::is.positive.definite(StS))){
+    if ((!.matrixcalc_is.symmetric.matrix(StS)) || (!.matrixcalc_is.positive.definite(StS))){
 	StS<-as.matrix(Matrix::nearPD(StS)$mat)
     }
 

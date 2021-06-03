@@ -17,7 +17,7 @@
     if ((is.element("Merror",names(modelParams)))&&(!(is.null(modelParams$Merror)))&&(!all(is.na(modelParams$Merror)))){mPhylCov<-mPhylCov+modelParams$Merror}
     mPhylCov[which(is.na(mPhylCov))]<-0
     mPhylCov[which(abs(mPhylCov)<1e-15)]<-0
-    if ((!matrixcalc::is.symmetric.matrix(mPhylCov)) || (!matrixcalc::is.positive.definite(mPhylCov))){
+    if ((!.matrixcalc_is.symmetric.matrix(mPhylCov)) || (!.matrixcalc_is.positive.definite(mPhylCov))){
         mPhylCov<-as.matrix(Matrix::nearPD(mPhylCov)$mat)
     }
 
@@ -27,7 +27,7 @@
 .bm.phyl.cov<-function(mAncestorTimes,StS=NULL,S=NULL){
     if (is.null(StS)){StS<-S%*%t(S)}
     mPhylCov<-mAncestorTimes%x%StS
-    if ((!matrixcalc::is.symmetric.matrix(mPhylCov)) || (!matrixcalc::is.positive.definite(mPhylCov))){
+    if ((!.matrixcalc_is.symmetric.matrix(mPhylCov)) || (!.matrixcalc_is.positive.definite(mPhylCov))){
         mPhylCov<-as.matrix(Matrix::nearPD(mPhylCov)$mat)
     }
     mPhylCov<-(mPhylCov+t(mPhylCov))/2
@@ -75,7 +75,7 @@
 	}
 	mPhylCov<-(mPhylCov+t(mPhylCov))/2
     }
-    if ((!matrixcalc::is.symmetric.matrix(mPhylCov)) || (!matrixcalc::is.positive.definite(mPhylCov))){
+    if ((!.matrixcalc_is.symmetric.matrix(mPhylCov)) || (!.matrixcalc_is.positive.definite(mPhylCov))){
         mPhylCov<-as.matrix(Matrix::nearPD(mPhylCov)$mat)
     }
     mPhylCov
@@ -139,7 +139,7 @@
 	}
 	mPhylCov<-(mPhylCov+t(mPhylCov))/2
     }
-    if ((!matrixcalc::is.symmetric.matrix(mPhylCov)) || (!matrixcalc::is.positive.definite(mPhylCov))){
+    if ((!.matrixcalc_is.symmetric.matrix(mPhylCov)) || (!.matrixcalc_is.positive.definite(mPhylCov))){
         mPhylCov<-as.matrix(Matrix::nearPD(mPhylCov)$mat)
     }
     mPhylCov

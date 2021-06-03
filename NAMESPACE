@@ -15,7 +15,6 @@ importFrom(stats, cov, cov2cor, lm, nlminb, optim, qnorm, qt, rexp, rnorm, runif
 importFrom(graphics, abline, legend, mtext, par, plot, points)
 importFrom(PCMBase, PCM, PCMParamCount ,PCMCreateLikelihood, PCMLik, PCMParamLoadOrStore, PCMOptions)
 importFrom("methods", "as")
-importFrom(matrixcalc, is.diagonal.matrix, is.positive.semi.definite, is.singular.matrix, is.symmetric.matrix)
 importFrom(Matrix,nearPD)
 importFrom(abind, abind)
 importFrom(TreeSim, sim.bd.taxa)

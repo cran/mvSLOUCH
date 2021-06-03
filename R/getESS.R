@@ -206,7 +206,7 @@
 		mRegESSi<-(t(mRegESSi)+mRegESSi)/2
 		## symmetric is immediate, but check for no errors
 		## this is a non-degenarate variance matrix so cannot be semi-definite!
-		if ((!matrixcalc::is.symmetric.matrix(mRegESSi)) || (!matrixcalc::is.positive.definite(mRegESSi))){
+		if ((!.matrixcalc_is.symmetric.matrix(mRegESSi)) || (!.matrixcalc_is.positive.definite(mRegESSi))){
 		    .my_warning(paste("Error in calculating multivariate regression ESS for species ",species_i, "--- variance matrix not positive-definite. Adjusting it using Matrix::nearPD(). \n"),TRUE,FALSE)
 		    mRegESSi<-as.matrix(Matrix::nearPD(mRegESSi)$mat)
 		}
