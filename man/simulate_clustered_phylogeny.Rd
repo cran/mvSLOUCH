@@ -56,6 +56,12 @@ Apart from the standard \code{phylo} fields it has two additional ones:
     is cluster_i.}
 }
 }
+
+\references{
+Bartoszek K. and Vasterlund A. (2020) 
+ "Old Techniques for New Times": the RMaCzek package for producing Czekanowski's diagrams 
+ Biometrical Letters 57(2):89-118.
+}
 \author{Krzysztof Bartoszek}
 
 \examples{

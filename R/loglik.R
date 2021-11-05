@@ -109,15 +109,16 @@
 			vVars_pred<-setdiff(1:kYkX,vVars_resp)
 			kY<-length(vVars2)
 			
-			phylLogLik<-vector("list",2)
-			names(phylLogLik)<-c("RSS","R2")
+			phylLogLik<-vector("list",3)
+			names(phylLogLik)<-c("RSS","R2","R2_phylaverage")
 			phylLogLik$RSS<-"Not calculated due to error"
 			phylLogLik$R2<-"Not calculated due to error"			
+			phylLogLik$R2_phylaverage<-"Not calculated due to error"			
 			
 			if (kY<kYkX){
 			    ## currently we calculate a non-phylogenetic RSS, i.e. we do not take into account the correlation between the species, only between the traits but inside a species
 			    phylLogLik<-c(phylLogLik,vector("list",4))
-			    names(phylLogLik)<-c(names(phylLogLik)[1:2],"RSS_conditional_on_predictors","R2_conditional_on_predictors","RSS_non_phylogenetic_conditional_on_predictors","R2_non_phylogenetic_conditional_on_predictors")
+			    names(phylLogLik)<-c(names(phylLogLik)[1:3],"RSS_conditional_on_predictors","R2_conditional_on_predictors","RSS_non_phylogenetic_conditional_on_predictors","R2_non_phylogenetic_conditional_on_predictors")
 			    phylLogLik$RSS_conditional_on_predictors<-"Not implemented yet"
 			    phylLogLik$R2_conditional_on_predictors<-"Not implemented yet"
 			    phylLogLik$RSS_non_phylogenetic_conditional_on_predictors<-"Not calculated due to error"
@@ -238,15 +239,26 @@
 			    vIntercp<-apply(mData,2,mean,na.rm=TRUE)
 			    mInterceptCentredData<-mData-matrix(c(vIntercp),nrow=n,ncol=length(vIntercp),byrow=TRUE)
 			    #RSS_null_model<-sum((mInterceptCentredData)^2,na.rm=TRUE)
-			    RSS_null_model<-.pcmbaseDphylGaussian_RSS(mInterceptCentredData,phyltree,modelParams$pcmbase_model_box)
+			    pcmbase_model_box_mean0<-.set_mean0_pcmbase_model_box(modelParams$pcmbase_model_box,glsmodel=NA)
+			    RSS_null_model<-.pcmbaseDphylGaussian_RSS(mInterceptCentredData,phyltree,pcmbase_model_box_mean0)
+			    ##RSS_null_model<-.pcmbaseDphylGaussian_RSS(mInterceptCentredData,phyltree,modelParams$pcmbase_model_box)
 			    phylLogLik$RSS<-.pcmbaseDphylGaussian_RSS(mData,phyltree,modelParams$pcmbase_model_box)
 			    phylLogLik$R2<-1-phylLogLik$RSS/RSS_null_model
+			    
+			    mDglsmean<-rep(1,nrow(mData))%x%diag(ncol(mData))        
+    			    vGLSmeanest<-.pcmbaseDphylOU_GLS(mData,mD=mDglsmean,phyltree,modelParams$pcmbase_model_box,glsmodel=NA)$vGLSest
+    			    mDatamGLSmean<-mData-matrix(vGLSmeanest,nrow=nrow(mData),ncol=ncol(mData),byrow=TRUE)
+    			    RSS_phylaverage<- .pcmbaseDphylGaussian_RSS(mDatamGLSmean,phyltree,pcmbase_model_box_mean0,glsmodel=NA) 
+			    phylLogLik$R2_phylaverage<-1-phylLogLik$RSS/RSS_phylaverage
 				
 			    if (!is.element("RSS",names(phylLogLik))||is.na(phylLogLik$RSS)||(phylLogLik$RSS<0)){
 			        phylLogLik$RSS_comment<-"RSS is negative, consider rerunning estimation or a different (also non-phylogenetic) model of evolution. A possible explanation is that the search procedure finished in a very bad local maximum of the likelihood surface. One suggested solution is to re-run on a simpler, i.e. fewer free parameters and then use the output as a starting point for the considered here model. A simpler model can be set using the parameters Atype (from experience this is could be the key parameter to focus on) and Syytype. To use the output as a starting point for the optimization, use the start_point_for_optim parameter provided to the estimation function(s). See mvSLOUCH's manual."
 			    }
 			    if (!is.element("R2",names(phylLogLik))||is.na(phylLogLik$R2)||(phylLogLik$R2<0)){
 			        phylLogLik$R2_comment<-"R2 is negative, consider rerunning estimation or a different (also non-phylogenetic) model of evolution. A possible explanation is that the search procedure finished in a very bad local maximum of the likelihood surface. One suggested solution is to re-run on a simpler, i.e. fewer free parameters and then use the output as a starting point for the considered here model. A simpler model can be set using the parameters Atype (from experience this is could be the key parameter to focus on) and Syytype. To use the output as a starting point for the optimization, use the start_point_for_optim parameter provided to the estimation function(s). See mvSLOUCH's manual."
+			    }
+			    if (!is.element("R2_phylaverage",names(phylLogLik))||is.na(phylLogLik$R2_phylaverage)||(phylLogLik$R2_phylaverage<0)){
+			        phylLogLik$R2_phylaverage_comment<-"R2 based on the phylogenetic RSS average is negative, consider rerunning estimation or a different (also non-phylogenetic) model of evolution. A possible explanation is that the search procedure finished in a very bad local maximum of the likelihood surface. One suggested solution is to re-run on a simpler, i.e. fewer free parameters and then use the output as a starting point for the considered here model. A simpler model can be set using the parameters Atype (from experience this is could be the key parameter to focus on) and Syytype. To use the output as a starting point for the optimization, use the start_point_for_optim parameter provided to the estimation function(s). See mvSLOUCH's manual."
 			    }
 			},error=function(e){.my_message("Error in calculating RSS: ",TRUE);.my_message(e,TRUE);.my_message("\n",TRUE)})
 			#}
@@ -337,6 +349,7 @@
 }
 
 .my_stop<-function(m,bdoPrint=TRUE){
+## called in OUphylregression.R
     class(m)<-"character" 
     if (bdoPrint){stop(m,call. = FALSE)}
     else{stop(call. = FALSE)}

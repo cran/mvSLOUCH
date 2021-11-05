@@ -50,11 +50,11 @@ is taken.
   \item{predictors}{
 A vector giving the numbers of the columns from
   \code{data} which are to be considered predictor ones, \emph{i.e.} conditioned
-      on in the program output. If not provided the "X" variables are treated as predictors.
+      on in the program output. If not provided, then none will be treated as predictors.
 }
   \item{M.error}{
 An optional measurement error covariance structure. The measurement errors between species are assumed 
-independent. The program tries to recognizes the structure of matrix passed and accepts the following 
+independent. The program tries to recognize the structure of the passed matrix and accepts the following 
 possibilities :
 \itemize{
 \item{}{a single number that is a common measurement error for all tips and species,}
@@ -86,7 +86,10 @@ What class does the Syy matrix in the multivariate OUBM model belong to, possibl
 }
 \item{diagA}{
   Whether the values on \code{A}'s diagonal are to be \code{"Positive"}, \code{"Negative"} or 
-  sign allowed to vary, \code{NULL}.
+  sign allowed to vary, \code{NULL}.  However, setting this to
+a non-\code{NULL} value might be detrimental to the optimization process if 
+\code{Atype} is \code{"SymmetricPositiveDefinite"}. In this case the diagonal is always 
+guaranteed to be positive.
 }
 \item{estimate.root.state}{
     Should the root state be estimate \code{TRUE} (not recommended) or set at the optimum 
@@ -237,6 +240,13 @@ is the stationary covariance matrix of process if it exists (i.e. the eigenvalue
 \code{aic} is the Akaike information criterion, \code{aic.c} is the Akaike information criterion corrected for small
 sample size, \code{sic} is the Schwarz information criterion, \code{bic} is the Bayesian information criterion
 (which is the same as the Schwarz information criterion) and \code{RSS} is the residual sum of squares.
+The field \code{RSS_non_phylogenetic} is a residual sum of squares calculated without correcting
+for the phylogeny--induced between species correlations, while the extension
+conditional_on_predictors indicates that we consider the RSS for the variables
+labelled as responses conditioned on the remaining variables. The \code{R2_phylaverage} field is
+R2, where the alternative model is the phylogenetically weighted sample average 
+(see \code{\link{OU_phylreg}}).
+
 
 From version \code{2.0.0} of \pkg{mvSLOUCH} the data has to be passed as a matrix.
 To underline this the data parameter's name has been changed to \code{mData}. 
@@ -263,9 +273,9 @@ Hansen, T.F. (1997)
   Stabilizing selection and the comparative analysis of adaptation. 
   Evolution 51:1341-1351.
 
-Mitov, V. and Bartoszek, K. and Asimomitis, G. and Stadler, T. (2018) 
-  Fast likelihood evaluation for multivariate phylogenetic comparative methods: the PCMBase R 
-  package. arXiv:1809.09014.
+Mitov, V. and Bartoszek, K. and Asimomitis, G. and Stadler, T. (2020) 
+  Fast likelihood calculation for multivariate Gaussian phylogenetic models with shifts
+  Theoretical Population Biology 131:66-78.
 
 Pienaar et al (in prep) An overview of comparative methods for
      testing adaptation to external environments.  

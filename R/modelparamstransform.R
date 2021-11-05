@@ -15,6 +15,7 @@
 }
 
 .update_pcmbase_box_params<-function(model_params,evolmodel,vDo=NULL){
+## callled in OUphylregression.R
     pcmbase_model_box=switch(evolmodel,
                 bm=.update_pcmbase_box_params_bm(model_params,vDo=NULL),
                 ouch=.update_pcmbase_box_params_ouch(model_params,vDo=NULL),

@@ -50,7 +50,8 @@
     expmtA<-modelParams$precalcMatrices[[1]]$eigA$vectors%*%diag(exp(-modelParams$precalcMatrices[[1]]$eigA$values*curr.time),length(Y),length(Y))%*%modelParams$precalcMatrices[[1]]$invP
     if (!is.null(lRegs$times)){lRegs$exptjA<-sapply(lRegs$times,function(t1,eigA,invP){eigA$vectors%*%diag(exp(eigA$values*t1),length(eigA$values),length(eigA$values))%*%invP},eigA=modelParams$precalcMatrices[[1]]$eigA,invP=modelParams$precalcMatrices[[1]]$invP,simplify=FALSE)}
     modelParams$vY0<-Y
-    vMean<-.calc.mean.ouch.mv(expmtA,Y,modelParams$mPsi,modelParams$mPsi0,lRegs$exptjA,lRegs$regimes)
+    mPsi_tmp<-modelParams$mPsi;if(ncol(mPsi_tmp)>1){mPsi_tmp<-mPsi_tmp[,order(colnames(mPsi_tmp)),drop=FALSE]}
+    vMean<-.calc.mean.ouch.mv(expmtA,Y,mPsi_tmp,modelParams$mPsi0,lRegs$exptjA,lRegs$regimes)
     if (is.null(mCov)){mCov<-.calc.cov.ouch.mv(curr.time,modelParams$precalcMatrices[[1]],modelParams$precalcMatrices[[2]])}
     mvtnorm::rmvnorm(n=1,mean=vMean,sigma=mCov)
 }
@@ -121,7 +122,8 @@
     if (!is.null(lRegs$times)){lRegs$exptjA<-sapply(lRegs$times,function(t1,eigA,invP){eigA$vectors%*%diag(exp(eigA$values*t1),length(eigA$values),length(eigA$values))%*%invP},eigA=modelParams$precalcMatrices[[1]]$eigA,invP=modelParams$precalcMatrices[[1]]$invP,simplify=FALSE)}
     modelParams$vY0<-Y
     modelParams$vX0<-vX
-    vMean<-.calc.mean.slouch.mv(expmtA,modelParams$precalcMatrices[[1]]$A1B,Y,vX,modelParams$mPsi,modelParams$mPsi0,lRegs$exptjA,lRegs$regimes)
+    mPsi_tmp<-modelParams$mPsi;if(ncol(mPsi_tmp)>1){mPsi_tmp<-mPsi_tmp[,order(colnames(mPsi_tmp)),drop=FALSE]}
+    vMean<-.calc.mean.slouch.mv(expmtA,modelParams$precalcMatrices[[1]]$A1B,Y,vX,mPsi_tmp,modelParams$mPsi0,lRegs$exptjA,lRegs$regimes)
     if (is.null(mCov)){mCov<-.calc.cov.slouch.mv(curr.time,modelParams$precalcMatrices[[1]],modelParams$precalcMatrices[[2]])}
     mvtnorm::rmvnorm(n=1,mean=vMean,sigma=mCov)
 }

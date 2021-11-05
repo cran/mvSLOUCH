@@ -222,6 +222,7 @@
 		    vWhichTimes<-intersect(which(regimes.times[[itermNum]]>=phyltree$time.of.nodes[vTermLineage[j-1]]),which(regimes.times[[itermNum]]<=phyltree$time.of.nodes[vTermLineage[j]]))
 	    	    vY0<-Xprev[1:kY]
 	    	    mPsi<-modelParams$mPsi
+		    if(ncol(mPsi)>1){mPsi<-mPsi[,order(colnames(mPsi)),drop=FALSE]}
 	    	    mPsi0<-modelParams$mPsi0
 
 		    expmtAcurr<-.calc.exptA(t=-timeDiff,modelParams$precalcMatrices[[1]])   

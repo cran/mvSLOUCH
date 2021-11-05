@@ -28,11 +28,12 @@ a warning is thrown and generic names are generated.
   \item{predictors}{
 A vector giving the numbers of the columns from
 \code{data} which are to be considered predictor ones, \emph{i.e.} conditioned
-on in the program output. 
+on in the program output. If not provided, then none will be considered to 
+be predictors.
 }
   \item{M.error}{
 An optional measurement error covariance structure. The measurement errors between species are assumed 
-independent. The program tries to recognizes the structure of matrix passed and accepts the following 
+independent. The program tries to recognize the structure of the passed matrix and accepts the following 
 possibilities :
 \itemize{
 \item{}{a single number that is a common measurement error for all tips and species,}
@@ -121,10 +122,10 @@ Hansen, T.F. and Bartoszek, K. (2012)
   errors in phylogenetic comparative studies.
   Systematic Biology 61(3):413-425.
 
-Mitov, V. and Bartoszek, K. and Asimomitis, G. and Stadler, T. (2018) 
-  Fast likelihood evaluation for multivariate phylogenetic comparative methods: the PCMBase R 
-  package. arXiv:1809.09014.
-
+Mitov, V. and Bartoszek, K. and Asimomitis, G. and Stadler, T. (2020) 
+  Fast likelihood calculation for multivariate Gaussian phylogenetic models with shifts
+  Theoretical Population Biology 131:66-78.
+  
 Pienaar et al (in prep) An overview of comparative methods for
      testing adaptation to external environments.
 }

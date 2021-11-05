@@ -49,7 +49,7 @@ is taken.
 }
   \item{M.error}{
 An optional measurement error covariance structure. The measurement errors between species are assumed 
-independent. The program tries to recognizes the structure of matrix passed and accepts the following 
+independent. The program tries to recognize the structure of the passed matrix and accepts the following 
 possibilities :
 \itemize{
 \item{}{a single number that is a common measurement error for all tips and species,}
@@ -93,7 +93,7 @@ Defined using \code{.generate.ext.model.setups()} which at the moment calls \cr
 \item{\code{"all"} }{All possible models are generated, using 
 \cr \code{.generate.all.model.setups()}. Running it will take an intolerable \cr amount of time.}
 }
-Alternatively the use is also free to provide their own list of models in this variable. 
+Alternatively the user is also free to provide their own list of models in this variable. 
 Each element of the list is a list with fields.
 \itemize{
 \item{\code{evolmodel} }{The evolutionary model, it may take one of the three values \code{"bm"} 
@@ -111,7 +111,16 @@ Each element of the list is a list with fields.
 \code{"UpperTri"}, \code{"LowerTri"},  \code{"Symmetric"}, \code{"Any"}. 
 }
 \item{\code{diagA} }{Should the diagonal of \code{A} be forced to be positive (\code{"Positive"}),
-negative (\code{"Negative"}) or the sign free to vary (\code{NULL})}
+negative (\code{"Negative"}) or the sign free to vary (\code{NULL}). However, setting this to
+a non-\code{NULL} value when \code{evolmodel} is \code{"mvslouch"} might be 
+(but simulations concerning this are not conclusive) slightly detrimental to the optimization process 
+if \code{Atype} is \code{"DecomposablePositive"}, \code{"DecomposableNegative"}, or
+\code{"DecomposableReal"}. In these cases \code{A} is parametrized by its eigendecomposition.
+Additional exponentiation of the diagonal, to ensure positivity, could (but this is uncertain)
+make the exploration of the likelihood surface more difficult. The user is advised to
+also try \code{diag=NULL}. In the case of \code{Atype} being \code{"SymmetricPositiveDefinite"},
+the diagonal is always guaranteed to be positive.
+}
 \item{\code{signsA} }{WARNING: ONLY use this if you know what you are doing. Ignored if \code{evolmodel} 
 equals \code{"bm"}. This allows the user to specify which elements of \code{A} are to be positive, negative 
 or equal to specific values.See \code{\link{ouchModel}}  and \code{\link{mvslouchModel}} for a more specific 
@@ -168,12 +177,20 @@ all parameters (under the appropriate parametrization) will be free to vary.
   \item{predictors}{
 A vector giving the numbers of the columns from
 \code{dfdata} which are to be considered predictor ones, \emph{i.e.} conditioned
-on in the program output. If not provided then the "X" variables 
-are treated as predictors, but this only for the OUBM models (for the others in this case 
-none are treated as predictors).
+on in the program output. 
+A vector giving the numbers of the columns from \code{mData} matrix which are to be considered predictor ones, 
+\emph{i.e.} conditioned on in the program output. If not provided then in for the OUBM model the columns \code{(kY+1):ncol(mData)}, i.e. the 
+"BM" ones, are treated as predictors. Otherwise, none will be considered to be predictors.
 }
   \item{kY}{
 Number of "Y" (response) variables, for the OUBM models.
+The first \code{kY}
+columns of \code{mY} are the "OU" ones, while the rest the "BM" ones.
+In more detail this value determines the number of columns of the \code{mData} matrix to treat as response variables ("OU" ones). For example, a 
+value of 1 means that only the first column is treated as a response variable, while a value of 3 means the first three 
+columns are treated as response variables. Any predictor variables ("BM" ones) the user is interested in setting for a particular model 
+should therefore be placed in the final columns of the \code{mData} matrix, allowing for selecting select \code{kY} columns before 
+this as response variables ("OU" ones).
 }
   \item{doPrint}{
 Should the function print out information on what it is doing (TRUE) or keep silent 
@@ -300,9 +317,9 @@ Hansen, T.F. and Pienaar, J. and Orzack, S.H. (2008)
   A comparative method for studying adaptation to randomly evolving environment. 
   Evolution 62:1965-1977.
 
-Mitov, V. and Bartoszek, K. and Asimomitis, G. and Stadler, T. (2018) 
-  Fast likelihood evaluation for multivariate phylogenetic comparative methods: the PCMBase R 
-  package. arXiv:1809.09014.
+Mitov, V. and Bartoszek, K. and Asimomitis, G. and Stadler, T. (2020) 
+  Fast likelihood calculation for multivariate Gaussian phylogenetic models with shifts
+  Theoretical Population Biology 131:66-78.
 
 Xiao, H and Bartoszek, K. and Lio P. (2018)
   Multi--omic analysis of signalling factors in inflammatory comorbidities. 

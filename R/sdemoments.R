@@ -8,6 +8,7 @@
 ## bugs to Krzysztof Bartoszek at krzbar@protonmail.ch .
 
 .calc_species_mean<-function(evolmodel,expmtA,exptjA,regimes,vX0=NULL,vY0=NULL,mPsi=NULL,A1B=NULL,mPsi0=NULL){
+## called in loglik.R in order to get RSS
     vMean=switch(evolmodel,
 	bm=vX0, ## BM with drift here also
 	ouch=.calc.mean.ouch.mv(expmtA,vY0,mPsi,mPsi0,exptjA,regimes),
@@ -40,7 +41,8 @@
 }
     
 
-.calc.mean.ouch.mv<-function(expmtA,vY0,mPsi,mPsi0,exptjA=NULL,regimes=NULL){
+.calc.mean.ouch.mv<-function(expmtA,vY0,mPsi,mPsi0=NULL,exptjA=NULL,regimes=NULL){
+## called in simulVasicekproc.R, simulVasicekprocphyl.R
 ## t is not needed to be passed, it is in the expmtA not explicitely
 ## vPsia has to be given as a vector
     kY<-length(vY0)
@@ -57,6 +59,7 @@
 }
 
 .calc.cov.ouch.mv<-function(t,lAcalcs,lScalcs,stationary=FALSE,method="minus.v",b_correct_forPD=TRUE){
+## called in simulVasicekproc.R, simulVasicekprocphyl.R
     invA<-lAcalcs$invA
     kY<-nrow(lAcalcs$A)
     mCov<-matrix(NA,kY,kY)
@@ -82,7 +85,8 @@
     mCov
 }
 
-.calc.mean.slouch.mv<-function(expmtA,A1B,vY0,vX0,mPsi,mPsi0,exptjA=NULL,regimes=NULL){
+.calc.mean.slouch.mv<-function(expmtA,A1B,vY0,vX0,mPsi,mPsi0=NULL,exptjA=NULL,regimes=NULL){
+## called in simulVasicekproc.R, simulVasicekprocphyl.R
 ## t is not needed to be passed, it is in the expmtA not explicitely
 ## vPsia has to be given as a vector
     kY<-length(vY0)
@@ -100,6 +104,7 @@
 
 
 .calc.cov.slouch.mv<-function(t,lAcalcs,lScalcs,tol=1e-10,method="minus.v",b_correct_forPD=TRUE){
+## called in simulVasicekproc.R, simulVasicekprocphyl.R
 ## once again invP can be calculated from eigA but more effective to do this once
 ## same with invA
 ## the idea of the function is just to glue everything together and only calculate time depedent bits

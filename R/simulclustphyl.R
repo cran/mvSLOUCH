@@ -44,8 +44,6 @@ simulate_clustered_phylogeny<-function(v_sizeclusts,joining_branchlengths=NULL,f
 ##    TreeSim::sim.bd.taxa(n=n,...)[[1]]
 ## }
 ##	f_simClustPhyl(v_sizeclusts=c(5,5,5),f_simclustphyl=my_sim.bd.taxa,b_change_joining_branches=TRUE,joining_branchlengths=c(20,NA),joining=my_sim.bd.taxa,lambda=1,mu=0)
-## podaj tez identyczny call z sim.bd.taxa_Yule1
-## i takze ultrametryzacje
 
     if (is.null(v_sizeclusts)){stop("Size clusters not provided!")}
     numclusts<-length(v_sizeclusts)

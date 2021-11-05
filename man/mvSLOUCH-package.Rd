@@ -31,8 +31,8 @@ bugs to Krzysztof Bartoszek at krzbar@protonmail.ch .
 \tabular{ll}{
 Package: \tab mvSLOUCH\cr
 Type: \tab Package\cr
-Version: \tab 2.6.4\cr
-Date: \tab 2021-05-14\cr
+Version: \tab 2.7\cr
+Date: \tab 2021-11-05\cr
 License: \tab GPL (>= 2)\cr
 LazyLoad: \tab yes\cr
 }
@@ -110,9 +110,9 @@ Labra, A., Pienaar, J. & Hansen, T.F. (2009)
   niche tracking. 
   The American Naturalist 174:204-220.
 
-Mitov, V. and Bartoszek, K. and Asimomitis, G. and Stadler, T. (2018) 
-  Fast likelihood evaluation for multivariate phylogenetic comparative methods: the PCMBase R 
-  package. arXiv:1809.09014.
+Mitov, V. and Bartoszek, K. and Asimomitis, G. and Stadler, T. (2020) 
+  Fast likelihood calculation for multivariate Gaussian phylogenetic models with shifts
+  Theoretical Population Biology 131:66-78.
 
 Pienaar et al (in prep) An overview of comparative methods for
      testing adaptation to external environments.
@@ -124,6 +124,8 @@ Pienaar et al (in prep) An overview of comparative methods for
 \keyword{manip}
 \keyword{hplot}
 \keyword{datagen}
+\keyword{array}
+\keyword{algebra}
 
 \examples{
 RNGversion(min(as.character(getRversion()),"3.6.1"))

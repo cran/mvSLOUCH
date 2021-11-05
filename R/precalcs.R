@@ -12,7 +12,7 @@
 ## function precalculates all the matrices needed to calculate the covariance
 ## ie all the bits that are not time dependent
 ## the function does not consider the situation A=0 ie degenerate to BM
-## called in estimGLSGC.R, getESS.R, loglik.R, matrixexps.R (not lPrecalculates), modelparams.R
+## called in estimGLSGC.R, getESS.R, loglik.R, matrixexps.R (not lPrecalculates), modelparams.R, OUphylregression.R
 ## modelparamsummary.R (not lPrecalculates), precalcs.R, simulVasicekproc.R, simulVasicekprocphyl.R
 
 ##---------------------------Prepare all the variables ----------------------------------
@@ -20,7 +20,7 @@
     regimeTimes<-modelParams$regimeTimes
     kY<-NA;kX<-NA
     if (is.element("A",names(modelParams))){A<-modelParams$A;if((!any(is.na(A)))&&(is.matrix(A))){kY<-nrow(A)}}else{A<-NULL}
-    if (is.element("B",names(modelParams))){B<-modelParams$B;if((!any(is.na(B)))&&(is.matrix(B))){kX<-ncol(A)}}else{B<-NULL}
+    if (is.element("B",names(modelParams))){B<-modelParams$B;if((!any(is.na(B)))&&(is.matrix(B))){kX<-ncol(B)}}else{B<-NULL}
     if (is.element("Syy",names(modelParams))){Syy<-modelParams$Syy}else{Syy<-NULL}
     if (is.element("Syx",names(modelParams))){Syx<-modelParams$Syx}else{Syx<-NULL}
     if (is.element("Sxy",names(modelParams))){Sxy<-modelParams$Sxy}else{Sxy<-NULL}

@@ -37,7 +37,7 @@ A list of model parameters, as returned in \code{ParamsInModel} part of
 }
   \item{M.error}{
 An optional measurement error covariance structure. The measurement errors between species are assumed 
-independent. The program tries to recognizes the structure of matrix passed and accepts the following 
+independent. The program tries to recognize the structure of the passed matrix and accepts the following 
 possibilities :
 \itemize{
 \item{}{a single number that is a common measurement error for all tips and species,}
@@ -57,7 +57,7 @@ for all the species and traits.
   \item{predictors}{
 A vector giving the numbers of the columns from
 \code{data} which are to be considered predictor ones, \emph{i.e.} conditioned
-on in the program output.
+on in the program output. If not provided, then none will be treated as predictors.
 }
   \item{min_bl}{Value to which \pkg{PCMBase}'s \code{PCMBase.Threshold.Skip.Singular} should be set.
   It indicates that branches of length shorter than \code{min_bl} should be skipped in likelihood

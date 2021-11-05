@@ -12,7 +12,7 @@
 
 <meta name="author" content="Jesualdo Fuentes Gonzalez, Jason Pienaar and Krzysztof Bartoszek" />
 
-<meta name="date" content="2021-06-02" />
+<meta name="date" content="2021-11-05" />
 
 <title>Analysis of locomotion and forelimb morphology in carnivorans using the mvSLOUCH R-package</title>
 
@@ -56,14 +56,7 @@ document.addEventListener('DOMContentLoaded', function() {
     </style>
 
 
-<style type="text/css">
-  code {
-    white-space: pre;
-  }
-  .sourceCode {
-    overflow: visible;
-  }
-</style>
+<style type="text/css">code{white-space: pre;}</style>
 <style type="text/css" data-origin="pandoc">
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
@@ -348,7 +341,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 <h1 class="title toc-ignore">Analysis of locomotion and forelimb morphology in carnivorans using the mvSLOUCH R-package</h1>
 <h4 class="author">Jesualdo Fuentes Gonzalez, Jason Pienaar and Krzysztof Bartoszek</h4>
-<h4 class="date">2021-06-02</h4>
+<h4 class="date">2021-11-05</h4>
 
 
 <div id="TOC">
@@ -525,7 +518,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <h2>Brownian motion (BM)</h2>
 <p>Now we are ready to explore some models. Let us start with a multivariate Brownian motion model, under which the morphological variables accumulate variation over time in the absence of systematic selection towards deterministic optima. The main inputs are the modified data and tree that we just created:</p>
 <div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1"></a>BMestim&lt;-mvSLOUCH<span class="op">::</span><span class="kw">BrownianMotionModel</span>(mvStree,mvData)</span></code></pre></div>
-<p>Key parameter estimates for this model are the trait covariance matrix and the ancestral trait values:</p>
+<p>Key parameter estimates for this model are the diffusion component of the stochastic differential equation (important for obtaining the infinitesimal covariance matrix) and the ancestral trait values:</p>
 <div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1"></a>BMestim<span class="op">$</span>ParamsInModel<span class="op">$</span>Sxx</span></code></pre></div>
 <pre><code>##           HuPCL       RaL        HuL
 ## HuPCL 0.7960162 0.0000000 0.00000000
@@ -1070,9 +1063,9 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <p>As before the customized procedure attained a higher likelihood than the wrapper function. By comparing the AICc values of these optimized models, you can notice that the reduced model is more decisively preferred this time:</p>
 <div class="sourceCode" id="cb201"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb201-1"><a href="#cb201-1"></a>FinalOUf2<span class="op">$</span>FinalFound<span class="op">$</span>ParamSummary<span class="op">$</span>aic.c <span class="op">-</span><span class="st"> </span>FinalOUs2<span class="op">$</span>FinalFound<span class="op">$</span>ParamSummary<span class="op">$</span>aic.c</span></code></pre></div>
 <pre><code>## [1] 2.772658</code></pre>
-<p>Confirming that the reduced model is doing a better job than the full model, and that we can focus our attention on the former for interpretation. In regards to strokers, it seems like the type of motion works more effectively as selective regime than the particular medium being pulled (water or soil). <span class="math inline">\(\mathrm{R}^{2}\)</span> is high, indicating that the model explains considerable variation in the data:</p>
+<p>Confirming that the reduced model is doing a better job than the full model, and that we can focus our attention on the former for interpretation. In regards to strokers, it seems like the type of motion works more effectively as selective regime than the particular medium being pulled (water or soil). <span class="math inline">\(\mathrm{R}^{2}\)</span> is low, indicating that there is, as often in phylogenetic comparative studies, considerable variation in the data left to be still explained:</p>
 <div class="sourceCode" id="cb203"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb203-1"><a href="#cb203-1"></a>FinalOUs2<span class="op">$</span>FinalFound<span class="op">$</span>ParamSummary<span class="op">$</span>RSS<span class="op">$</span>R2</span></code></pre></div>
-<pre><code>## [1] 0.8620673</code></pre>
+<pre><code>## [1] 0.1140503</code></pre>
 <p>So now we can go back and explore the phenomena described at the beginning using this model <a href="#section2">(Data section)</a>. Let us start with the adaptive significance of limb morphology in terms of locomotor types. This can be explored by comparing the estimated primary optima for the different niches. mvSLOUCH not only reports the estimates, but also <span class="math inline">\(95\%\)</span> generalized least squares (GLS) confidence intervals conditional on <span class="math inline">\(\mathbf{A}\)</span> and diffusion matrix parameters:</p>
 <div class="sourceCode" id="cb205"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb205-1"><a href="#cb205-1"></a>FinalOUs2<span class="op">$</span>FinalFound<span class="op">$</span>ParamSummary<span class="op">$</span>confidence.interval<span class="op">$</span>regression.summary<span class="op">$</span>mPsi.regression.confidence.interval</span></code></pre></div>
 <pre><code>## $Lower.end

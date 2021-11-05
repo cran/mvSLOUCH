@@ -9,7 +9,7 @@
 
 
 .InitialRegimeSetup<-function(phyltree,regimes,regimes.times,mData,kX,kYX=NULL,root.regime=NULL,M.error=NULL,bSave_in_phyltree=FALSE){
-## called in evolmodelest.R PhyloSDE.R, modelparamsummary.R, simulaVasicekprocphyl.R
+## called in evolmodelest.R PhyloSDE.R, modelparamsummary.R, simulaVasicekprocphyl.R, OUphylregression.R
     bTake_from_phyltree<-FALSE
     vregimes<-NA
     pcmbase_model_box<-NA

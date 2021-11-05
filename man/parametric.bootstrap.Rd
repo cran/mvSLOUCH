@@ -49,7 +49,7 @@ is taken.
 }
   \item{M.error}{
 An optional measurement error covariance structure. The measurement errors between species are assumed 
-independent. The program tries to recognizes the structure of matrix passed and accepts the following 
+independent. The program tries to recognize the structure of the passed matrix and accepts the following 
 possibilities :
 \itemize{
 \item{}{a single number that is a common measurement error for all tips and species,}
@@ -74,7 +74,15 @@ are treated as predictors, but this only for the OUBM models (for the others in 
 none are treated as predictors).
 }
   \item{kY}{
-Number of "Y" (response) variables, for the OUBM models. If \code{NULL} then
+Number of "Y" (response) variables, for the OUBM models. 
+The first \code{kY}
+columns of \code{mY} are the "OU" ones, while the rest the "BM" ones.
+In more detail this value determines the number of columns of the (simulated) data matrix to treat as response variables ("OU" ones). For example, a 
+value of 1 means that only the first column is treated as a response variable, while a value of 3 means the first three 
+columns are treated as response variables. Any predictor variables ("BM" ones) the user is interested in setting for a particular model 
+should therefore be placed in the final columns of the data matrix, allowing for selecting select \code{kY} columns before 
+this as response variables ("OU" ones).
+If \code{NULL} then
 it is extracted from the provided model parameters in \code{estimated.model}.
 }
   \item{numboot}{
@@ -98,8 +106,17 @@ in \code{estimated.model}.
 }
   \item{diagA}{
 Should the diagonal of \code{A} be forced to be positive (\code{"Positive"}), \cr
-negative (\code{"Negative"}) or the sign free to vary (\code{NULL})
-If \code{NULL} then the function checks it is not in the provided model parameters 
+negative (\code{"Negative"}) or the sign free to vary (\code{NULL}). 
+However, setting this to
+a non-\code{NULL} value when \code{evolmodel} is \code{"mvslouch"} might be 
+(but simulations concerning this are not conclusive) slightly detrimental to the optimization process 
+if \code{Atype} is \code{"DecomposablePositive"}, \code{"DecomposableNegative"}, or
+\code{"DecomposableReal"}. In these cases \code{A} is parametrized by its eigendecomposition.
+Additional exponentiation of the diagonal, to ensure positivity, could (but this is uncertain)
+make the exploration of the likelihood surface more difficult. 
+In the case of \code{Atype} being \code{"SymmetricPositiveDefinite"},
+the diagonal is always guaranteed to be positive.
+If \code{NULL} then the function checks if it is not in the provided model parameters 
 in \code{estimated.model}.
 }
    \item{parameter_signs}{

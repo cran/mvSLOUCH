@@ -71,6 +71,7 @@
 
 
 .correct_phylGLS_response_by_intercept<-function(mY,intercept){
+## called in OUphylregression.R, phylgls.R
 ## intercept is already calculated in precalcs.R
 ## the intercept is stored as a vector for consitency with the old slow version of mvSLOUCH at the moment
     mY<-mY-matrix(intercept,nrow=nrow(mY),ncol=ncol(mY),byrow=TRUE)
@@ -104,6 +105,7 @@
 }
 
 .get_fullGLSintercept_mvslouch<-function(vIntercept,mDintercept,YnonCondX,model_params){
+## called in OUphylregression.R, phylgls.R
     vInterfrommD<-rep(0,length(vIntercept))
 # design matrix has the dummy estimate of X0-X0 regardless of YnonCondX or not
 #    if (YnonCondX){vInterfrommD<-mDintercept}
@@ -158,6 +160,7 @@
 }
 
 .extract_GLS_results_ouch<-function(vestim_params,model_params,designToEstim){
+## called in OUphylregression.R, phylgls.R
     vDoParamsUpdate<-c("H"=FALSE,"Theta"=FALSE,"Sigma_x"=FALSE,"X0"=FALSE)
     kY<-nrow(model_params$A)
 
@@ -488,6 +491,7 @@
 
 
 .design_matrix_construction<-function(evolmodel,n,model_params=NULL,designToEstim=NULL,kYX=NULL,mX=NULL){
+## called in OUphylregression.R phylgls.R
     mD=switch(evolmodel,
                 bm=.design_matrix_bm(kYX=kYX,n=n),
                 ouch=.design_matrix_ouch(model_params,designToEstim,model_params$precalcMatrices[[3]]$lexpmtA,model_params$precalcMatrices[[3]]$lexptjA),
@@ -507,6 +511,7 @@
 }
 
 .set_mean0_pcmbase_model_box<-function(pcmbase_model_box,glsmodel=NA){
+## called in OUphylregression.R, phylgls.R
 ## So far this is for OU (BM, OUOU, OUBM) type models
 
     pcmbase_model_box_mean0<-pcmbase_model_box
@@ -529,6 +534,7 @@
 
 
 .pcmbaseDphylOU_GLS<-function(mY,mD,phyltree,pcmbase_model_box,glsmodel=NA){
+## called in OUphylregression.R phylgls.R
 ## intercept needs to be corrected with PRIOR to GLS
 ## glsmodel is for mvslouch if we will need to do the conditional model
 ## we cannot have a completely unobserved trait

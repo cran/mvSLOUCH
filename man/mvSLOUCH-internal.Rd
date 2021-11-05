@@ -194,6 +194,14 @@
 \alias{.matrixcalc_is.singular.matrix}
 \alias{.matrixcalc_is.square.matrix}
 \alias{.matrixcalc_is.symmetric.matrix}
+\alias{.calc.phyl.mean}
+\alias{.bm.phyl.mean}
+\alias{.ouch.phyl.mean}
+\alias{.mvslouch.phyl.mean}
+\alias{.get_phyl_mean}
+\alias{.OUphylreg_internal}
+\alias{.id_evolmodel}
+\alias{.f_warningsA}
 \description{Internal mvSLOUCH objects.}
 \details{These are not to be called by the user. They are located in the code files as follows
 .ape2slouch.mvsl: trees2slouch.mvsl.R
@@ -390,5 +398,13 @@
 .matrixcalc_is.singular.matrix: from_matrixcalc_1_0_3_matrixcalculations.R
 .matrixcalc_is.square.matrix: from_matrixcalc_1_0_3_matrixcalculations.R
 .matrixcalc_is.symmetric.matrix: from_matrixcalc_1_0_3_matrixcalculations.R
+.calc.phyl.mean: sdemeanphyl.R
+.bm.phyl.mean: sdemeanphyl.R
+.ouch.phyl.mean: sdemeanphyl.R
+.mvslouch.phyl.mean: sdemeanphyl.R
+.get_phyl_mean: OUphylregression.R
+.OUphylreg_internal: OUphylregression.R
+.id_evolmodel: OUphylregression.R
+.f_warningsA: wrappers.R
 }
 \keyword{internal}

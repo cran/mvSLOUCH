@@ -763,7 +763,7 @@ generate.model.setups<-function(){
 	    LambdaStart[which(signsA=="+")]<- exp(LambdaStart[which(signsA=="+")])
     	    signsA[which(signsA=="-")]<-NA
     	    signsA[which(signsA=="+")]<-NA
-    	    if (lengths(which(!is.na(signsA)))>0){LambdaStart[which(!is.na(signsA))]<-signsA[which(!is.na(signsA))]}	    
+    	    if (length(which(!is.na(signsA)))>0){LambdaStart[which(!is.na(signsA))]<-as.numeric(signsA[which(!is.na(signsA))])}	    
     }
     eigL<-eigen(LambdaStart)
     mP<-eigL$vectors
@@ -793,7 +793,7 @@ generate.model.setups<-function(){
 	    signsB<-model_setup$parameter_signs$signsB
     	    signsB[which(signsB=="-")]<-NA
     	    signsB[which(signsB=="+")]<-NA
-    	    if (lengths(which(!is.na(signsB)))>0){BStartPoint[which(!is.na(signsB))]<-signsB[which(!is.na(signsB))]}	    
+    	    if (lengths(which(!is.na(signsB)))>0){BStartPoint[which(!is.na(signsB))]<-as.numeric(signsB[which(!is.na(signsB))])}	    
 	}
 	
 	for (i in 1:kY){

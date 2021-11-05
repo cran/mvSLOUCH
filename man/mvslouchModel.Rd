@@ -30,7 +30,15 @@ species are in the phylogeny (i.e. correspond to the node indices \code{1:n},
 where \eqn{n}{n} is the number of tips). The columns should be named by traits, otherwise
 a warning is thrown and generic names are generated.
 }
-  \item{kY}{Number of "Y" (response) variables.}
+  \item{kY}{Number of "Y" (response) variables.
+The first \code{kY}
+columns of \code{mY} are the "OU" ones, while the rest the "BM" ones.
+In more detail this value determines the number of columns of the \code{mData} matrix to treat as response variables ("OU" ones). For example, a 
+value of 1 means that only the first column is treated as a response variable, while a value of 3 means the first three 
+columns are treated as response variables. Any predictor variables ("BM" ones) the user is interested in setting for a particular model 
+should therefore be placed in the final columns of the \code{mData} matrix, allowing for selecting select \code{kY} columns before 
+this as response variables ("OU" ones).
+ }
   \item{regimes}{
 A vector or list of regimes. If vector then each entry corresponds to each of \code{phyltree}'s
 branches, i.e. to each row of \code{phyltree$edge}. If list then each list entry corresponds to a tip node
@@ -49,12 +57,13 @@ than one regime has the same maximum frequency, then alphabetically first one of
 is taken.
 }
   \item{predictors}{
-A vector giving the numbers of the columns from \code{data} which are to be considered predictor ones, 
-\emph{i.e.} conditioned on in the program output. If not provided the "X" variables are treated as predictors.
+A vector giving the numbers of the columns from \code{mData} matrix which are to be considered predictor ones, 
+\emph{i.e.} conditioned on in the program output. If not provided then columns \code{(kY+1):ncol(mData)}, i.e. the 
+"BM" ones, are treated as predictors.
 }
   \item{M.error}{
 An optional measurement error covariance structure. The measurement errors between species are assumed 
-independent. The program tries to recognizes the structure of matrix passed and accepts the following 
+independent. The program tries to recognize the structure of the passed matrix and accepts the following 
 possibilities :
 \itemize{
 \item{}{a single number that is a common measurement error for all tips and species,}
@@ -85,7 +94,15 @@ What class does the Syy matrix in the multivariate OUBM model belong to, possibl
 }
    \item{diagA}{
   Whether the values on \code{A}'s diagonal are to be \code{"Positive"}, \code{"Negative"} 
-  or sign allowed to vary, \code{NULL}.  
+  or sign allowed to vary, \code{NULL}. However, setting this to
+a non-\code{NULL} value might be (but simulations concerning this are not conclusive) 
+slightly detrimental to the optimization process if \code{Atype} is
+\code{"DecomposablePositive"}, \code{"DecomposableNegative"}, or
+\code{"DecomposableReal"}. In these cases \code{A} is parametrized by its eigendecomposition.
+Additional exponentiation of the diagonal, to ensure positivity, could (but this is uncertain)
+make the exploration of the likelihood surface more difficult. The user is advised to
+also try \code{diag=NULL}. In the case of \code{Atype} being \code{"SymmetricPositiveDefinite"},
+the diagonal is always guaranteed to be positive.
 }
 \item{estimate.root.state}{
     Should the root state be estimate \code{TRUE} (not recommended) or set at the optimum 
@@ -270,7 +287,9 @@ sample size, sic is the Schwarz information criterion, \code{bic} is the Bayesia
 The field \code{RSS_non_phylogenetic} is a residual sum of squares calculated without correcting
 for the phylogeny--induced between species correlations, while the extension
 conditional_on_predictors indicates that we consider the RSS for the variables
-labelled as responses conditioned on the remaining variables.
+labelled as responses conditioned on the remaining variables. The \code{R2_phylaverage} field is
+R2, where the alternative model is the phylogenetically weighted sample average 
+(see \code{\link{OU_phylreg}}).
 The last field \code{LogLik} is the log--likelihood at the point.
 
 From version \code{2.0.0} of \pkg{mvSLOUCH} the data has to be passed as a matrix.
@@ -311,9 +330,9 @@ Labra, A., Pienaar, J. & Hansen, T.F. (2009)
   Evolution of thermophysiology in Liolaemus lizards: adaptation, phylogenetic inertia and niche tracking. 
   The American Naturalist 174:204-220.
 
-Mitov, V. and Bartoszek, K. and Asimomitis, G. and Stadler, T. (2018) 
-  Fast likelihood evaluation for multivariate phylogenetic comparative methods: the PCMBase R 
-  package. arXiv:1809.09014.
+Mitov, V. and Bartoszek, K. and Asimomitis, G. and Stadler, T. (2020) 
+  Fast likelihood calculation for multivariate Gaussian phylogenetic models with shifts
+  Theoretical Population Biology 131:66-78.
 
 Pienaar et al (in prep) An overview of comparative methods for
      testing adaptation to external environments.

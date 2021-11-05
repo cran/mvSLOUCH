@@ -330,7 +330,8 @@ deterministic optima. The main inputs are the modified data and tree that we jus
 BMestim<-mvSLOUCH::BrownianMotionModel(mvStree,mvData)
 ```
 
-Key parameter estimates for this model are the trait covariance matrix and the ancestral trait values:
+Key parameter estimates for this model are the diffusion component of the stochastic 
+differential equation (important for obtaining the infinitesimal covariance matrix) and the ancestral trait values:
 
 ```{r}
 BMestim$ParamsInModel$Sxx
@@ -1098,8 +1099,8 @@ FinalOUf2$FinalFound$ParamSummary$aic.c - FinalOUs2$FinalFound$ParamSummary$aic.
 
 Confirming that the reduced model is doing a better job than the full model, and that we can focus our attention on the 
 former for interpretation. In regards to strokers, it seems like the type of motion works more effectively as 
-selective regime than the particular medium being pulled (water or soil). $\mathrm{R}^{2}$ is high, indicating that the model 
-explains considerable variation in the data:
+selective regime than the particular medium being pulled (water or soil). $\mathrm{R}^{2}$ is low, indicating that there
+is, as often in phylogenetic comparative studies, considerable variation in the data left to be still explained:
 
 ```{r}
 FinalOUs2$FinalFound$ParamSummary$RSS$R2

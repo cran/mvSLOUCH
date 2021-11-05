@@ -29,7 +29,7 @@ BrownianMotionModel<-function(phyltree,mData,predictors=NULL,M.error=NULL,min_bl
 }
 
 
-.internal_ouchModel<-function(phyltree,mData,regimes=NULL,regimes.times=NULL,root.regime=NULL,predictors=NULL,M.error=NULL,Atype="Invertible",Syytype="UpperTri",diagA="Positive",estimate.root.state=FALSE,parameter_signs=NULL,lStartPoint=NULL,parscale=NULL,min_bl=0.0003,maxiter=c(10,100)){
+.internal_ouchModel<-function(phyltree,mData,regimes=NULL,regimes.times=NULL,root.regime=NULL,predictors=NULL,M.error=NULL,Atype="Invertible",Syytype="UpperTri",diagA="Positive",estimate.root.state=FALSE,parameter_signs=NULL,lStartPoint=NULL,parscale=NULL,min_bl=0.0003,maxiter=c(10,100),b_warnInvertible=FALSE,b_warnAdiag=FALSE,b_warnAsymposdef=FALSE){
     if ((!is.vector(maxiter))|| (!is.numeric(maxiter)) || (length(maxiter)!=2)){
         maxiter<-c(10,100);
         .my_warning("WARNING: maxiter passed in a wrong way, setting it to default of c(10,100)",TRUE,FALSE)
@@ -43,21 +43,22 @@ BrownianMotionModel<-function(phyltree,mData,predictors=NULL,M.error=NULL,min_bl
     res<-.PhyloSDEestim(phyltree,mData,kY=NULL,regimes=regimes,regimes.times=regimes.times,root.regime=root.regime,params= list(EvolModel="ouch",EstimParams=c(list(Atype=Atype,Syytype=Syytype,diagA=diagA,diagSyy="Positive",calcCI=FALSE,lStartPoint=lStartPoint,optim_parscale=parscale),parameter_signs)),predictors=predictors,M.error=M.error,estimate.root.state=estimate.root.state,maxiter=c(maxiter[1],1,maxiter[2]))
     options(PCMBase.Threshold.Skip.Singular=pcmbase_min_bl)
     options(PCMBase.Skip.Singular=pcmbase_skip)
+    .f_warningsA(b_warnInvertible=b_warnInvertible,b_warnAdiag=b_warnAdiag,Atype=Atype,diagA=diagA,b_warnAsymposdef=b_warnAsymposdef)
     res
 }
 
 
 ouchModel<-function(phyltree,mData,regimes=NULL,regimes.times=NULL,root.regime=NULL,predictors=NULL,M.error=NULL,Atype="Invertible",Syytype="UpperTri",diagA="Positive",estimate.root.state=FALSE,parameter_signs=NULL,start_point_for_optim=NULL,parscale=NULL,min_bl=0.0003,maxiter=c(10,100)){
-    .internal_ouchModel(phyltree,mData,regimes,regimes.times,root.regime,predictors,M.error,Atype,Syytype,diagA,estimate.root.state,parameter_signs,start_point_for_optim,parscale,min_bl,maxiter=maxiter)
+    .internal_ouchModel(phyltree,mData,regimes,regimes.times,root.regime,predictors,M.error,Atype,Syytype,diagA,estimate.root.state,parameter_signs,start_point_for_optim,parscale,min_bl,maxiter=maxiter,b_warnInvertible=TRUE,b_warnAdiag=FALSE,b_warnAsymposdef=TRUE)
 }
 
 
 mvslouchModel<-function(phyltree,mData,kY,regimes=NULL,regimes.times=NULL,root.regime=NULL,predictors=NULL,M.error=NULL,Atype="Invertible",Syytype="UpperTri",diagA="Positive",estimate.root.state=FALSE,parameter_signs=NULL,start_point_for_optim=NULL,parscale=NULL,min_bl=0.0003,maxiter=c(10,50,100),estimateBmethod="ML"){
-    .internal_mvslouchModel(phyltree,mData,kY,regimes,regimes.times,root.regime,predictors,M.error,Atype,Syytype,diagA,estimate.root.state,parameter_signs,start_point_for_optim,parscale,min_bl,maxiter=maxiter,estimateBmethod=estimateBmethod)
+    .internal_mvslouchModel(phyltree,mData,kY,regimes,regimes.times,root.regime,predictors,M.error,Atype,Syytype,diagA,estimate.root.state,parameter_signs,start_point_for_optim,parscale,min_bl,maxiter=maxiter,estimateBmethod=estimateBmethod,b_warnInvertible=TRUE,b_warnAdiag=TRUE)
 }
 
 
-.internal_mvslouchModel<-function(phyltree,mData,kY,regimes=NULL,regimes.times=NULL,root.regime=NULL,predictors=NULL,M.error=NULL,Atype="Invertible",Syytype="UpperTri",diagA="Positive",estimate.root.state=FALSE,parameter_signs=NULL,lStartPoint=NULL,parscale=NULL,min_bl=0.0003,maxiter=c(10,50,100),estimateBmethod="ML"){
+.internal_mvslouchModel<-function(phyltree,mData,kY,regimes=NULL,regimes.times=NULL,root.regime=NULL,predictors=NULL,M.error=NULL,Atype="Invertible",Syytype="UpperTri",diagA="Positive",estimate.root.state=FALSE,parameter_signs=NULL,lStartPoint=NULL,parscale=NULL,min_bl=0.0003,maxiter=c(10,50,100),estimateBmethod="ML",b_warnInvertible=FALSE,b_warnAdiag=FALSE){
     if (is.matrix(mData)){
 	if (kY>=ncol(mData)){
 	    .my_stop('Cannot have all variables as OU responses, i.e. kY>=ncol(mData). Set kY to a smaller (than number of columns in mData) number of OU responses.',TRUE)
@@ -81,9 +82,33 @@ mvslouchModel<-function(phyltree,mData,kY,regimes=NULL,regimes.times=NULL,root.r
     res<-.PhyloSDEestim(phyltree,mData,kY=kY,regimes=regimes,regimes.times=regimes.times,root.regime=root.regime,params=list(EvolModel=EvolModel,EstimParams=c(list(Atype=Atype,Syytype=Syytype,diagA=diagA,diagSyy="Positive",calcCI=FALSE,lStartPoint=lStartPoint,optim_parscale=parscale),parameter_signs)),predictors=predictors,M.error=M.error,estimate.root.state=estimate.root.state,maxiter=maxiter,cBestim_method=estimateBmethod)
     options(PCMBase.Threshold.Skip.Singular=pcmbase_min_bl)
     options(PCMBase.Skip.Singular=pcmbase_skip)
+    .f_warningsA(b_warnInvertible=b_warnInvertible,b_warnAdiag=b_warnAdiag,Atype=Atype,diagA=diagA,b_warnAsymposdef=FALSE)
     res
 }
 
+.f_warningsA<-function(b_warnInvertible,b_warnAdiag,Atype,diagA,b_warnAsymposdef){
+    if ((b_warnInvertible)&&(Atype=="Invertible")){
+	.my_message('Atype is at the default "Invertible" setting. This is a highly inefficient and unrecommended setting. Please look into the possible constraints on A and choose the one best corresponding to the hypothesis on the relationship between the traits.')
+    }
+    if ((b_warnAdiag)&&(!is.null(diagA))&&(Atype%in%c("SymmetricPositiveDefinite", "DecomposablePositive", "DecomposableNegative", "DecomposableReal"))){ ##"Invertible"
+	c_warnmessage<-""
+	if (Atype=="SymmetricPositiveDefinite"){
+	    c_warnmessage<-"A is defined as symmetric postive definite. Its diagonal is guaranteed to be positive. Using the diag A setting will result in the diagonal being exponentiated above this and could be in some cases detrimental to the optimization process. It is recommended to run with diagA=NULL."
+	}else{
+	    c_warnmessage<-"A is parametrized through its "
+	    if (Atype%in%c("DecomposablePositive", "DecomposableNegative", "DecomposableReal")){c_warnmessage<-paste0(c_warnmessage,"eigen")}
+	    ##if (Atype=="Invertible"){c_warnmessage<-paste0(c_warnmessage,"QR ")}
+	    c_warnmessage<-paste0(c_warnmessage,"decomposition.	Using the diag A setting will result in the diagonal being exponentiated above this and could be in some cases (but performed simulations on this are not conclusive) slightly detrimental to the optimization process. It is recommended to experiment with diagA=NULL.")
+	}
+	.my_message(c_warnmessage)	
+    }
+    if ((!b_warnAdiag)&&(b_warnAsymposdef)&&(!is.null(diagA))&&(Atype=="SymmetricPositiveDefinite")){
+	c_warnmessage<-"A is defined as symmetric postive definite. Its diagonal is guaranteed to be positive. Using the diag A setting will result in the diagonal being exponentiated above this and could be in some cases detrimental to the optimization process. It is recommended to run with diagA=NULL."
+	.my_message(c_warnmessage)	
+    }
+
+    NULL
+}
 
 SummarizeBM<-function(phyltree,mData, modelParams,t=c(1),dof=NULL,M.error=NULL,predictors=NULL,min_bl=0.0003){
     bShouldPrint<-FALSE

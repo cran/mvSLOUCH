@@ -9,7 +9,7 @@
 
 
 .check_input_trait_data<-function(mData,n=NULL,vSpeciesLabels=NULL){
-## called in PhyloSDE.R, evolmodelest.R, modelparamssummary.R
+## called in PhyloSDE.R, evolmodelest.R, modelparamssummary.R, OUphylregression.R
     if (is.null(mData)){.my_stop("The observed trait data is NULL! It has to be a matrix!",TRUE)}
     if (is.matrix(mData)){
 	if (!is.numeric(mData)){.my_stop("The observed trait data is not a numeric matrix!",TRUE)}
@@ -389,8 +389,10 @@
 	if (is.element("bic",names(listobj$lower.summary))){listobj$lower.summary$bic<-NULL}
 	if (is.element("RSS",names(listobj$lower.summary))){listobj$lower.summary$RSS<-NULL}
 	if (is.element("R2",names(listobj$lower.summary))){listobj$lower.summary$R2<-NULL}
-	if (is.element("RSS_comment",names(listobj$lower.summary))){listobj$lower.summary$R2_comment<-NULL}
-	if (is.element("R2_comment",names(listobj$lower.summary))){listobj$lower.summary$RSS_comment<-NULL}
+	if (is.element("R2_phylaverage",names(listobj$lower.summary))){listobj$lower.summary$R2_phylaverage<-NULL}
+	if (is.element("RSS_comment",names(listobj$lower.summary))){listobj$lower.summary$RSS_comment<-NULL}
+	if (is.element("R2_comment",names(listobj$lower.summary))){listobj$lower.summary$R2_comment<-NULL}
+	if (is.element("R2_phylaverage_comment",names(listobj$lower.summary))){listobj$lower.summary$R2_phylaverage_comment<-NULL}
 	if (is.element("RSS_non_phylogenetic",names(listobj$lower.summary))){listobj$lower.summary$RSS_non_phylogenetic<-NULL}
 	if (is.element("R2_non_phylogenetic",names(listobj$lower.summary))){listobj$lower.summary$R2_non_phylogenetic<-NULL}
 	if (is.element("RSS_non_phylogenetic_comment",names(listobj$lower.summary))){listobj$lower.summary$RSS_non_phylogenetic_comment<-NULL}
@@ -414,8 +416,10 @@
 	if (is.element("bic",names(listobj$upper.summary))){listobj$upper.summary$bic<-NULL}
 	if (is.element("RSS",names(listobj$upper.summary))){listobj$upper.summary$RSS<-NULL}
 	if (is.element("R2",names(listobj$upper.summary))){listobj$upper.summary$R2<-NULL}
+	if (is.element("R2_phylaverage",names(listobj$upper.summary))){listobj$upper.summary$R2_phylaverage<-NULL}
 	if (is.element("RSS_comment",names(listobj$upper.summary))){listobj$upper.summary$RSS_comment<-NULL}
 	if (is.element("R2_comment",names(listobj$upper.summary))){listobj$upper.summary$R2_comment<-NULL}
+	if (is.element("R2_phylaverage_comment",names(listobj$upper.summary))){listobj$upper.summary$R2_phylaverage_comment<-NULL}
 	if (is.element("RSS_non_phylogenetic",names(listobj$upper.summary))){listobj$upper.summary$RSS_non_phylogenetic<-NULL}
 	if (is.element("R2_non_phylogenetic",names(listobj$upper.summary))){listobj$upper.summary$R2_non_phylogenetic<-NULL}
 	if (is.element("RSS_non_phylogenetic_comment",names(listobj$upper.summary))){listobj$upper.summary$RSS_non_phylogenetic_comment<-NULL}

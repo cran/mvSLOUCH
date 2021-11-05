@@ -55,7 +55,7 @@ The function additionally returns the parameter summary at the tree's height.
 
   \item{M.error}{
 An optional measurement error covariance structure. The measurement errors between species are assumed 
-independent. The program tries to recognizes the structure of matrix passed and accepts the following 
+independent. The program tries to recognize the structure of the passed matrix and accepts the following 
 possibilities :
 \itemize{
 \item{}{a single number that is a common measurement error for all tips and species,}
@@ -72,12 +72,11 @@ the order of the list has to correspond to the order of the nodes in the \code{p
 From version \code{2.0.0} of \pkg{mvSLOUCH} it is impossible to pass a single joint measurement error matrix 
 for all the species and traits. 
 }
-
-
   \item{predictors}{
   A vector giving the numbers of the columns from
   \code{data} which are to be considered predictor ones, \emph{i.e.} conditioned
-  on in the program output.
+  on in the program output. If not provided then columns \code{(kY+1):ncol(mData)}, i.e. the 
+"BM" ones, are treated as predictors.
 }
   \item{Atype}{
 What class does the A matrix in the multivariate OUBM model belong to, possible values :
