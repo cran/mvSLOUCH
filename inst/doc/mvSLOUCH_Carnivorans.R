@@ -21,22 +21,11 @@ if(!requireNamespace("geiger")) {
       "The geiger installation did not succeed. The vignette cannot be built.")
   }
 }
-if(!requireNamespace("rdryad")) {
-  message("Building the vignette requires rdryad (>= 1.0.0) R-package. Trying to install.")
-  status.rdryad <- try({
-    install.packages("rdryad")
-  }, silent = TRUE)
-  if(class(status.rdryad == "try-error")) {
-    stop(
-      "The rdryad installation did not succeed. The vignette cannot be built.")
-  }
-}
 
 ## -----------------------------------------------------------------------------
 library(geiger)
 library(ggplot2)
 library(ape)
-library(rdryad)
 library(mvSLOUCH)
 
 ## -----------------------------------------------------------------------------
@@ -47,10 +36,26 @@ RNGversion(min(as.character(getRversion()),"3.6.1"))
 set.seed(5, kind = "Mersenne-Twister", normal.kind = "Inversion")
 
 ## ----eval=TRUE, echo=TRUE, results="hide", message=FALSE----------------------
-files_carnivores_postcranial<- rdryad::dryad_download(dois ="10.5061/dryad.77tm4")
+b_correct_dryad_download<-FALSE
+temp <- tempfile()
+tryCatch({
+download.file("datadryad.org/api/v2/datasets/doi%253A10.5061%252Fdryad.77tm4/download",temp)
+b_correct_dryad_download<-TRUE
+},error=function(e){cat("Could not download data file from Dryad! No analysis can be done! Vignette not built!")},
+warning=function(w){cat("Problem with downloading data file from Dryad! No analysis can be done! Vignette not built!")})
+
+if (b_correct_dryad_download){
+    b_correct_dryad_download<-FALSE
+    tryCatch({
+	dfcarnivores_postcranial <- read.table(unz(temp, "Carnivore Postcranial Morphology Data Samuels et al. 2013.txt"),header=TRUE,sep="\t",stringsAsFactors =FALSE)
+	b_correct_dryad_download<-TRUE
+    },error=function(e){cat("Corrupt data file from Dryad! No analysis can be done! Vignette not built!")},
+    warning=function(w){cat("Problem with accessing data file from Dryad! No analysis can be done! Vignette not built!")})
+}
+
 
 ## -----------------------------------------------------------------------------
-dfcarnivores_postcranial<-read.table(files_carnivores_postcranial[[1]][1],header=TRUE,sep="\t",stringsAsFactors =FALSE)
+unlink(temp)
 Urocyon_cinereoargenteus_duplicated<-which(dfcarnivores_postcranial[,2]=="Urocyon cinereoargenteus")[2]
 dfcarnivores_postcranial<-dfcarnivores_postcranial[-Urocyon_cinereoargenteus_duplicated,]
 v_species_to_remove<-c("Bdeogale crassicauda","Lycalopex sp.","Daphoenus vetus","Barbourofelis loveorum","Archaeocyon leptodus","Canis armbrusteri","Canis dirus","Canis latrans orcutti","Canis lupus (Pleistocene)","Desmocyon thomsoni","Hesperocyon gregarius","Mesocyon coryphaeus","Paraenhydrocyon josephi","Phlaocyon leucosteus","Vulpes macrotis (Pleistocene)","Vulpes vulpes (Pleistocene)","Homotherium ischyrus","Homotherium serum","Leopardus wiedii (Pleistocene)","Lynx rufus (Pleistocene)","Miracinonyx inexpectatus","Panthera atrox","Puma concolor (Pleistocene)","Puma lacustris","Smilodon fatalis","Miacis gracilis","Mephitis mephitis (Pleistocene)","Spilogale gracilis (Pleistocene)","Spilogale putorius (Pleistocene)","Gulo gulo (Pleistocene)","Martes americana (Pleistocene)","Martes nobilis (Pleistocene)","Mustela nigripes (Pleistocene)","Neovison frenata (Pleistocene)","Neovison vison (Pleistocene)","Satherium piscinarium","Taxidea taxus (Pleistocene)","Dinictis felina","Dinictis major","Hoplophoneus primaevus","Nimravus brachyops","Agriotherium africanum","Arctodus simus","Ursus arctos (Pleistocene)")
@@ -68,7 +73,15 @@ dat<-dfcarnivores_postcranial[,c("Ecology","HuL","HuPCL","RaL")]
 head(dat)
 
 ## -----------------------------------------------------------------------------
+b_correct_tree_download<-FALSE
+tryCatch({
 phyltree_mammals<-ape::read.tree("http://www.biodiversitycenter.org/files/ttol/8.TTOL_mammals_unsmoothed.nwk")
+b_correct_tree_download<-TRUE
+},error=function(e){cat("Could not download tree file! No analysis can be done! Vignette not built!")},
+warning=function(w){cat("Problem with downloading tree file! No analysis can be done! Vignette not built!")}
+)
+
+## -----------------------------------------------------------------------------
 phyltree_mammals$tip.label[which(phyltree_mammals$tip.label=="Uncia_uncia")]<-"Panthera_uncia"
 phyltree_mammals$tip.label[which(phyltree_mammals$tip.label=="Parahyaena_brunnea")]<-"Hyaena_brunnea"
 phyltree_mammals$tip.label[which(phyltree_mammals$tip.label=="Bdeogale_crassicauda")]<-"Bdeogale_jacksoni"
@@ -542,4 +555,11 @@ dimnames(BTL.CondCorr)<-dimnames(BTU.CondCorr)<-list(row.names(FinalOUs2$FinalFo
 ## -----------------------------------------------------------------------------
 BTL.CondCorr
 BTU.CondCorr
+
+## ----conditional_print_treeerror, eval=!b_correct_tree_download, echo=FALSE----
+#  cat("Error: Could not download tree file! No analysis can be done! Vignette not built!")
+
+## ----conditional_print_Dryaderror, eval=!b_correct_dryad_download, echo=FALSE----
+#  cat("Error: Could not download data file from Dryad! No analysis can be done! Vignette not built!")
+#  unlink(temp)
 
