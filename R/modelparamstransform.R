@@ -174,14 +174,14 @@
 		    if (!is.null(EstimationParams$signsA)){
 			tmpsignsA<-EstimationParams$signsA
 			vToNA<-c(which(tmpsignsA=="-"),which(tmpsignsA=="+"))
-			if (length(vToNA)>0){tmpsignsA[vToNA]<-NA}
+			Aval<-matrix(NA,ncol=ncol(tmpsignsA),nrow=nrow(tmpsignsA))
+			if (length(vToNA)>0){tmpsignsA[vToNA]<-NA}			
 			if (length(which(!is.na(tmpsignsA)))>0){
-			    Aval<-matrix(NA,ncol=ncol(tmpsignsA),nrow=nrow(tmpsignsA))
 			    Aval[which(!is.na(tmpsignsA))]<-as.numeric(tmpsignsA[which(!is.na(tmpsignsA))])
-			    if (length(which(is.na(tmpsignsA)))>0){
-				if (length(which(is.na(tmpsignsA)))==1){Aval[which(is.na(tmpsignsA))]<-params[which(names(params)=="A")]}
-				else{Aval[which(is.na(tmpsignsA))]<-params[(which(names(params)=="Astart")):(which(names(params)=="Aend"))]}
-			    }
+			}
+			if (length(which(is.na(tmpsignsA)))>0){
+			    if (length(which(is.na(tmpsignsA)))==1){Aval[which(is.na(tmpsignsA))]<-params[which(names(params)=="A")]}
+			    else{Aval[which(is.na(tmpsignsA))]<-params[(which(names(params)=="Astart")):(which(names(params)=="Aend"))]}
 			}
 		    }else{
 			Aval<-matrix(params[(which(names(params)=="Astart")):(which(names(params)=="Aend"))],ncol=EstimationParams$kY,nrow=EstimationParams$kY,byrow=TRUE)
@@ -242,14 +242,14 @@
 		    if (!is.null(EstimationParams$signsB)){
 			tmpsignsB<-EstimationParams$signsB
 			vToNA<-c(which(tmpsignsB=="-"),which(tmpsignsB=="+"))
+		        Bval<-matrix(NA,ncol=ncol(tmpsignsB),nrow=nrow(tmpsignsB))
 			if (length(vToNA)>0){tmpsignsA[vToNA]<-NA}
 			if (length(which(!is.na(tmpsignsB)))>0){
-			    Bval<-matrix(NA,ncol=ncol(tmpsignsB),nrow=nrow(tmpsignsB))
 			    Bval[which(!is.na(tmpsignsB))]<-as.numeric(tmpsignsB[which(!is.na(tmpsignsB))])
-			    if (length(which(is.na(tmpsignsB)))>0){
-				if (length(which(is.na(tmpsignsB)))==1){Bval[which(is.na(tmpsignsB))]<-params[which(names(params)=="B")]}
-				else{Bval[which(is.na(tmpsignsB))]<-params[(which(names(params)=="Bstart")):(which(names(params)=="Bend"))]}
-			    }
+			}
+			if (length(which(is.na(tmpsignsB)))>0){
+			    if (length(which(is.na(tmpsignsB)))==1){Bval[which(is.na(tmpsignsB))]<-params[which(names(params)=="B")]}
+			    else{Bval[which(is.na(tmpsignsB))]<-params[(which(names(params)=="Bstart")):(which(names(params)=="Bend"))]}
 			}
 		    }else{
 			Bval<- matrix(params[(which(names(params)=="Bstart")):(which(names(params)=="Bend"))],ncol=EstimationParams$kX,nrow=EstimationParams$kY,byrow=TRUE)
@@ -399,14 +399,14 @@
 		    if (!is.null(EstimationParams$signsSyy)){
 			tmpsignsSyy<-EstimationParams$signsSyy
 			vToNA<-c(which(tmpsignsSyy=="-"),which(tmpsignsSyy=="+"))
+			Syyval<-matrix(NA,ncol=ncol(tmpsignsSyy),nrow=nrow(tmpsignsSyy))
 			if (length(vToNA)>0){tmpsignsSyy[vToNA]<-NA}
 			if (length(which(!is.na(tmpsignsSyy)))>0){
-			    Syyval<-matrix(NA,ncol=ncol(tmpsignsSyy),nrow=nrow(tmpsignsSyy))
 			    Syyval[which(!is.na(tmpsignsSyy))]<-as.numeric(tmpsignsSyy[which(!is.na(tmpsignsSyy))])
-			    if (length(which(is.na(tmpsignsSyy)))>0){
-				if (length(which(is.na(tmpsignsSyy)))==1){Syyval[which(is.na(tmpsignsSyy))]<-params[which(names(params)=="Syy")]}
-				else{Syyval[which(is.na(tmpsignsSyy))]<-params[(which(names(params)=="Syystart")):(which(names(params)=="Syyend"))]}
-			    }
+			}
+			if (length(which(is.na(tmpsignsSyy)))>0){
+			    if (length(which(is.na(tmpsignsSyy)))==1){Syyval[which(is.na(tmpsignsSyy))]<-params[which(names(params)=="Syy")]}
+			    else{Syyval[which(is.na(tmpsignsSyy))]<-params[(which(names(params)=="Syystart")):(which(names(params)=="Syyend"))]}
 			}
 		    }else{Syyval<- matrix(params[(which(names(params)=="Syystart")):(which(names(params)=="Syyend"))],ncol=EstimationParams$kY,nrow=EstimationParams$kY,byrow=TRUE)}
 		    Syyval
@@ -531,14 +531,14 @@
 		    if (!is.null(EstimationParams$signsSxx)){
 			tmpsignsSxx<-EstimationParams$signsSxx
 			vToNA<-c(which(tmpsignsSxx=="-"),which(tmpsignsSxx=="+"))
+			Sxxval<-matrix(NA,ncol=ncol(tmpsignsSxx),nrow=nrow(tmpsignsSxx))
 			if (length(vToNA)>0){tmpsignsSxx[vToNA]<-NA}
 			if (length(which(!is.na(tmpsignsSxx)))>0){
-			    Sxxval<-matrix(NA,ncol=ncol(tmpsignsSxx),nrow=nrow(tmpsignsSxx))
 			    Sxxval[which(!is.na(tmpsignsSxx))]<-as.numeric(tmpsignsSxx[which(!is.na(tmpsignsSxx))])
-			    if (length(which(is.na(tmpsignsSxx)))>0){
-				if (length(which(is.na(tmpsignsSxx)))==1){Sxxval[which(is.na(tmpsignsSxx))]<-params[which(names(params)=="Sxx")]}
-				else{Sxxval[which(is.na(tmpsignsSxx))]<-params[(which(names(params)=="Sxxstart")):(which(names(params)=="Sxxend"))]}
-			    }
+			}
+    			if (length(which(is.na(tmpsignsSxx)))>0){
+			    if (length(which(is.na(tmpsignsSxx)))==1){Sxxval[which(is.na(tmpsignsSxx))]<-params[which(names(params)=="Sxx")]}
+			    else{Sxxval[which(is.na(tmpsignsSxx))]<-params[(which(names(params)=="Sxxstart")):(which(names(params)=="Sxxend"))]}
 			}
 		    }else{Sxxval<-matrix(params[(which(names(params)=="Sxxstart")):(which(names(params)=="Sxxend"))],ncol=EstimationParams$kX,nrow=EstimationParams$kX,byrow=TRUE)}
 		    Sxxval
@@ -600,10 +600,10 @@
 		Any={
 		    if (!is.null(EstimationParams$signsA)){
 			tmpsignsA<-EstimationParams$signsA
+			Atmp<-ModelParams$A
 			vToNA<-c(which(tmpsignsA=="-"),which(tmpsignsA=="+"))
 			if (length(vToNA)>0){tmpsignsA[vToNA]<-NA}
 			if (length(which(!is.na(tmpsignsA)))>0){
-			    Atmp<-ModelParams$A
 			    Atmp[which(!is.na(tmpsignsA))]<-NA
 			}
 			Apars<-c(t(Atmp))
@@ -646,10 +646,10 @@
 		Any={
 		    if (!is.null(EstimationParams$signsB)){
 			tmpsignsB<-EstimationParams$signsB
+			Btmp<-ModelParams$B
 			vToNA<-c(which(tmpsignsB=="-"),which(tmpsignsB=="+"))
 			if (length(vToNA)>0){tmpsignsB[vToNA]<-NA}
 			if (length(which(!is.na(tmpsignsB)))>0){
-			    Btmp<-ModelParams$B
 			    Btmp[which(!is.na(tmpsignsB))]<-NA
 			}
 			Bpars<-c(t(Btmp))
@@ -766,10 +766,10 @@
 		Any={
 		    if (!is.null(EstimationParams$signsSyy)){
 			tmpsignsSyy<-EstimationParams$signsSyy
+	 	        Syytmp<-ModelParams$Syy			
 			vToNA<-c(which(tmpsignsSyy=="-"),which(tmpsignsSyy=="+"))
 			if (length(vToNA)>0){tmpsignsSyy[vToNA]<-NA}
 			if (length(which(!is.na(tmpsignsSyy)))>0){
-			    Syytmp<-ModelParams$Syy
 			    Syytmp[which(!is.na(tmpsignsSyy))]<-NA
 			}
 			Syypars<-c(t(Syytmp))
@@ -801,10 +801,10 @@
 	    }
 	    if ((!is.null(EstimationParams$signsSyx))&&(EstimationParams$Syxtype=="Any")){
 			tmpsignsSyx<-EstimationParams$signsSyx
+    		        Syxtmp<-ModelParams$Syx			
 			vToNA<-c(which(tmpsignsSyx=="-"),which(tmpsignsSyx=="+"))
 			if (length(vToNA)>0){tmpsignsSyx[vToNA]<-NA}
 			if (length(which(!is.na(tmpsignsSyx)))>0){
-			    Syxtmp<-ModelParams$Syx
 			    Syxtmp[which(!is.na(tmpsignsSyx))]<-NA
 			}
 			Syxpars<-c(t(Syxtmp))
@@ -834,10 +834,10 @@
 	    }
 	    if ((!is.null(EstimationParams$signsSxy))&&(EstimationParams$Sxytype=="Any")){
 			tmpsignsSxy<-EstimationParams$signsSxy
+			Sxytmp<-ModelParams$Sxy
 			vToNA<-c(which(tmpsignsSxy=="-"),which(tmpsignsSxy=="+"))
 			if (length(vToNA)>0){tmpsignsSxy[vToNA]<-NA}
 			if (length(which(!is.na(tmpsignsSxy)))>0){
-			    Sxytmp<-ModelParams$Sxy
 			    Sxytmp[which(!is.na(tmpsignsSxy))]<-NA
 			}
 			Sxypars<-c(t(Sxytmp))
@@ -874,10 +874,10 @@
 		Any={
 		    if (!is.null(EstimationParams$signsSxx)){
 			tmpsignsSxx<-EstimationParams$signsSxx
+			Sxxtmp<-ModelParams$Sxx
 			vToNA<-c(which(tmpsignsSxx=="-"),which(tmpsignsSxx=="+"))
 			if (length(vToNA)>0){tmpsignsSxx[vToNA]<-NA}
 			if (length(which(!is.na(tmpsignsSxx)))>0){
-			    Sxxtmp<-ModelParams$Sxx
 			    Sxxtmp[which(!is.na(tmpsignsSxx))]<-NA
 			}
 			Sxxpars<-c(t(Sxxtmp))

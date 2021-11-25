@@ -1,4 +1,4 @@
-05259874d6c308e468fdf53d5d147fb2 *DESCRIPTION
+bf430d0200aed787614fdef047f29c50 *DESCRIPTION
 0632cc7589c46bbf4981f0a778f1ef2a *LICENCE
 2049bf4497d9a96c81430cdb793f1b7f *NAMESPACE
 e08870eaa4230c57d3aca7ab375d65bd *R/OUphylregression.R
@@ -18,7 +18,7 @@ c8d50da2fc5e60f83864d3aea239edd5 *R/fitch.mvsl.R
 f5b6d7d46957e4b398f5e26d2465446f *R/matrixparametrizations.R
 496727005450e5af49a873e8196fd876 *R/modelparams.R
 1062387a5a092a6094118115064ab8b2 *R/modelparamssummary.R
-e4f85eb7e83ddc8d25bc1df6e4a0d53d *R/modelparamstransform.R
+373a682899f602833c64a87fb3c796df *R/modelparamstransform.R
 7c8af4800aa21621a5d04d3085c675f8 *R/phylgls.R
 2614eb2cd4c9a03dd7e2546754521942 *R/phyltree_paths.R
 45d72350776dace9ee69c12df4d1152d *R/precalcs.R
@@ -31,13 +31,13 @@ f2fda286ba898f8c940e20f55cb179e1 *R/sdemeanphyl.R
 fefb98bf35b1cb4a48101e17d422ce7d *R/simulclustphyl.R
 b5b6fe217842d0da2d0cd521be45d34c *R/trees2slouch.mvsl.R
 f208ace803239c419d8ad19f0491c451 *R/wrappers.R
-a68f2b6e79134f45c7123477ff8f75db *build/vignette.rds
+cd561097125dd0abd5f00de7a55443fd *build/vignette.rds
 ecf040c24e58cebdeb3c3456aca17000 *inst/CITATION
 eb723b61539feef013de476e68b5c50a *inst/GPL-2
 d32239bcb673463ab874e80d47fae504 *inst/GPL-3
 d5d2612790eeec1c0ed8a98998a62ea9 *inst/doc/mvSLOUCH_Carnivorans.R
 3a5050c3dc4c4f8d993db85083d0aa51 *inst/doc/mvSLOUCH_Carnivorans.Rmd
-5bfdee22ece245915d1545d6b33c3601 *inst/doc/mvSLOUCH_Carnivorans.html
+5139d0bbc8894381b3d9f82658ffcd6f *inst/doc/mvSLOUCH_Carnivorans.html
 5971e5910b01fe0434ce8078e3a99015 *man/BrownianMotionModel.Rd
 c6d7a073b88fe02b41759a165adf0d32 *man/OU_RSS.Rd
 b0ab6001edbf55207b162fd8ad754e0c *man/OU_phylreg.Rd
@@ -50,7 +50,7 @@ c0a91f15a43d7705fa26597bca628843 *man/drawPhylProcess.Rd
 9300c78877a2acec7de22e749c18cae8 *man/fitch.mvsl.Rd
 43998b575ed42f821a4fc92f11767a3b *man/generate.model.setups.Rd
 d49764417f0b8c47bd6d8e75bb6d4613 *man/mvSLOUCH-internal.Rd
-9d808bc8f844f5dee63f2ee93d57da77 *man/mvSLOUCH-package.Rd
+19aa43f14a3e49e4e3cde872df529522 *man/mvSLOUCH-package.Rd
 2e0733e6a558781d76c689dab0ade1dc *man/mvslouchModel.Rd
 cf7c35b260b169c62347014e224e61cc *man/ouchModel.Rd
 0037173edee766b97a7b1bc372af59c6 *man/parametric.bootstrap.Rd
