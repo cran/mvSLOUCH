@@ -26,8 +26,7 @@
 phyltree_mammals$tip.label[which(phyltree_mammals$tip.label=="Uncia_uncia")]<-"Panthera_uncia"
 phyltree_mammals$tip.label[which(phyltree_mammals$tip.label=="Parahyaena_brunnea")]<-"Hyaena_brunnea"
 phyltree_mammals$tip.label[which(phyltree_mammals$tip.label=="Bdeogale_crassicauda")]<-"Bdeogale_jacksoni"
-phyltree_mammals_Names<-geiger::name.check(phyltree_mammals,dat)
-tips_todrop<-phyltree_mammals_Names$tree_not_data
+tips_todrop<-setdiff(phyltree_mammals$tip.label,rownames(dat))
 PrunedTree<-ape::drop.tip(phyltree_mammals,tips_todrop)
 Tree<-ape::di2multi(PrunedTree)
 dat<-dat[Tree$tip.label,]
@@ -61,7 +60,7 @@ Now the branches are proportionately scaled to the tree height (rather than abso
 It is important to ensure that the taxa names in the data and in the tree match, and that the order of names correspond to each other:
 
 ```{r}
-geiger::name.check(ScaledTree, dat)
+isTRUE(all.equal(ScaledTree$tip.label,rownames(dat)))
 ```
 
 When this is not the case (i.e. when there is a list of mismatches instead of the "OK" sign), the data and/or the 

@@ -52,16 +52,6 @@ if(!requireNamespace("ggplot2")) {
       "The ggplot2 installation did not succeed. The vignette cannot be built.")
   }
 }
-if(!requireNamespace("geiger")) {
-  message("Building the vignette requires geiger R-package. Trying to install.")
-  status.geiger <- try({
-    install.packages("geiger")
-  }, silent = TRUE)
-  if(class(status.geiger == "try-error")) {
-    stop(
-      "The geiger installation did not succeed. The vignette cannot be built.")
-  }
-}
 ```
 
 # Introduction {#section1}
@@ -69,12 +59,11 @@ if(!requireNamespace("geiger")) {
 We will explore several attributes of the R [@R] package mvSLOUCH [@KBarJPiePMosSAndTHan2012], 
 that allows fitting multivariate models for phylogenetic comparative data with emphasis on those based on an Ornstein-Uhlenbeck 
 process. Versions of mvSLOUCH from 2.0.0 run models at considerably faster speeds through using the 
-computational engine provided by PCMBase [@VMitKBarGAsiTSta2020], so let us start by attaching mvSLOUCH as well as geiger 
-[@LHaretalGEIGER] and ggplot2 [@HWic2016], which have some useful functions for data processing and plotting, respectively
+computational engine provided by PCMBase [@VMitKBarGAsiTSta2020], so let us start by attaching mvSLOUCH as well as  
+ggplot2 [@HWic2016], which have some useful functions for data processing and plotting, respectively
 (PCMBase with its suggested PCMBaseCpp, if installed, C++ backend will be loaded by mvSLOUCH): 
 
 ```{r}
-library(geiger)
 library(ggplot2)
 library(ape)
 library(mvSLOUCH)

@@ -11,19 +11,8 @@ if(!requireNamespace("ggplot2")) {
       "The ggplot2 installation did not succeed. The vignette cannot be built.")
   }
 }
-if(!requireNamespace("geiger")) {
-  message("Building the vignette requires geiger R-package. Trying to install.")
-  status.geiger <- try({
-    install.packages("geiger")
-  }, silent = TRUE)
-  if(class(status.geiger == "try-error")) {
-    stop(
-      "The geiger installation did not succeed. The vignette cannot be built.")
-  }
-}
 
 ## -----------------------------------------------------------------------------
-library(geiger)
 library(ggplot2)
 library(ape)
 library(mvSLOUCH)
@@ -85,8 +74,7 @@ warning=function(w){cat("Problem with downloading tree file! No analysis can be 
 phyltree_mammals$tip.label[which(phyltree_mammals$tip.label=="Uncia_uncia")]<-"Panthera_uncia"
 phyltree_mammals$tip.label[which(phyltree_mammals$tip.label=="Parahyaena_brunnea")]<-"Hyaena_brunnea"
 phyltree_mammals$tip.label[which(phyltree_mammals$tip.label=="Bdeogale_crassicauda")]<-"Bdeogale_jacksoni"
-phyltree_mammals_Names<-geiger::name.check(phyltree_mammals,dat)
-tips_todrop<-phyltree_mammals_Names$tree_not_data
+tips_todrop<-setdiff(phyltree_mammals$tip.label,rownames(dat))
 PrunedTree<-ape::drop.tip(phyltree_mammals,tips_todrop)
 Tree<-ape::di2multi(PrunedTree)
 dat<-dat[Tree$tip.label,]
@@ -101,7 +89,7 @@ ScaledTree$edge.length<-ScaledTree$edge.length/tree_height
 mvSLOUCH::phyltree_paths(ScaledTree)$tree_height
 
 ## -----------------------------------------------------------------------------
-geiger::name.check(ScaledTree, dat)
+isTRUE(all.equal(ScaledTree$tip.label,rownames(dat)))
 
 ## -----------------------------------------------------------------------------
 row.names(dat)==ScaledTree$tip.label
