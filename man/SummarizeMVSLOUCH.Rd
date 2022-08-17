@@ -189,7 +189,7 @@ OUBMdata<-OUBMdata[phyltree$tip.label,,drop=FALSE]
 
 ## Here we do not do any recovery step
 OUBM.summary<-SummarizeMVSLOUCH(phyltree,OUBMdata,OUBMparameters,
-regimes,t=c(1),dof=11,maxiter=2)
+regimes,t=c(1),dof=7,maxiter=2)
 
 RNGversion(as.character(getRversion()))
 \dontrun{ ##It takes too long to run this

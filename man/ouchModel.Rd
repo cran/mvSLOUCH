@@ -213,7 +213,7 @@ The ONLY fail-safe way to use this is to set \code{Atype="Any"} (if \code{signsA
 the it is strongly advisable to set the entries either below or above the diagonal of\code{Syy} to \code{0}.
 The reason is that \eqn{\Sigma_{yy}\Sigma_{yy}^{T}}{\code{Syy\%*\% t(Syy)}} enters the likelihood and not the 
 given value of \eqn{\Sigma_{yy}}{Syy}. Hence, having values below (or respectively above) the diagonal
-results in an overparameterized model. The package has to option of mixing different matrix types
+results in an overparameterized model. The package has the option of mixing different matrix types
 with specifying values in it but this is only for advanced users who need to dig into the code
 to see what the \code{dof} should be and  if it is possible to find a correspondence between the 
 parametrization and settings. If entries of \code{mPsi} and \code{vY0} are pre-specified,

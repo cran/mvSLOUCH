@@ -314,7 +314,7 @@ OU_RSS<-function(mY,phyltree,modelParams,M.error=NULL,do_centre=NA,regimes=NULL,
 	    .my_stop('Wrong value of do_centre, should be either NA, "average", "phylaverage" or "evolutionary_model".')
 	}
     }else{
-	pcmbase_model_box_mean0<-.set_mean0_pcmbase_model_box(pcmbase_model_box,glsmodel=NA)
+	pcmbase_model_box<-.set_mean0_pcmbase_model_box(pcmbase_model_box,glsmodel=NA)
     }
     RSS<-.pcmbaseDphylGaussian_RSS(mY,phyltree,pcmbase_model_box,glsmodel=NA)
     list(RSS=RSS,phyltree=phyltree)

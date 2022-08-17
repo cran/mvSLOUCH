@@ -166,7 +166,7 @@ OUOUdata<-OUOUdata[phyltree$tip.label,,drop=FALSE]
 
 ## Here we do not do any recovery step
 OUOU.summary<-SummarizeOUCH(phyltree,OUOUdata,OUOUparameters,
-regimes,t=c(1),dof=8)
+regimes,t=c(1),dof=15)
 RNGversion(as.character(getRversion()))
 
 \dontrun{ ##It takes too long to run this

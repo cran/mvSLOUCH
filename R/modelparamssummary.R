@@ -261,7 +261,7 @@
 
 ## =========================================================================================================================
     ## checking if mData is a matrix, has to be for PCMBase
-    if (class(PhylTree)!="phylo"){.my_stop("The phylogenetic tree has to be of the phylo format (i.e. ape).",TRUE)}
+    if (!inherits(PhylTree,"phylo")){.my_stop("The phylogenetic tree has to be of the phylo format (i.e. ape).",TRUE)}
     mData<-.check_input_trait_data(mData,NULL,PhylTree$tip.label)
     n<-nrow(mData)
     kYX<-ncol(mData)
