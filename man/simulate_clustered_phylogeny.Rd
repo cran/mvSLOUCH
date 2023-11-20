@@ -45,7 +45,7 @@ b_change_joining_branches = FALSE, ...)
 \value{
 The resulting object is a \code{clustered_phylo} object which inherits from the \code{phylo} class and enhances it. 
 Apart from the standard \code{phylo} fields it has two additional ones:
-\itemize{
+\describe{
     \item{edges_clusters}{a named list with length equalling the number of clades/clusters plus 1. The first element
 	of the list is called \code{joining_tree} and contains the indices (row numbers of the \code{edge} matrix, 
 	indices of the \code{edge_length} vector) of the edges inside the subtree joining the clusters. 

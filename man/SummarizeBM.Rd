@@ -40,16 +40,16 @@ An optional measurement error covariance structure. The measurement errors betwe
 independent. The program tries to recognize the structure of the passed matrix and accepts the following 
 possibilities :
 \itemize{
-\item{}{a single number that is a common measurement error for all tips and species,}
-\item{}{a m element vector with each value corresponding to a variable, measurement errors are independent
+\item{a single number that is a common measurement error for all tips and species,}
+\item{a m element vector with each value corresponding to a variable, measurement errors are independent
 between variables and each species is assumed to have the same measurement errors,}
-\item{}{a m x m ((number of variables) x (number of variables)) matrix, all species will
+\item{a m x m ((number of variables) x (number of variables)) matrix, all species will
 have the same measurement error,}
-\item{}{a list of length n (number of species), each list element is the covariance structure 
+\item{a list of length n (number of species), each list element is the covariance structure 
 for the appropriate (numbering according to tree) species, either a single number 
 (each variable has same variance), vector (of length m for each variable), or m x m matrix, 
 the order of the list has to correspond to the order of the nodes in the \code{phyltree} object,}
-\item{}{NULL no measurement error.}
+\item{NULL no measurement error.}
 }
 From version \code{2.0.0} of \pkg{mvSLOUCH} it is impossible to pass a single joint measurement error matrix 
 for all the species and traits. 

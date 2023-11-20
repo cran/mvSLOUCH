@@ -137,7 +137,8 @@ simulate_clustered_phylogeny<-function(v_sizeclusts,joining_branchlengths=NULL,f
     p_joined$edge[which(p_joined$edge>(numclusts+1))]<-p_joined$edge[which(p_joined$edge>(numclusts+1))]+numalltips
     p_joined$edge[which(p_joined$edge==(numclusts+1))]<-numalltips+1 ## final root node
     p_joined$edge[which(p_joined$edge<=numclusts)]<-p_joined$edge[which(p_joined$edge<=numclusts)]+numalltips+1
-    labelfirstnodeinsubtree<-numalltips+2*numclusts
+    #labelfirstnodeinsubtree<-numalltips+2*numclusts
+    labelfirstnodeinsubtree<-numalltips+joiningphyl$Nnode+length(joiningphyl$tip.label)+1
     p_joined$edges_clusters<-vector("list",numclusts+1)
     p_joined$tips_clusters<-vector("list",numclusts)
     names(p_joined$edges_clusters)<-c("joining_tree",paste0("cluster_",1:numclusts))
@@ -178,7 +179,8 @@ simulate_clustered_phylogeny<-function(v_sizeclusts,joining_branchlengths=NULL,f
         p_joined$edge.length<-c(p_joined$edge.length,pnext$edge.length)
     }		
     ## change p_joined$Nnode
-    p_joined$Nnode<-numalltips-1
+    ## p_joined$Nnode<-numalltips-1
+    p_joined$Nnode<-length(unique(p_joined$edge[,1]))
     ## label tips correctly
     p_joined$tip.label<-paste0("t",1:numalltips)
     class(p_joined)<-c("clustered_phylo","phylo")

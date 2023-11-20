@@ -166,7 +166,7 @@ SummarizeMVSLOUCH<-function(phyltree,mData,modelParams,regimes=NULL,regimes.time
     list(pcmbase_min_bl=pcmbase_min_bl,pcmbase_skip=pcmbase_skip)
 }
 
-simulBMProcPhylTree<-function(phyltree,X0=NULL,Sigma=NULL,dropInternal=TRUE,M.error=NULL,fullTrajectory=FALSE,jumpsetup=NULL,keep_tree=FALSE){
+simulBMProcPhylTree<-function(phyltree,X0=NULL,Sigma=NULL,dropInternal=TRUE,M.error=NULL,fullTrajectory=FALSE,jumpsetup=NULL,keep_tree=FALSE,step=NULL){
 ## if regimes is not null then X0 has to be a matrix 
     regimes<-NULL
     regimes.times<-NULL
@@ -176,6 +176,7 @@ simulBMProcPhylTree<-function(phyltree,X0=NULL,Sigma=NULL,dropInternal=TRUE,M.er
 	evolmodel<-"bmStep"
     }
     Simulparams<-NULL
+    if (!is.null(step)){Simulparams$step<-step}
     if (!is.null(jumpsetup)){Simulparams$jump<-jumpsetup}
     if (is.null(modelParams)){
 	if (is.null(X0)||is.null(Sigma)){.my_stop("BM parameters are NULL",TRUE)}
@@ -186,22 +187,24 @@ simulBMProcPhylTree<-function(phyltree,X0=NULL,Sigma=NULL,dropInternal=TRUE,M.er
     res
 }
 
-simulOUCHProcPhylTree<-function(phyltree,modelParams,regimes=NULL,regimes.times=NULL,dropInternal=TRUE,M.error=NULL,fullTrajectory=FALSE,jumpsetup=NULL,keep_tree=FALSE){
+simulOUCHProcPhylTree<-function(phyltree,modelParams,regimes=NULL,regimes.times=NULL,dropInternal=TRUE,M.error=NULL,fullTrajectory=FALSE,jumpsetup=NULL,keep_tree=FALSE,step=NULL){
     evolmodel<-"ouch"
     if (fullTrajectory){evolmodel<-"ouchStep"}
     Simulparams<-NULL
+    if (!is.null(step)){Simulparams$step<-step}
     if (!is.null(jumpsetup)){Simulparams$jump<-jumpsetup}
     res<-.simulVasicekProcPhylTree(phyltree,evolmodel,modelParams=modelParams,EstimationParams=NULL,regimes=regimes,regimes.times=regimes.times,Simulparams=Simulparams,dropInternal=dropInternal,M.error=M.error,bAllTrajectories=fullTrajectory,bKeep_tree=keep_tree)
     if (!fullTrajectory){res<-res$ExtantSample}
     res
 }
 
-simulMVSLOUCHProcPhylTree<-function(phyltree,modelParams,regimes=NULL,regimes.times=NULL,dropInternal=TRUE, M.error=NULL,fullTrajectory=FALSE,jumpsetup=NULL,keep_tree=FALSE){
+simulMVSLOUCHProcPhylTree<-function(phyltree,modelParams,regimes=NULL,regimes.times=NULL,dropInternal=TRUE, M.error=NULL,fullTrajectory=FALSE,jumpsetup=NULL,keep_tree=FALSE,step=NULL){
     evolmodel<-"mvslouch"
     if (fullTrajectory){
 	evolmodel<-"mvslouchStep"
     }
     Simulparams<-NULL
+    if (!is.null(step)){Simulparams$step<-step}
     if (!is.null(jumpsetup)){Simulparams$jump<-jumpsetup}
     res<-.simulVasicekProcPhylTree(phyltree,evolmodel,modelParams=modelParams,EstimationParams=NULL,regimes=regimes,regimes.times=regimes.times,Simulparams=Simulparams,dropInternal=dropInternal,M.error=M.error,bAllTrajectories=fullTrajectory,bKeep_tree=keep_tree)
     if (!fullTrajectory){res<-res$ExtantSample}

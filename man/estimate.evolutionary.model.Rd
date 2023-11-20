@@ -52,16 +52,16 @@ An optional measurement error covariance structure. The measurement errors betwe
 independent. The program tries to recognize the structure of the passed matrix and accepts the following 
 possibilities :
 \itemize{
-\item{}{a single number that is a common measurement error for all tips and species,}
-\item{}{a m element vector with each value corresponding to a variable, measurement errors are independent
+\item{a single number that is a common measurement error for all tips and species,}
+\item{a m element vector with each value corresponding to a variable, measurement errors are independent
 between variables and each species is assumed to have the same measurement errors,}
-\item{}{a m x m ((number of variables) x (number of variables)) matrix, all species will
+\item{a m x m ((number of variables) x (number of variables)) matrix, all species will
 have the same measurement error,}
-\item{}{a list of length n (number of species), each list element is the covariance structure 
+\item{a list of length n (number of species), each list element is the covariance structure 
 for the appropriate (numbering according to tree) species, either a single number 
 (each variable has same variance), vector (of length m for each variable), or m x m matrix, 
 the order of the list has to correspond to the order of the nodes in the \code{phyltree} object,}
-\item{}{NULL no measurement error.}
+\item{NULL no measurement error.}
 }
 From version \code{2.0.0} of \pkg{mvSLOUCH} it is impossible to pass a single joint measurement error matrix 
 for all the species and traits. 
@@ -80,7 +80,7 @@ generates using
 
 \code{.generate.basic.model.setups()} a basic list of models.
 Allowed values are 
-\itemize{
+\describe{
 \item{\code{"basic"} }{A basic list of models to try out is generated, defined using 
 
 \code{.generate.basic.model.setups()}. This list should be usually enough.}
@@ -95,7 +95,7 @@ Defined using \code{.generate.ext.model.setups()} which at the moment calls \cr
 }
 Alternatively the user is also free to provide their own list of models in this variable. 
 Each element of the list is a list with fields.
-\itemize{
+\describe{
 \item{\code{evolmodel} }{The evolutionary model, it may take one of the three values \code{"bm"} 
 (Brownian motion model), \code{"ouch"} (OUOU model), \code{"mvslouch"} \cr (OUBM model).}
 \item{\code{Atype} }{The class of the \code{A} matrix, ignored if \code{evolmodel} equals 
@@ -149,6 +149,7 @@ Make sure that the parameter is consistent with the other parameter restrictions
 can result in undefined behaviour. For example one may provide this as (provided dimensions and other
 parameter restrictions agree) \preformatted{start_point_for_optim=list(A=rbind(c(2,0),(0,4)), 
 Syy=rbind(c(1,0.5),c(0,2))).}
+}
  \item{parscale}{
 A vector to calculate the \code{parscale} argument for \code{optim}. It is a named
 vector with 3 entries, e.g. \cr \code{c("parscale_A"=3,"logparscale_A"=5,"logparscale_other"=1)}.
@@ -163,7 +164,6 @@ is misspelled), then made equal  to the example value provided above. For other 
 mentioned above, that are optimized over by \code{optim()}, \code{1} is used for \code{optim()}'s 
 \code{parscale}. It is advised that the user experiments with a couple of different values and 
 reads \code{\link[stats]{optim}}'s man page. 
-}
 }
 \item{estimateBmethod}{Only relevant for the OUBM models (optional), should \code{B} be estimated by maximum likelihood 
 (default if not provided) value \code{"ML"} or generalized least squares (value \code{"GLS"}).
@@ -300,6 +300,11 @@ Ane, C. (2008)
 Bartoszek, K. (2016)
   Phylogenetic effective sample size.
   Journal of Theoretical Biology 407:371-386.
+
+Bartoszek, K. and Fuentes-Gonzalez, J. and Mitov, V. and Pienaar, J. and Piwczynski, M.
+  and Puchalka, R. and Spalik, K. and Voje, K. L. (2023) 
+  Model Selection Performance in Phylogenetic Comparative Methods Under Multivariate 
+  Ornstein-Uhlenbeck Models of Trait Evolution, Systematic Biology 72(2):275-293.
 
 Bartoszek, K. and Pienaar, J. and Mostad. P. and Andersson, S. and Hansen, T. F. (2012)
   A phylogenetic comparative method for studying multivariate adaptation.

@@ -25,7 +25,7 @@ None of the "signs" options for the model is generated, see the description of
 \value{
 A list with different models is returned. Each element of the list is a list with the following 
 fields.
-\itemize{
+\describe{
 \item{\code{evolmodel} }{The evolutionary model, it may take one of the three values \code{"BM"} 
 (Brownian motion model), \code{"ouch"} (OUOU model), \code{"mvslouch"} (OUBM model).}
 \item{\code{Atype} }{The class of the \code{A} matrix, ignored if \code{evolmodel} equals 
