@@ -31,8 +31,8 @@ bugs to Krzysztof Bartoszek at krzbar@protonmail.ch .
 \tabular{ll}{
 Package: \tab mvSLOUCH\cr
 Type: \tab Package\cr
-Version: \tab 2.7.6\cr
-Date: \tab 2023-11-19\cr
+Version: \tab 2.7.7\cr
+Date: \tab 2025-07-24\cr
 License: \tab GPL (>= 2)\cr
 LazyLoad: \tab yes\cr
 }
@@ -85,9 +85,19 @@ Bartoszek, K. and Fuentes-Gonzalez, J. and Mitov, V. and Pienaar, J. and Piwczyn
   Model Selection Performance in Phylogenetic Comparative Methods Under Multivariate 
   Ornstein-Uhlenbeck Models of Trait Evolution, Systematic Biology 72(2):275-293.
 
+Bartoszek, K. and Fuentes-Gonzalez, J. and Mitov, V. and Pienaar, J. and Piwczynski, M.
+  and Puchalka, R. and Spalik, K. and Voje, K. L. (2024) 
+  Analytical advances alleviate model misspecification in non-Brownian multivariate
+  comparative methods, Evolution 78(3):389-400.
+
 Bartoszek, K. and Pienaar, J. and Mostad. P. and Andersson, S. and Hansen, T. F. (2012)
   A phylogenetic comparative method for studying  multivariate adaptation.
   Journal of Theoretical Biology 314:204-215.
+
+Bartoszek, K. and Tredgett Clarke J. and Fuentes-Gonzalez, J. and Mitov, V. and Pienaar, J. 
+  and Piwczynski, M. and Puchalka, R. and Spalik, K. and Voje, K. L. (2024) 
+  Fast mvSLOUCH: Multivariate Ornstein-Uhlenbeck-based models of trait evolution on 
+  large phylogenies, Methods in Ecology and Evolution 15(9):1507-1515.
 
 Butler, M.A. and A.A. King (2004) 
   Phylogenetic comparative analysis: a modeling approach for adaptive evolution.  

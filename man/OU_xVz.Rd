@@ -116,6 +116,14 @@ the identity matrix with rows and columns equalling the number or columns of \co
 The value of the vector matrix vector multiplication with respect to the 
 between-species-between-traits precision matrix. Also the used phylogeny is returned.
 }
+
+\references{
+Bartoszek, K. and Tredgett Clarke J. and Fuentes-Gonzalez, J. and Mitov, V. and Pienaar, J. 
+  and Piwczynski, M. and Puchalka, R. and Spalik, K. and Voje, K. L. (2024) 
+  Fast mvSLOUCH: Multivariate Ornstein-Uhlenbeck-based models of trait evolution on 
+  large phylogenies, Methods in Ecology and Evolution 15(9):1507-1515.
+}
+
 \author{Krzysztof Bartoszek}
 
 \examples{

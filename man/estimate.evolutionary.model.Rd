@@ -313,6 +313,11 @@ Bartoszek, K. and Pienaar, J. and Mostad. P. and Andersson, S. and Hansen, T. F.
 Bartoszek, K. and Sagitov, S. (2015) 
   Phylogenetic confidence intervals for the optimal trait value. 
   Journal of Applied Probability 52(4):1115-1132.
+
+Bartoszek, K. and Tredgett Clarke J. and Fuentes-Gonzalez, J. and Mitov, V. and Pienaar, J. 
+  and Piwczynski, M. and Puchalka, R. and Spalik, K. and Voje, K. L. (2024) 
+  Fast mvSLOUCH: Multivariate Ornstein-Uhlenbeck-based models of trait evolution on 
+  large phylogenies, Methods in Ecology and Evolution 15(9):1507-1515.
   
 Butler, M.A. and A.A. King (2004) 
   Phylogenetic comparative analysis: a modeling approach for adaptive evolution.  

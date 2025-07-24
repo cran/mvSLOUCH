@@ -42,7 +42,7 @@ length of the longest path from root to tip.}
 
 \note{The \code{ape} and \code{phangorn} packages include related tree manipulation functions.}
 
-\seealso{\code{\link{ape}}, \code{phangorn}}
+\seealso{\code{ape}, \code{phangorn}}
 
 \examples{
     RNGversion(min(as.character(getRversion()),"3.6.1"))

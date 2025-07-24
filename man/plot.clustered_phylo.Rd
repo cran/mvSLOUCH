@@ -34,6 +34,12 @@ joiningphylo_edge.width = 1, joiningphylo_edge.lty = 1, ...)
 
 \value{Same as \code{plot.phylo()}.}
 
+\references{
+Bartoszek K. and Vasterlund A. (2020) 
+ "Old Techniques for New Times": the RMaCzek package for producing Czekanowski's diagrams 
+ Biometrical Letters 57(2):89-118.
+}
+
 \author{Krzysztof Bartoszek}
 
 

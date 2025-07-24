@@ -195,7 +195,12 @@ help in a speed up if the \code{OU_phylreg} is used in some iterative procedure.
 Bartoszek, K. and Pienaar, J. and Mostad. P. and Andersson, S. and Hansen, T. F. (2012)
   A phylogenetic comparative method for studying  multivariate adaptation.
   Journal of Theoretical Biology 314:204-215.
-  
+
+Bartoszek, K. and Tredgett Clarke J. and Fuentes-Gonzalez, J. and Mitov, V. and Pienaar, J. 
+  and Piwczynski, M. and Puchalka, R. and Spalik, K. and Voje, K. L. (2024) 
+  Fast mvSLOUCH: Multivariate Ornstein-Uhlenbeck-based models of trait evolution on 
+  large phylogenies, Methods in Ecology and Evolution 15(9):1507-1515.
+ 
 Hansen, T.F. and Bartoszek, K. (2012)
   Interpreting the evolutionary regression: the interplay between observational and 
   biological errors in phylogenetic comparative studies.
